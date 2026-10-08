@@ -1,0 +1,23 @@
+{
+  "raw_dir": "data/raw",
+  "processed_dir": "data/processed",
+  "clinical_file": "data/raw/sarc_tcga_clinical_data.tsv",
+  "expression_file": "data/raw/data_mrna_seq_v2_rsem.txt",
+  "label_column": "Cancer Type Detailed",
+  "target_subtypes": {
+    "Leiomyosarcoma": "LMS",
+    "Dedifferentiated Liposarcoma": "DDLPS",
+    "Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma": "UPS",
+    "Myxofibrosarcoma": "MFS",
+    "Synovial Sarcoma": "SS",
+    "Malignant Peripheral Nerve Sheath Tumor": "MPNST"
+  },
+  "expected_class_counts": {
+    "LMS": 104,
+    "DDLPS": 57,
+    "UPS": 49,
+    "MFS": 25,
+    "SS": 10,
+    "MPNST": 9
+  }
+}

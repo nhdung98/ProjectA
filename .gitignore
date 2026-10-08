@@ -1,0 +1,10 @@
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/sarc_tcga_clinical_data.tsv
+!data/raw/data_mrna_seq_v2_rsem.txt
+data/processed/*
+!data/processed/.gitkeep
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
