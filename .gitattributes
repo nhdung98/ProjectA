@@ -1,0 +1,3 @@
+# Preserve bundled dataset bytes and checksums on every platform.
+data/raw/*.tsv -text
+data/raw/*.txt -text
