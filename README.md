@@ -57,6 +57,14 @@ The expression archive alone does not reproduce the separate clinical export. Th
 
 ## Exploration and verification
 
-notebooks/01_data_exploration.ipynb calls the shared audit code and inspects the prepared dataset. It contains no separate preparation implementation. Open it from the repository root or notebooks directory with a Python environment containing the pinned dependencies.
+`notebooks/01_data_exploration.ipynb` is a guided walkthrough covering provenance, sample accounting, class imbalance, expression distributions, sample variation, zero and constant genes, duplicate gene identifiers, and clinical label discrepancies. Each code cell has comments and Markdown explanations before and after it. It calls the shared audit module and reads prepared outputs without changing data or applying learned preprocessing.
+
+Install the optional notebook dependencies in the same virtual environment:
+
+```powershell
+python -m pip install -r requirements-notebooks.txt
+```
+
+Run `python -m src.data.prepare` first. Open the notebook from the repository root or notebooks directory in your notebook editor and select the virtual environment's Python interpreter. Restart the kernel and run all cells in order. Saved outputs illustrate the verified run; rerun the cells to reproduce them. Input checksums are compared against DATA_SOURCES.md, and prepared values are checked against the current raw expression file. The notebook dependencies add plotting and kernel/execution tools; a standalone Jupyter user interface is optional and not included.
 
 Preparation verifies saved sample order, feature order, and every expression value after a TSV round trip. data/processed/merge_validation.json records source hashes, configuration, counts, exclusions, package versions, and verification results. The current code has no randomness; later experiments should record seeds and split assignments.
