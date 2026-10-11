@@ -1,3 +1,11 @@
 # Preserve bundled dataset bytes and checksums on every platform.
 data/raw/*.tsv -text
 data/raw/*.txt -text
+
+results/splits/*.csv -text
+results/splits/*.json -text
+
+# Keep executable source hashes consistent across Git checkouts.
+*.py text eol=lf
+configs/*.json text eol=lf
+requirements-experiments.txt text eol=lf

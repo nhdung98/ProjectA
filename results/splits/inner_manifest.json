@@ -1,0 +1,10 @@
+{
+  "dataset_sha256": "e468ea37ed3863cb6c0c46bbe05fda398bae30b627586ff3ed94f2cea0e2476d",
+  "outer_sha256": "92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7",
+  "inner_validation": {
+    "n_splits": 4,
+    "shuffle": true,
+    "random_state": 42
+  },
+  "inner_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08"
+}

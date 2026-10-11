@@ -8,3 +8,16 @@ data/processed/*
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
+
+results/*
+!results/splits/
+results/splits/*
+!results/splits/outer.csv
+!results/splits/outer_manifest.json
+
+!results/splits/inner.csv
+!results/splits/inner_manifest.json
+
+# Private development verification records
+/reports/validation/
+/docs/svm_validation.md

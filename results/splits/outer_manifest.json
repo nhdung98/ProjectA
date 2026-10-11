@@ -1,0 +1,14 @@
+{
+  "dataset_sha256": "e468ea37ed3863cb6c0c46bbe05fda398bae30b627586ff3ed94f2cea0e2476d",
+  "validation": {
+    "n_splits": 5,
+    "n_repeats": 3,
+    "random_state": 42
+  },
+  "source_sha256": {
+    "data/raw/sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+    "data/raw/data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee"
+  },
+  "scikit_learn": "1.7.2",
+  "split_sha256": "92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7"
+}

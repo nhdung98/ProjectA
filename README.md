@@ -1,70 +1,75 @@
 # TCGA SARC machine learning
 
-This repository prepares TCGA SARC gene expression and clinical labels for a reproducible comparison of sarcoma subtype classification pipelines. The current stage audits and merges data; it does not train models.
+We compare machine learning pipelines that predict 6 sarcoma subtypes from gene expression. The prepared dataset has 254 patients and 20,531 gene records. Gene expression measures how active a gene is in a sample; the subtype is the label we predict.
 
-## Setup
+## Start here
 
-From the repository root, create a Python 3.12 virtual environment and install the pinned direct dependencies:
+For official member runs, clone the repository and use the reviewed commit. A ZIP download does not contain the Git history needed to record that commit.
+
+```powershell
+git clone https://github.com/nhdung98/ProjectA.git
+cd ProjectA
+```
+
+Use Python 3.12. From the repository root:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-```
-
-The pins record the pandas and NumPy versions used for the verified merge. This is not a complete transitive environment lock. Jupyter is optional and is not required for the command-line workflow.
-
-## Data and configuration
-
-The repository is configured to include these two unchanged input files in Git:
-
-- `data/raw/sarc_tcga_clinical_data.tsv`
-- `data/raw/data_mrna_seq_v2_rsem.txt`
-
-Once these files are committed and pushed, cloning or downloading the repository supplies both inputs. No separate data download or archive extraction is needed for the normal workflow. Run the preparation commands below to generate `data/processed/` locally.
-
-Other raw files, including archives, and generated processed files are excluded by `.gitignore`. The two input files were copied unchanged from local working copies. `DATA_SOURCES.md` records their provenance and exact SHA-256 checksums; `DATA_LICENSE.txt` preserves the license notice supplied with the downloaded study. The audit and preparation runs also record source hashes. Preserve the original downloaded archive and acquisition records separately when available.
-
-configs/data.yaml defines input paths, output directory, label mapping, and expected class counts. It uses JSON syntax, which is valid YAML, so the current loader needs only Python's standard library. Keep this format when editing it. Relative paths resolve from the repository root, rather than the current shell directory. --config accepts an alternate config file.
-
-## Reproduce the data preparation
-
-```powershell
-python -m src.data.audit
+python -m pip install -r requirements-experiments.txt
 python -m src.data.prepare
+python -m src.experiments.svm check
+python -m unittest discover -s tests -v
 ```
 
-audit.py checks identifiers, unmatched samples, expression validity, missing values, duplicate gene identifiers, patient repetition, and class counts without writing data. prepare.py runs the audit, refuses unexpected class counts, transposes expression measurements, joins by exact Sample ID, and writes datasets and audit records. Re-running prepare regenerates processed files.
+The two original inputs are included in `data/raw/`. Preparation creates `data/processed/` locally. The runner checks the pinned numerical package versions and the shared split assignments before experiments.
 
-The six-subtype output contains 254 samples from 254 patients and 20,531 genes. Expected labels are LMS 104, DDLPS 57, UPS 49, MFS 25, SS 10, and MPNST 9. Labels come from Cancer Type Detailed to match the research report. Histologic text is retained in the full merge without being used to reassign classes.
+Read the [team guide](docs/team_guide.md) for the workflow, assignments, submission rules, and validation commands. Read the [experiment protocol](docs/experiment_protocol.md) before running an experiment. Official runs should use the team's agreed commit with a clean working tree.
 
-The full output preserves 263 matched samples and all clinical columns. Two clinical records lack expression measurements; nine matched samples are outside the target classes. Separate files record exclusions, unmatched clinical records, repeated-patient samples, and gene column mappings. Duplicate gene identifiers remain separate features identified by symbol, Entrez ID, and source row.
+## Repository layout
 
-Only columns beginning gene__ are expression model inputs. subtype is the target and Patient ID is the split group. No normalization, imputation, scaling, gene filtering, feature selection, or resampling is performed here. These learned steps belong inside model training folds in later pipeline modules.
+| Folder or file | Purpose |
+| --- | --- |
+| `configs/` | Shared data paths and experiment settings |
+| `data/raw/` | Two unchanged source datasets included in Git |
+| `data/processed/` | Generated datasets and merge checks; ignored by Git |
+| `src/data/` | Audit the inputs and prepare the dataset |
+| `src/experiments/` | Shared training, splits, metrics, validation, and comparison tools |
+| `notebooks/` | Guided data exploration |
+| `tests/` | Checks for leakage prevention, splits, metrics, and output review |
+| `docs/` | Team instructions, protocol, submission register, and templates |
+| `reports/` | Accepted comparison summaries and validation evidence |
+| `results/` | Local experiment outputs; only common splits are included in Git |
 
-## Optional acquisition utilities
-
-Skip these utilities when using the bundled input files. They are for acquiring another copy or preparing a deliberately configured alternative dataset. Use a separate destination or configuration rather than overwriting the bundled inputs.
-
-download.py accepts an explicit HTTPS URL and filename; it does not automatically download or choose a clinical export. It refuses existing destination files and can verify an expected SHA-256. extract.py extracts only the configured expression file from a tar archive and refuses existing output.
-
-```powershell
-python -m src.data.download --url <public-https-url> --filename sarc_tcga.tar.gz --sha256 <expected-hash>
-python -m src.data.extract --archive data/raw/sarc_tcga.tar.gz
-```
-
-The expression archive alone does not reproduce the separate clinical export. The bundled clinical TSV preserves the exact export used here; document the provenance separately if replacing it.
-
-## Exploration and verification
-
-`notebooks/01_data_exploration.ipynb` is a guided walkthrough covering provenance, sample accounting, class imbalance, expression distributions, sample variation, zero and constant genes, duplicate gene identifiers, and clinical label discrepancies. Each code cell has comments and Markdown explanations before and after it. It calls the shared audit module and reads prepared outputs without changing data or applying learned preprocessing.
-
-Install the optional notebook dependencies in the same virtual environment:
+## Explore the data
 
 ```powershell
 python -m pip install -r requirements-notebooks.txt
 ```
 
-Run `python -m src.data.prepare` first. Open the notebook from the repository root or notebooks directory in your notebook editor and select the virtual environment's Python interpreter. Restart the kernel and run all cells in order. Saved outputs illustrate the verified run; rerun the cells to reproduce them. Input checksums are compared against DATA_SOURCES.md, and prepared values are checked against the current raw expression file. The notebook dependencies add plotting and kernel/execution tools; a standalone Jupyter user interface is optional and not included.
+Open [01_data_exploration.ipynb](notebooks/01_data_exploration.ipynb) and select the virtual environment's Python interpreter. Run preparation first, then restart the notebook kernel and run all cells. The notebook explains the data and reads prepared outputs. It does not fit experiment preprocessing.
 
-Preparation verifies saved sample order, feature order, and every expression value after a TSV round trip. data/processed/merge_validation.json records source hashes, configuration, counts, exclusions, package versions, and verification results. The current code has no randomness; later experiments should record seeds and split assignments.
+## Run an experiment
+
+List the configurations, then run your assigned ID:
+
+```powershell
+python -m src.experiments.svm list
+python -m src.experiments.svm run --member 1
+```
+
+The current round has 24 SVM configurations, six per member. Each configuration performs 15 outer refits, with four-fold inner GridSearch for each: five stratified outer folds repeated three times. Preprocessing is fitted inside training folds. Follow the [running guide](docs/running_experiments.md) and [submission requirements](docs/submission_requirements.md) to validate and hand off the outputs.
+
+See the [experiment tree](docs/experiment_tree.md) for all 24 configurations and member assignments.
+
+## Read the results
+
+Follow the [comparison guide](docs/combining_results.md) to review accepted SVM submissions across repeats and subtypes. Accepted SVM comparison results are not available yet.
+
+## Data and dependencies
+
+[DATA_SOURCES.md](DATA_SOURCES.md) records provenance and input checksums. [DATA_LICENSE.txt](DATA_LICENSE.txt) preserves the supplied dataset notice. Repeated gene records remain separate features; clinical columns are not model inputs.
+
+`configs/data.yaml` uses JSON syntax, which is valid YAML; preserve that syntax when editing. `configs/svm.json` contains the current agreed SVM settings. Paths resolve from the repository root.
+
+`requirements.txt` installs data preparation dependencies. `requirements-experiments.txt` adds the numerical experiment packages, and `requirements-notebooks.txt` adds optional notebook and plotting tools. These files pin direct dependencies; they are not a complete environment lock.
