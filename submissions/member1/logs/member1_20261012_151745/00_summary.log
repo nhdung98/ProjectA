@@ -1,6 +1,7 @@
-[2026-10-12 15:17:45] Member 1 submission scaffold created.
-[2026-10-12 15:17:45] Repository hash: 2d14aa920a8f4dec5fe0fbe364a43c17222e294d
-[2026-10-12 15:17:45] Working tree: clean
-[2026-10-12 15:17:45] Validation command: .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-[2026-10-12 15:17:45] Logs in C:\Users\hungt\Documents\GitHub\ProjectA\submissions\member1\logs\member1_20261012_151745
-[2026-10-12 15:17:45] Note: official member1 SVM run folders are not present in this workspace yet.
+[2026-10-12 16:15] Member 1 numbered setup/check logs regenerated after Git merge conflicts affected the submission text files.
+[2026-10-12 16:15] Logs 00-08 record checks performed in the current workspace; they are not claimed as original historical terminal captures.
+[2026-10-12 16:15] 01_create_venv.log verifies the existing .venv; it was not recreated to preserve the experiment environment.
+[2026-10-12 16:15] 02_pip_install.log and 03_pip_freeze.log record the pinned dependency check and current environment package inventory.
+[2026-10-12 16:15] 04_prepare_data.log and 05_svm_check.log record data preparation and shared split verification.
+[2026-10-12 16:15] 06_unit_tests.log, 07_svm_list.log, and 08_smoke_SVM-MM-ANOVA-50-LINEAR.log record current test, assignment-list, and Member 1 smoke checks.
+[2026-10-12 16:15] The smoke run is a development check, not an official submission. The six complete official runs remain under submissions/member1/runs/.

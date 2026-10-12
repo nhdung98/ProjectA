@@ -1,4 +1,5 @@
-> "C:\Users\hungt\Documents\GitHub\ProjectA\.venv\Scripts\python.exe" -m unittest discover -s tests -v
+﻿Regenerated unit-test run (captured now).
+Command: "c:\Users\hungt\Documents\GitHub\ProjectA\.venv\Scripts\python.exe" -m unittest discover -s tests -v
 test_metrics_use_all_samples_per_repeat (test_data_integrity.ExperimentChecks.test_metrics_use_all_samples_per_repeat) ... ok
 test_missing_predictions_for_class_have_zero_f1 (test_data_integrity.ExperimentChecks.test_missing_predictions_for_class_have_zero_f1) ... ok
 test_reject_duplicate_assignment (test_data_integrity.ExperimentChecks.test_reject_duplicate_assignment) ... ok
@@ -18,8 +19,9 @@ test_rewritten_inner_manifest_cannot_hide_changed_patients (test_svm.SVMChecks.t
 test_comparison_preserves_all_24_configurations_and_repeat_tables (test_svm_comparison.ComparisonChecks.test_comparison_preserves_all_24_configurations_and_repeat_tables) ... ok
 test_comparison_rejects_dirty_or_mixed_commit_runs (test_svm_comparison.ComparisonChecks.test_comparison_rejects_dirty_or_mixed_commit_runs) ... ok
 test_comparison_rejects_missing_configuration (test_svm_comparison.ComparisonChecks.test_comparison_rejects_missing_configuration) ... ok
-
+System.Management.Automation.RemoteException
 ----------------------------------------------------------------------
-Ran 19 tests in 6.715s
-
+Ran 19 tests in 5.246s
+System.Management.Automation.RemoteException
 OK
+Exit code: 0

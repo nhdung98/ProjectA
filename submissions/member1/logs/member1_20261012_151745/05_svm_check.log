@@ -1,0 +1,5 @@
+﻿Regenerated SVM data/split check (captured now).
+Command: "c:\Users\hungt\Documents\GitHub\ProjectA\.venv\Scripts\python.exe" -m src.experiments.svm check
+Checking raw files and prepared expression values...
+Verified 254 patients; 762 outer and 3048 inner assignments.
+Exit code: 0

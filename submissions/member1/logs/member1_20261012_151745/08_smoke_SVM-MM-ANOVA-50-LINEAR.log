@@ -1,0 +1,7 @@
+﻿Regenerated Member 1 smoke check (captured now; smoke run is not an official submission).
+Command: "c:\Users\hungt\Documents\GitHub\ProjectA\.venv\Scripts\python.exe" -m src.experiments.svm run --configuration SVM-MM-ANOVA-50-LINEAR --smoke
+Checking raw files and prepared expression values...
+Verified 254 patients; 762 outer and 3048 inner assignments.
+SVM-MM-ANOVA-50-LINEAR repeat=1 fold=1: complete
+Saved C:\Users\hungt\Documents\GitHub\ProjectA\results\svm\SVM-MM-ANOVA-50-LINEAR\20261012T091859Z-4fed144b
+Exit code: 0

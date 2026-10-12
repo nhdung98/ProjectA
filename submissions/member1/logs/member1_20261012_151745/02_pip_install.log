@@ -1,0 +1,12 @@
+﻿Regenerated dependency check (captured now).
+Command: "c:\Users\hungt\Documents\GitHub\ProjectA\.venv\Scripts\python.exe" -m pip install -r requirements-experiments.txt
+Requirement already satisfied: numpy==2.3.5 in .\.venv\Lib\site-packages (from -r c:\Users\hungt\Documents\GitHub\ProjectA\requirements.txt (line 1)) (2.3.5)
+Requirement already satisfied: pandas==3.0.1 in .\.venv\Lib\site-packages (from -r c:\Users\hungt\Documents\GitHub\ProjectA\requirements.txt (line 2)) (3.0.1)
+Requirement already satisfied: scikit-learn==1.7.2 in .\.venv\Lib\site-packages (from -r c:\Users\hungt\Documents\GitHub\ProjectA\requirements-experiments.txt (line 2)) (1.7.2)
+Requirement already satisfied: scipy==1.16.2 in .\.venv\Lib\site-packages (from -r c:\Users\hungt\Documents\GitHub\ProjectA\requirements-experiments.txt (line 3)) (1.16.2)
+Requirement already satisfied: joblib==1.5.2 in .\.venv\Lib\site-packages (from -r c:\Users\hungt\Documents\GitHub\ProjectA\requirements-experiments.txt (line 4)) (1.5.2)
+Requirement already satisfied: threadpoolctl==3.6.0 in .\.venv\Lib\site-packages (from -r c:\Users\hungt\Documents\GitHub\ProjectA\requirements-experiments.txt (line 5)) (3.6.0)
+Requirement already satisfied: python-dateutil>=2.8.2 in .\.venv\Lib\site-packages (from pandas==3.0.1->-r c:\Users\hungt\Documents\GitHub\ProjectA\requirements.txt (line 2)) (2.9.0.post0)
+Requirement already satisfied: tzdata in .\.venv\Lib\site-packages (from pandas==3.0.1->-r c:\Users\hungt\Documents\GitHub\ProjectA\requirements.txt (line 2)) (2026.5)
+Requirement already satisfied: six>=1.5 in .\.venv\Lib\site-packages (from python-dateutil>=2.8.2->pandas==3.0.1->-r c:\Users\hungt\Documents\GitHub\ProjectA\requirements.txt (line 2)) (1.17.0)
+Exit code: 0
