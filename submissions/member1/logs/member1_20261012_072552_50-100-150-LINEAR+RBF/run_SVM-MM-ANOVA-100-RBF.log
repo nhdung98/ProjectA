@@ -1,0 +1,23 @@
+Member 1 run record (summary from saved run_manifest.json; original terminal stdout was not archived).
+Command: python -m src.experiments.svm run --configuration SVM-MM-ANOVA-100-RBF
+Configuration: SVM-MM-ANOVA-100-RBF
+Run ID: 20261012T073935Z-d8df65a0
+Commit: 2d14aa920a8f4dec5fe0fbe364a43c17222e294d (git_dirty=False)
+Status: complete; smoke=False; outer folds=15
+SVM-MM-ANOVA-100-RBF repeat=1 fold=1: complete
+SVM-MM-ANOVA-100-RBF repeat=1 fold=2: complete
+SVM-MM-ANOVA-100-RBF repeat=1 fold=3: complete
+SVM-MM-ANOVA-100-RBF repeat=1 fold=4: complete
+SVM-MM-ANOVA-100-RBF repeat=1 fold=5: complete
+SVM-MM-ANOVA-100-RBF repeat=2 fold=1: complete
+SVM-MM-ANOVA-100-RBF repeat=2 fold=2: complete
+SVM-MM-ANOVA-100-RBF repeat=2 fold=3: complete
+SVM-MM-ANOVA-100-RBF repeat=2 fold=4: complete
+SVM-MM-ANOVA-100-RBF repeat=2 fold=5: complete
+SVM-MM-ANOVA-100-RBF repeat=3 fold=1: complete
+SVM-MM-ANOVA-100-RBF repeat=3 fold=2: complete
+SVM-MM-ANOVA-100-RBF repeat=3 fold=3: complete
+SVM-MM-ANOVA-100-RBF repeat=3 fold=4: complete
+SVM-MM-ANOVA-100-RBF repeat=3 fold=5: complete
+Total tuning/refit/prediction runtime: 358.46 seconds
+Saved output: results/svm/SVM-MM-ANOVA-100-RBF/20261012T073935Z-d8df65a0

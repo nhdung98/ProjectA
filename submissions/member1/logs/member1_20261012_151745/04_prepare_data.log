@@ -1,0 +1,71 @@
+﻿Regenerated data preparation check (captured now).
+Command: "c:\Users\hungt\Documents\GitHub\ProjectA\.venv\Scripts\python.exe" -m src.data.prepare
+{
+  "sources": {
+    "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\data\\raw\\sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+    "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\data\\raw\\data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee"
+  },
+  "clinical_samples": 265,
+  "expression_samples": 263,
+  "gene_features": 20531,
+  "matched_samples": 263,
+  "target_samples": 254,
+  "target_unique_patients": 254,
+  "class_counts": {
+    "LMS": 104,
+    "DDLPS": 57,
+    "UPS": 49,
+    "MFS": 25,
+    "SS": 10,
+    "MPNST": 9
+  },
+  "unmatched_expression_samples": [],
+  "unmatched_clinical_samples": [
+    "TCGA-DX-A48V-01",
+    "TCGA-DX-A6BK-01"
+  ],
+  "excluded_label_counts": {
+    "Soft Tissue": 4,
+    "Desmoid/Aggressive Fibromatosis": 2,
+    "Pleomorphic Liposarcoma": 2,
+    "Soft Tissue Sarcoma": 1
+  },
+  "duplicate_clinical_sample_ids": 0,
+  "duplicate_gene_symbols_beyond_first": 17,
+  "missing_gene_symbols": 1,
+  "duplicate_entrez_ids_beyond_first": 26,
+  "missing_expression_cells": 0,
+  "repeated_patients_in_full_merge": 4,
+  "repeated_patients_in_target_dataset": 0,
+  "label_source": "Cancer Type Detailed (matches research report); histologic text not used to relabel samples",
+  "expression_transformations": "Transpose only; no aggregation, filtering, imputation, normalization, scaling or feature selection",
+  "verification": "Saved target matrix IDs, column order and all expression values verified against sources",
+  "versions": {
+    "pandas": "3.0.1",
+    "numpy": "2.3.5"
+  },
+  "configuration": {
+    "raw_dir": "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\data\\raw",
+    "processed_dir": "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\data\\processed",
+    "clinical_file": "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\data\\raw\\sarc_tcga_clinical_data.tsv",
+    "expression_file": "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\data\\raw\\data_mrna_seq_v2_rsem.txt",
+    "label_column": "Cancer Type Detailed",
+    "target_subtypes": {
+      "Leiomyosarcoma": "LMS",
+      "Dedifferentiated Liposarcoma": "DDLPS",
+      "Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma": "UPS",
+      "Myxofibrosarcoma": "MFS",
+      "Synovial Sarcoma": "SS",
+      "Malignant Peripheral Nerve Sheath Tumor": "MPNST"
+    },
+    "expected_class_counts": {
+      "LMS": 104,
+      "DDLPS": 57,
+      "UPS": 49,
+      "MFS": 25,
+      "SS": 10,
+      "MPNST": 9
+    }
+  }
+}
+Exit code: 0

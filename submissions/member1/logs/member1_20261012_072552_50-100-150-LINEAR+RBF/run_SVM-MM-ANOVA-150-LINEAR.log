@@ -1,0 +1,23 @@
+Member 1 run record (summary from saved run_manifest.json; original terminal stdout was not archived).
+Command: python -m src.experiments.svm run --configuration SVM-MM-ANOVA-150-LINEAR
+Configuration: SVM-MM-ANOVA-150-LINEAR
+Run ID: 20261012T074535Z-55c37c7c
+Commit: 2d14aa920a8f4dec5fe0fbe364a43c17222e294d (git_dirty=False)
+Status: complete; smoke=False; outer folds=15
+SVM-MM-ANOVA-150-LINEAR repeat=1 fold=1: complete
+SVM-MM-ANOVA-150-LINEAR repeat=1 fold=2: complete
+SVM-MM-ANOVA-150-LINEAR repeat=1 fold=3: complete
+SVM-MM-ANOVA-150-LINEAR repeat=1 fold=4: complete
+SVM-MM-ANOVA-150-LINEAR repeat=1 fold=5: complete
+SVM-MM-ANOVA-150-LINEAR repeat=2 fold=1: complete
+SVM-MM-ANOVA-150-LINEAR repeat=2 fold=2: complete
+SVM-MM-ANOVA-150-LINEAR repeat=2 fold=3: complete
+SVM-MM-ANOVA-150-LINEAR repeat=2 fold=4: complete
+SVM-MM-ANOVA-150-LINEAR repeat=2 fold=5: complete
+SVM-MM-ANOVA-150-LINEAR repeat=3 fold=1: complete
+SVM-MM-ANOVA-150-LINEAR repeat=3 fold=2: complete
+SVM-MM-ANOVA-150-LINEAR repeat=3 fold=3: complete
+SVM-MM-ANOVA-150-LINEAR repeat=3 fold=4: complete
+SVM-MM-ANOVA-150-LINEAR repeat=3 fold=5: complete
+Total tuning/refit/prediction runtime: 157.87 seconds
+Saved output: results/svm/SVM-MM-ANOVA-150-LINEAR/20261012T074535Z-55c37c7c

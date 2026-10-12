@@ -1,0 +1,7 @@
+Member 1 validation record (summary of the saved validation.json produced by the project validator).
+Command: python -m src.experiments.validate_svm results/svm/SVM-MM-ANOVA-150-RBF/20261012T074815Z-2c7cd463 --report results/svm/SVM-MM-ANOVA-150-RBF/20261012T074815Z-2c7cd463/validation.json
+Configuration: SVM-MM-ANOVA-150-RBF
+Run ID: 20261012T074815Z-2c7cd463
+Validation: passed; fits=15; predictions=762; search checked=True; warnings empty=True; metrics independently recomputed=True
+Validator SHA-256: 0308448a28da925198822f06732e99d6efbc58c59a8a4a3f97ab93fcdc014287
+Split SHA-256: 92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7
