@@ -1,0 +1,10 @@
+﻿> "D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\.venv\Scripts\python.exe" -m pip freeze
+joblib==1.5.2
+numpy==2.3.5
+pandas==3.0.1
+python-dateutil==2.9.0.post0
+scikit-learn==1.7.2
+scipy==1.16.2
+six==1.17.0
+threadpoolctl==3.6.0
+tzdata==2026.5
