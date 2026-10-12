@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "configuration": "SVM-MM-ANOVA-150-RBF",
+  "fits": 15,
+  "predictions": 762,
+  "inner_search_checked": true,
+  "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+  "warning_log_empty": true,
+  "metrics_independently_recomputed": true,
+  "run_folder": "C:\\Users\\hungt\\Documents\\GitHub\\ProjectA\\results\\svm\\SVM-MM-ANOVA-150-RBF\\20261012T074815Z-2c7cd463",
+  "split_sha256": "92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7",
+  "validator_sha256": "0308448a28da925198822f06732e99d6efbc58c59a8a4a3f97ab93fcdc014287",
+  "protocol_version": "2.0"
+}
