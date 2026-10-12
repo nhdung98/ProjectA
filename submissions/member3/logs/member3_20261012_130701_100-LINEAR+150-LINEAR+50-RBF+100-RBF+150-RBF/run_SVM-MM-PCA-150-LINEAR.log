@@ -1,0 +1,19 @@
+﻿> "D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\.venv\Scripts\python.exe" -m src.experiments.svm run --configuration SVM-MM-PCA-150-LINEAR
+Checking raw files and prepared expression values...
+Verified 254 patients; 762 outer and 3048 inner assignments.
+SVM-MM-PCA-150-LINEAR repeat=1 fold=1: complete
+SVM-MM-PCA-150-LINEAR repeat=1 fold=2: complete
+SVM-MM-PCA-150-LINEAR repeat=1 fold=3: complete
+SVM-MM-PCA-150-LINEAR repeat=1 fold=4: complete
+SVM-MM-PCA-150-LINEAR repeat=1 fold=5: complete
+SVM-MM-PCA-150-LINEAR repeat=2 fold=1: complete
+SVM-MM-PCA-150-LINEAR repeat=2 fold=2: complete
+SVM-MM-PCA-150-LINEAR repeat=2 fold=3: complete
+SVM-MM-PCA-150-LINEAR repeat=2 fold=4: complete
+SVM-MM-PCA-150-LINEAR repeat=2 fold=5: complete
+SVM-MM-PCA-150-LINEAR repeat=3 fold=1: complete
+SVM-MM-PCA-150-LINEAR repeat=3 fold=2: complete
+SVM-MM-PCA-150-LINEAR repeat=3 fold=3: complete
+SVM-MM-PCA-150-LINEAR repeat=3 fold=4: complete
+SVM-MM-PCA-150-LINEAR repeat=3 fold=5: complete
+Saved D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\svm\SVM-MM-PCA-150-LINEAR\20261012T061453Z-9a840895

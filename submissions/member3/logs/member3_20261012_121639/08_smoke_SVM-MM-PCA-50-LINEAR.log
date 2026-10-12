@@ -1,0 +1,5 @@
+﻿> "D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\.venv\Scripts\python.exe" -m src.experiments.svm run --configuration SVM-MM-PCA-50-LINEAR --smoke
+Checking raw files and prepared expression values...
+Verified 254 patients; 762 outer and 3048 inner assignments.
+SVM-MM-PCA-50-LINEAR repeat=1 fold=1: complete
+Saved D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\svm\SVM-MM-PCA-50-LINEAR\20261012T052002Z-82c84b96

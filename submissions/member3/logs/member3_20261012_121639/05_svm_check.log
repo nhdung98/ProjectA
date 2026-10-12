@@ -1,0 +1,3 @@
+﻿> "D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\.venv\Scripts\python.exe" -m src.experiments.svm check
+Checking raw files and prepared expression values...
+Verified 254 patients; 762 outer and 3048 inner assignments.
