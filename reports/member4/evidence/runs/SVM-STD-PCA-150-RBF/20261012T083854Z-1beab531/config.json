@@ -1,0 +1,287 @@
+{
+  "shared": {
+    "protocol_version": "2.0",
+    "dataset": "data/processed/sarc_merged_six_subtypes.tsv",
+    "expected_samples": 254,
+    "expected_features": 20531,
+    "labels": [
+      "LMS",
+      "DDLPS",
+      "UPS",
+      "MFS",
+      "SS",
+      "MPNST"
+    ],
+    "class_counts": {
+      "LMS": 104,
+      "DDLPS": 57,
+      "UPS": 49,
+      "MFS": 25,
+      "SS": 10,
+      "MPNST": 9
+    },
+    "source_sha256": {
+      "data/raw/sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+      "data/raw/data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee"
+    },
+    "validation": {
+      "n_splits": 5,
+      "n_repeats": 3,
+      "random_state": 42
+    },
+    "preprocessing": {
+      "log": "log2(x+1)",
+      "variance_threshold": 0.0
+    },
+    "model": {
+      "class_weight": null,
+      "probability": false,
+      "tol": 0.001,
+      "max_iter": -1,
+      "cache_size": 200
+    },
+    "pca": {
+      "svd_solver": "randomized",
+      "random_state": 42,
+      "whiten": false,
+      "iterated_power": 7,
+      "n_oversamples": 10,
+      "power_iteration_normalizer": "QR"
+    },
+    "blas_threads": 1,
+    "packages": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scikit-learn": "1.7.2",
+      "scipy": "1.16.2",
+      "joblib": "1.5.2",
+      "threadpoolctl": "3.6.0"
+    },
+    "configurations": [
+      {
+        "id": "SVM-MM-ANOVA-50-LINEAR",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-ANOVA-50-RBF",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-ANOVA-100-LINEAR",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-ANOVA-100-RBF",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-ANOVA-150-LINEAR",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-ANOVA-150-RBF",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-ANOVA-50-LINEAR",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-ANOVA-50-RBF",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-ANOVA-100-LINEAR",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-ANOVA-100-RBF",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-ANOVA-150-LINEAR",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-ANOVA-150-RBF",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-PCA-50-LINEAR",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-PCA-50-RBF",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-PCA-100-LINEAR",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-PCA-100-RBF",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-PCA-150-LINEAR",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-PCA-150-RBF",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-PCA-50-LINEAR",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-PCA-50-RBF",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-PCA-100-LINEAR",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-PCA-100-RBF",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-PCA-150-LINEAR",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-PCA-150-RBF",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "rbf"
+      }
+    ],
+    "round": "svm",
+    "inner_validation": {
+      "n_splits": 4,
+      "shuffle": true,
+      "random_state": 42
+    },
+    "search": {
+      "C": [
+        0.01,
+        0.1,
+        1,
+        10,
+        100
+      ],
+      "gamma": [
+        "scale",
+        0.001,
+        0.01,
+        0.1
+      ],
+      "scoring": "f1_macro",
+      "tie_break": "first candidate in declared grid order"
+    }
+  },
+  "configuration": {
+    "id": "SVM-STD-PCA-150-RBF",
+    "owner": "Member 4",
+    "scaler": "standard",
+    "reduction": "pca",
+    "k": 150,
+    "kernel": "rbf"
+  },
+  "smoke": false
+}
