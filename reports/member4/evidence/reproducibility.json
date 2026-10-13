@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "git_commit": "2d14aa920a8f4dec5fe0fbe364a43c17222e294d",
+  "git_dirty": false,
+  "python": "3.12.13 (main, May 10 2026, 19:20:41) [Clang 22.1.3 ]",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.16.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0"
+  },
+  "hashes": {
+    "data/raw/sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+    "data/raw/data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee",
+    "data/processed/sarc_merged_six_subtypes.tsv": "e468ea37ed3863cb6c0c46bbe05fda398bae30b627586ff3ed94f2cea0e2476d",
+    "results/splits/outer.csv": "92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7",
+    "results/splits/inner.csv": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08"
+  }
+}

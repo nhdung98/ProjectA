@@ -1,0 +1,21 @@
+>>> .venv/bin/python -m src.experiments.svm run --configuration SVM-STD-PCA-100-RBF
+Checking raw files and prepared expression values...
+Verified 254 patients; 762 outer and 3048 inner assignments.
+SVM-STD-PCA-100-RBF repeat=1 fold=1: complete
+SVM-STD-PCA-100-RBF repeat=1 fold=2: complete
+SVM-STD-PCA-100-RBF repeat=1 fold=3: complete
+SVM-STD-PCA-100-RBF repeat=1 fold=4: complete
+SVM-STD-PCA-100-RBF repeat=1 fold=5: complete
+SVM-STD-PCA-100-RBF repeat=2 fold=1: complete
+SVM-STD-PCA-100-RBF repeat=2 fold=2: complete
+SVM-STD-PCA-100-RBF repeat=2 fold=3: complete
+SVM-STD-PCA-100-RBF repeat=2 fold=4: complete
+SVM-STD-PCA-100-RBF repeat=2 fold=5: complete
+SVM-STD-PCA-100-RBF repeat=3 fold=1: complete
+SVM-STD-PCA-100-RBF repeat=3 fold=2: complete
+SVM-STD-PCA-100-RBF repeat=3 fold=3: complete
+SVM-STD-PCA-100-RBF repeat=3 fold=4: complete
+SVM-STD-PCA-100-RBF repeat=3 fold=5: complete
+Saved results/svm/SVM-STD-PCA-100-RBF/20261012T082505Z-4ec7d6b6
+
+Exit code: 0
