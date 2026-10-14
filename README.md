@@ -26,6 +26,8 @@ The two original inputs are included in `data/raw/`. Preparation creates `data/p
 
 Read the [team guide](docs/team_guide.md) for the workflow, assignments, submission rules, and validation commands. Read the [experiment protocol](docs/experiment_protocol.md) before running an experiment. Official runs should use the team's agreed commit with a clean working tree.
 
+New to the biology, data, or statistics terms? The [glossary](docs/glossary.md) explains every term used in this repository in plain language.
+
 ## Repository layout
 
 | Folder or file | Purpose |
