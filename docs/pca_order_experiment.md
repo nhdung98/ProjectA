@@ -1,6 +1,6 @@
 # PCA order with automatic CSV results
 
-Scope: PCA order only. No Random Forest, Logistic Regression, ANOVA, new class weighting, or new feature counts. This is the current experiment protocol. The [archived SVM protocol](experiment_protocol.md) records the earlier round.
+Scope: PCA order only. No Random Forest, Logistic Regression, ANOVA, new class weighting, or new feature counts. This is the current experiment protocol. The [archived SVM protocol](../archive/week01/docs/experiment_protocol.md) records the earlier round.
 
 ## Scientific comparison
 

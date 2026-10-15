@@ -100,7 +100,7 @@ Every inner candidate fit includes the complete preprocessing and reduction pipe
 
 Parameter selection runs separately for each configuration and outer fold. Different folds may select different values. "Best" means best among the tested combinations according to the inner validation metric.
 
-Patient identifiers provide an additional check against overlap between training and test samples. See the [SVM settings](../configs/svm.json), [experiment protocol](../docs/experiment_protocol.md), and [nested validation implementation](../src/experiments/svm.py).
+Patient identifiers provide an additional check against overlap between training and test samples. See the [SVM settings](../configs/svm.json), [experiment protocol](../archive/week01/docs/experiment_protocol.md), and [nested validation implementation](../src/experiments/svm.py).
 
 ### 1.6 Evaluation metrics
 
