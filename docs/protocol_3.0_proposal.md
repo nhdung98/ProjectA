@@ -1,6 +1,6 @@
 # Đề xuất Protocol 3.0: benchmark nhiều pipeline dưới cùng nested CV
 
-Trạng thái: **bản nháp để nhóm thảo luận** (14/10/2026). Tài liệu này không thay thế [experiment_protocol.md](experiment_protocol.md) (protocol 2.0, vẫn áp dụng cho vòng SVM cho tới khi vòng đó được so sánh và tag `svm-p2.0`, xem D7 trong [architecture.md](architecture.md)). Nguồn: [R1](research/R1.md) (danh mục phương pháp), [R2](research/R2.md) (baseline), [R3](research/R3.md) (sinh học subtype), và kết quả Round 1.
+Trạng thái: **bản nháp để nhóm thảo luận** (14/10/2026, sửa 15/10/2026: bỏ P14 LightGBM, chỉ dùng một kiểm định thống kê, vòng B chạy lại đủ 3 repeat). Tài liệu này không thay thế [experiment_protocol.md](experiment_protocol.md) (protocol 2.0, vẫn áp dụng cho vòng SVM cho tới khi vòng đó được so sánh và tag `svm-p2.0`, xem D7 trong [architecture.md](architecture.md)). Nguồn: [R1](research/R1.md) (danh mục phương pháp), [R2](research/R2.md) (baseline), [R3](research/R3.md) (sinh học subtype), và kết quả Round 1.
 
 Mục tiêu: tìm pipeline tốt nhất cho bài toán 6 subtype TCGA-SARC, đồng thời có một **quy trình tái sử dụng được** cho các bài toán RNA-seq n nhỏ, p lớn, đa lớp, lệch lớp. Vì vậy mỗi pipeline có một **vai trò** (sàn, tham chiếu, ablation, ứng viên), không chạy full factorial.
 
@@ -17,7 +17,7 @@ flowchart LR
   F --> H["Pipeline mang sang app"]
 ```
 
-Quy ước trích dẫn: `[R1§4]` là mục 4 của R1. Nguồn mà R1–R3 đánh dấu **[UNVERIFIED]** vẫn giữ nhãn đó ở đây và phải được mở lại trước khi đưa vào báo cáo (việc W6, mục 8).
+Quy ước trích dẫn: `[R1§4]` là mục 4 của R1. Nguồn mà R1–R3 đánh dấu **[UNVERIFIED]** vẫn giữ nhãn đó ở đây và phải được mở lại trước khi đưa vào báo cáo.
 
 ---
 
@@ -28,7 +28,7 @@ Quy ước trích dẫn: `[R1§4]` là mục 4 của R1. Nguồn mà R1–R3 đ�
 | Cohort | 254 bệnh nhân, 20.531 gene record, 6 lớp (LMS 104, DDLPS 57, UPS 49, MFS 25, SS 10, MPNST 9) | So sánh trực tiếp với Round 1 |
 | Biến đổi | `log2(x+1)` trên RSEM normalized, theo từng mẫu | Smith 2020: lựa chọn chuẩn hoá ảnh hưởng rất ít tới hiệu năng `[R1§1]`. DESeq2/VST cần raw counts, không có trong dữ liệu |
 | Outer CV | 5 fold phân tầng × 3 repeat, seed 42, **dùng lại `results/splits/outer.csv`** | Các pipeline (kể cả 24 cấu hình Round 1) có cùng split nên so sánh được theo cặp `[R2 Recommendations (a)]` |
-| Inner CV | 4 fold phân tầng, **dùng lại `results/splits/inner.csv`** | Điều kiện để chọn pipeline bên trong inner CV (mục 5.2) |
+| Inner CV | 4 fold phân tầng, **dùng lại `results/splits/inner.csv`** | Điều kiện để chọn pipeline bên trong inner CV (mục 5.1) |
 | Metric chính | Macro-F1 gộp 254 dự đoán của mỗi repeat; mean và SD qua 3 repeat | Như 2.0; micro-F1 bị LMS chi phối `[R2 Lớp 3]` |
 | Integrity | Checksum dữ liệu và split, clean tree, mọi warning đều phải review | Như 2.0 |
 
@@ -84,7 +84,7 @@ flowchart LR
     S2["S2 Scaler<br/>Z1 Standard<br/>Z0 không scale"]
     S3["S3 Chọn đặc trưng<br/>R0 không chọn<br/>R1 ANOVA top-k<br/>R3 panel marker"]
     S4["S4 Imbalance<br/>I0 không · I1 class weight<br/>I2 ngưỡng α · I3 SMOTE<br/>I4 RF balanced"]
-    S5["S5 Classifier<br/>C0 Dummy · C1 SVM<br/>C2 LR L2 · C3 LR EN<br/>C4 PAM · C5 RF<br/>C6 kNN · C7 LightGBM"]
+    S5["S5 Classifier<br/>C0 Dummy · C1 SVM<br/>C2 LR L2 · C3 LR EN<br/>C4 PAM · C5 RF<br/>C6 kNN"]
     S1 --> S2 --> S3 --> S4 --> S5
   end
   L --> S1
@@ -119,7 +119,7 @@ flowchart LR
 | Mã | Lựa chọn | Dùng | Nguồn |
 | --- | --- | --- | --- |
 | Z1 | `StandardScaler` | **Mặc định** cho SVM/LR/kNN | R1 shortlist #1–#4 `[R1§7]` |
-| Z0 | Không scale | RF, LightGBM (mô hình cây không bị ảnh hưởng bởi scale) | — |
+| Z0 | Không scale | RF (mô hình cây không bị ảnh hưởng bởi scale) | — |
 | — | `MinMaxScaler` | Chỉ còn trong 24 run Round 1, không chạy lại | Không có nguồn ủng hộ; Round 1 đã so sánh |
 
 Lưu ý kỹ thuật: ANOVA-F không đổi khi biến đổi affine từng feature, nên đặt scaler trước hay sau ANOVA đều cho cùng tập gene. MAD thì phụ thuộc scale nên **phải tính trên thang log2, trước scaler**.
@@ -157,13 +157,13 @@ Lưu ý kỹ thuật: ANOVA-F không đổi khi biến đổi affine từng feat
 | C4 | Nearest shrunken centroids (PAM) | Baseline omics kinh điển | Tibshirani 2002 `[R2 B4]` (PMID **[UNVERIFIED]**) |
 | C5 | Random forest | Baseline phi tuyến | Statnikov 2008 dự báo thua SVM; van IJzendoorn 2019 dùng RF trên TCGA-SARC `[R2 B5]` |
 | C6 | kNN | Baseline đơn giản | `[R2 B6]`; là classifier duy nhất mà SMOTE có thể giúp |
-| C7 | LightGBM nông | **Tuỳ chọn, exploratory** | Chưa có benchmark đã kiểm chứng `[R2 B8]` |
 | — | SVC RBF | Chỉ còn trong Round 1 | Round 1: RBF ≈ linear, chậm gấp ~2,2 lần; RBF hiếm khi hơn linear khi p ≫ n `[R1§5]` |
+| — | LightGBM / gradient boosting | **Loại khỏi 3.0** | Chưa có benchmark đã kiểm chứng trên loại dữ liệu này `[R2 B8]`; cần thêm dependency, và grid đủ nhỏ cho n = 254 thì quá hẹp để boosting thể hiện được |
 | — | MLP/deep learning | **Loại** | "NN gives worse results for very small datasets (N<300)" `[R1§5]` |
 
 ---
 
-## 2. Shortlist: 13 pipeline lõi + 2 tuỳ chọn
+## 2. Shortlist: 13 pipeline lõi + 1 tuỳ chọn
 
 Mỗi pipeline khác pipeline đối chứng của nó ở **một stage**, nên mỗi cặp (cột "So với") trả lời được một câu hỏi. Ngoại lệ: P05 và P09 đổi bộ lọc cùng với bước chọn gene, vì bỏ hoặc thêm ANOVA thì cũng phải đổi cách giới hạn số gene.
 
@@ -182,7 +182,6 @@ Mỗi pipeline khác pipeline đối chứng của nó ở **một stage**, nên
 | P11 | `PAM` | log2 → F2 → C4 | Baseline omics | P06 |
 | P12 | `RF-BAL` | log2 → F2 → Z0 → RF, I4 | Baseline phi tuyến | P06 |
 | P13 | `KNN` | log2 → F1 → Z1 → ANOVA k ∈ {100, 500} → kNN | Baseline đơn giản | P09 |
-| P14 *(tuỳ chọn)* | `LGBM` | log2 → F2 → Z0 → LightGBM nông, sample weight cân bằng | Exploratory | P12 |
 | P15 *(tuỳ chọn, không được chọn làm winner)* | `MARKER` | log2 → panel marker → Z1 → LR L2, I1 | Diễn giải: "toàn genome hơn vài marker bao nhiêu?" | P06 |
 
 ### Bản đồ ablation
@@ -204,7 +203,6 @@ flowchart TD
   P11["P11 PAM"]
   P12["P12 RF-BAL"]
   P13["P13 KNN"]
-  P14["P14 LGBM (tuỳ chọn)"]
   P15["P15 MARKER (tuỳ chọn,<br/>không được làm winner)"]
 
   P02 -->|"S4: + class weight"| P03
@@ -219,7 +217,6 @@ flowchart TD
   P06 -.->|"họ khác"| P12
   P06 -.->|"gene toàn genome → vài marker"| P15
   P09 -.->|"họ khác"| P13
-  P12 -.->|"họ cây khác"| P14
 
   classDef floor fill:#eeeeee,stroke:#888
   classDef ref fill:#dbeafe,stroke:#2563eb
@@ -233,7 +230,7 @@ flowchart TD
   class P06,P07,P09 cand
   class P10 neg
   class P11,P12,P13 ref
-  class P14,P15 opt
+  class P15 opt
 ```
 
 Màu: xám = sàn · xanh dương = tham chiếu/baseline · vàng = ablation · xanh lá = ứng viên · đỏ = đối chứng âm · tím nét đứt = tuỳ chọn. Nét liền = đổi một stage; nét đứt = so với một họ mô hình khác.
@@ -264,17 +261,16 @@ Nguyên tắc: grid **nhỏ** vì mỗi inner validation fold chỉ có 1–2 MP
 | P08 | `C` (5 như P06) × `α` ∈ {0; 0,5; 1} | 15 | `class_weight=None`; π lấy từ training fold |
 | P09 | `k` ∈ {500, 1000, 2000} × `C` (5) | 15 | F1 |
 | P10 | như P09 | 15 | SMOTE `k_neighbors=3`, seed 42, đặt sau ANOVA và scaler |
-| P11 | `shrink_threshold` ∈ {4; 2; 1; 0,5; 0} | 5 | prior: **uniform** (cần nhóm xác nhận, xem Q5) |
+| P11 | `shrink_threshold` ∈ {4; 2; 1; 0,5; 0} | 5 | prior: **uniform** (nhất quán với `balanced`) |
 | P12 | `max_features` ∈ {sqrt; 0,01} × `min_samples_leaf` ∈ {3; 1} | 4 | `n_estimators`=500, `balanced_subsample`, seed 42 |
 | P13 | ANOVA `k` ∈ {100, 500} × `n_neighbors` ∈ {7; 5; 3; 1} | 8 | `weights="distance"` |
-| P14 | `max_depth` ∈ {2; 3} × `n_estimators` ∈ {100; 300} | 4 | `learning_rate`=0,05, subsample 0,8, seed 42 |
 | P15 | `C` (5 như P06) | 5 | danh sách gene khoá trước khi chạy |
 
 Các tham số **cố định ở cấp protocol** (không bao giờ tune): ngưỡng lọc F1 (`log2>1`, ≥5 mẫu), N=5000 của MAD, `k_neighbors` của SMOTE, mọi seed, các thiết lập PCA của 2.0.
 
 **Quy tắc biên grid** (chỉ dùng trong screening): nếu tham số được chọn nằm ở **biên** grid trong ≥3/5 outer fold, mở rộng một bước theo hướng đó **một lần duy nhất** rồi đóng băng. Quy tắc này chỉ dựa vào kết quả chọn của inner CV, không nhìn outer.
 
-**Phụ thuộc mới:** `imbalanced-learn` (cho P10), `lightgbm` (cho P14). Phải pin phiên bản tương thích với `scikit-learn==1.7.2` và kiểm tra trong W1.
+**Phụ thuộc mới:** `imbalanced-learn` (cho P10). Phải pin phiên bản tương thích với `scikit-learn==1.7.2`.
 
 ---
 
@@ -290,11 +286,11 @@ flowchart TD
   Q -->|"lỗi / không hội tụ"| FX["Sửa, tăng max_iter"]
   Q -->|"chạm biên grid ≥3/5 fold"| GX["Mở rộng grid 1 bước, 1 lần"]
   Q -->|"không"| FR
-  FX --> RR["Chạy lại repeat 1 cho pipeline đó"]
+  FX --> RR["Chạy lại vòng A cho pipeline đó<br/>(vẫn mù outer) để xác nhận đã sửa"]
   GX --> RR
   RR --> FR["🧊 Đóng băng config<br/>tag p3.0-frozen"]
   subgraph RB["Vòng B — chính thức"]
-    FR --> B["Chạy repeat 2 và 3<br/>repeat 1 được tái sử dụng"]
+    FR --> B["Chạy lại đủ 3 repeat<br/>từ commit đã tag<br/>kết quả vòng A bỏ đi"]
     B --> O["🔓 Mở niêm phong outer<br/>phân tích mục 5"]
   end
 ```
@@ -303,15 +299,16 @@ flowchart TD
 
 ### 4.1 Vòng A: screening (1 repeat, "mù outer")
 
-- Chạy **repeat 1** (5 outer fold) cho cả 13 (+2) pipeline.
-- Báo cáo screening **chỉ chứa thông tin kỹ thuật và inner CV**: warning/lỗi, convergence, runtime/fit, tham số được chọn, các lần chạm biên grid, điểm inner. Dự đoán outer vẫn được lưu nhưng **niêm phong**: không ai tính hay xem metric outer cho tới vòng B.
+- Chạy **repeat 1** (5 outer fold) cho cả 13 (+1) pipeline.
+- Báo cáo screening **chỉ chứa thông tin kỹ thuật và inner CV**: warning/lỗi, convergence, runtime/fit, tham số được chọn, các lần chạm biên grid, điểm inner. **Không ai tính hay xem metric outer** của vòng A. Run folder của vòng A chỉ được lưu trữ để tra lỗi, không đi vào phân tích ở mục 5.
+- Vòng A vẫn phải mù dù kết quả của nó bị bỏ: vòng B dùng **cùng split** (`outer.csv`), nên xem outer ở vòng A rồi chỉnh config cũng chính là chỉnh theo test của vòng B.
 - Quyết định được phép ở vòng A: sửa lỗi kỹ thuật, tăng `max_iter`, mở rộng biên grid một lần, bỏ một pipeline **chỉ khi** nó không chạy được trong ngân sách thời gian. **Không** loại pipeline theo hiệu năng.
 - Lý do: tổng chi phí nhỏ (4.3), nên loại sớm theo điểm số gần như không tiết kiệm được gì mà lại thêm selection bias.
 
 ### 4.2 Vòng B: chính thức (3 repeat)
 
 - Đóng băng config bằng một commit (pre-registration: danh sách pipeline, grid, metric, các phép so sánh ở mục 5). Tag `p3.0-frozen`.
-- Chạy **repeat 2 và 3**. Repeat 1 được tái sử dụng cho các pipeline không đổi config sau vòng A; pipeline nào đổi config thì chạy lại cả 3 repeat.
+- Chạy **đủ 3 repeat** cho mọi pipeline từ đúng commit đã tag. Không tái sử dụng repeat 1 của vòng A: như vậy mọi kết quả chính thức đến từ cùng một phiên bản code, và không cần theo dõi pipeline nào đã đổi config hay chứng minh repeat 1 chưa bị xem. Đổi lại tốn thêm khoảng 1,2 giờ CPU (mục 4.3).
 - Sau đó mới mở niêm phong outer và chạy phân tích ở mục 5.
 
 ### 4.3 Ước tính số fit
@@ -334,18 +331,18 @@ Công thức: mỗi outer fold có `4·G` inner fit + 1 refit, nên mỗi repeat
 | P12 | 4 | 85 | 3 | ~4 phút |
 | P13 | 8 | 165 | 0,3 | ~1 phút |
 | **Lõi P01–P13** | | **2.305** | | **~70 phút CPU** |
-| P14, P15 | 4, 5 | 85 + 105 | 4; 0,3 | ~6 phút |
+| P15 (tuỳ chọn) | 5 | 105 | 0,3 | ~1 phút |
 
 \* Một lõi CPU. Mốc duy nhất đo được là SVM linear của Round 1 (138 s / 315 fit ≈ 0,44 s/fit, máy của Member 2). Các con số khác là **giả định** và sẽ được hiệu chỉnh từ smoke run ở vòng A. P07 có thể chậm hơn 3 lần.
 
 | Vòng | Fit (lõi) | CPU ước tính (lõi) |
 | --- | --- | --- |
 | A: screening (repeat 1) | 2.305 | ~1,2 giờ (khoảng 1–3,5 giờ) |
-| B: thêm repeat 2–3 | 4.610 | ~2,4 giờ (khoảng 2–7 giờ) |
-| **Tổng** | **6.915** | **~3,5 giờ (khoảng 3–10 giờ)** |
+| B: chính thức, đủ 3 repeat | 6.915 | ~3,5 giờ (khoảng 3–10,5 giờ) |
+| **Tổng** | **9.220** | **~4,7 giờ (khoảng 4–14 giờ)** |
 | Độ nhạy (3 pipeline × 3 phân tích, mỗi phân tích 1 repeat) | ~1.000 | ~0,5–1 giờ |
 
-So sánh: protocol 2.0 tốn 18.360 fit. Chạy song song theo ứng viên grid (`n_jobs`) trên 4–8 lõi thì mỗi lô (mục 8) xong trong dưới 1 giờ. Runtime chỉ so được giữa các run trên **cùng một máy**, nên manifest phải ghi lại thông tin máy.
+So sánh: protocol 2.0 tốn 18.360 fit. Chạy song song theo ứng viên grid (`n_jobs`) trên 4–8 lõi thì mỗi repeat xong trong dưới 1 giờ. Runtime chỉ so được giữa các run trên **cùng một máy**, nên manifest phải ghi lại thông tin máy.
 
 ---
 
@@ -359,7 +356,7 @@ flowchart LR
   R --> Q2["Câu hỏi 2<br/>Stage nào quan trọng?"]
   R --> Q3["Câu hỏi 3<br/>Mang pipeline nào sang app?"]
   Q1 --> A1["META-SELECT<br/>chọn pipeline trong inner CV<br/>→ CON SỐ CHÍNH để báo cáo"]
-  Q2 --> A2["~11 cặp ablation đăng ký trước<br/>Bayesian t-test + corrected t-test"]
+  Q2 --> A2["~11 cặp ablation đăng ký trước<br/>Bayesian correlated t-test"]
   Q3 --> A3["Đơn giản nhất trong nhóm<br/>tương đương với top"]
 ```
 
@@ -369,8 +366,8 @@ flowchart LR
 
 Coi lựa chọn pipeline là một hyperparameter. Trong mỗi outer fold:
 
-1. Gom mọi cặp (pipeline, tham số) của các pipeline **được phép làm winner** (P02–P14; không gồm P01 và P15).
-2. Chọn cặp có **mean inner macro-F1** cao nhất. Khi hoà, chọn theo thứ tự đơn giản đã khai báo trước: P11 < P03 < P02 < P05 < P04 < P06 < P08 < P09 < P07 < P10 < P13 < P12 < P14.
+1. Gom mọi cặp (pipeline, tham số) của các pipeline **được phép làm winner** (P02–P13; không gồm P01 và P15).
+2. Chọn cặp có **mean inner macro-F1** cao nhất. Khi hoà, chọn theo thứ tự đơn giản đã khai báo trước: P11 < P03 < P02 < P05 < P04 < P06 < P08 < P09 < P07 < P10 < P13 < P12.
 3. Lấy dự đoán outer của chính cặp đó.
 
 Ví dụ cho **một** outer fold (số minh hoạ):
@@ -382,7 +379,7 @@ flowchart LR
     c2["P06 · C=0,01<br/>inner 0,77"]
     c3["P07 · l1=0,5, C=0,1<br/>inner 0,79 ⭐"]
     c4["P12 · sqrt, leaf=1<br/>inner 0,70"]
-    c5["… mọi ứng viên<br/>của P02–P14"]
+    c5["… mọi ứng viên<br/>của P02–P13"]
   end
   c3 --> W["Thắng fold này:<br/>P07 với l1=0,5, C=0,1"]
   W --> O["Lấy dự đoán outer test<br/>của P07 ở fold này<br/>(đã có sẵn, không fit thêm)"]
@@ -400,8 +397,9 @@ Lưu ý: pipeline có grid lớn có lợi thế nhỏ khi so điểm inner (max
 Chỉ kiểm định các cặp đã khai báo ở cột "So với" của mục 2 (khoảng 11 cặp), không so mọi cặp với nhau.
 
 - **Dữ liệu cho kiểm định:** hiệu macro-F1 theo từng outer fold, `d_j` với j = 1..15. Cặp nào cũng ghép được vì cùng split.
-- **Bayesian correlated t-test** (Benavoli 2017) `[R1§6]` với **ROPE = ±0,01** macro-F1. Báo cáo P(A tốt hơn), P(tương đương thực tế), P(B tốt hơn). Hệ số tương quan ρ = n_test/n ≈ 0,2.
-- **Corrected repeated k-fold t-test** (Nadeau & Bengio 2003; Bouckaert & Frank 2004): phương sai nhân với `1/15 + n_test/n_train ≈ 0,317` `[R2 Lớp 3]`, df = 14, hiệu chỉnh Holm cho cả họ phép so sánh.
+- **Kiểm định duy nhất: Bayesian correlated t-test** (Benavoli 2017) `[R1§6]` với **ROPE = ±0,01** macro-F1. Báo cáo P(A tốt hơn), P(tương đương thực tế), P(B tốt hơn). Hệ số tương quan ρ = n_test/n ≈ 0,2.
+- Kiểm định này đã hiệu chỉnh cho việc các fold dùng chung dữ liệu train: phương sai được nhân với `1/15 + ρ/(1−ρ) = 1/15 + n_test/n_train ≈ 0,317`, cùng hiệu chỉnh với Nadeau & Bengio 2003 `[R2 Lớp 3]`. Vì vậy không chạy thêm corrected t-test tần suất: hai kiểm định trả lời cùng một câu hỏi, và nếu kết luận lệch nhau thì chỉ thêm việc giải thích. Mục 5.3 cũng dựa trên chính kiểm định này.
+- Kết quả là xác suất, không phải p-value, nên không áp hiệu chỉnh Holm. Số phép so sánh được kiểm soát bằng cách chỉ kiểm định ~11 cặp đã đăng ký trước.
 - Ghi trước kỳ vọng: với 15 fold, khác biệt dưới khoảng 0,03–0,05 nhiều khả năng **không có ý nghĩa** `[R2 Lớp 3]`. "Không khác biệt" là một kết quả hợp lệ.
 
 ### 5.3 Câu hỏi 3: mang pipeline nào sang app/final model? → **quy tắc "đơn giản nhất trong nhóm tương đương"**
@@ -472,116 +470,7 @@ Sai thường gặp: tính MAD, ANOVA hay SMOTE trên toàn bộ 254 ca **trư�
 
 ---
 
-## 7. Các điểm nhóm cần quyết định
-
-| ID | Câu hỏi | Lựa chọn | Đề xuất |
-| --- | --- | --- | --- |
-| Q1 | Dùng lại split 2.0? | dùng lại / sinh mới | **Dùng lại.** Mới so ghép cặp được với 24 run Round 1 và P02 mới làm được regression test. Cần xử lý hash CRLF (D6) mà không đổi assignment |
-| Q2 | Gene record trùng (cùng symbol) | giữ riêng như 2.0 / gộp theo Entrez `[R1§2]` | Giữ riêng ở 3.0 để so sánh được; gộp là việc của vòng sau |
-| Q3 | Vòng A có thật sự "mù outer"? | mù / được xem outer repeat 1 | **Mù**, nếu không thì phải chạy lại repeat 1 bằng seed khác |
-| Q4 | Loại pipeline theo hiệu năng ở vòng A? | không / có (chỉ dựa vào inner) | **Không.** Chi phí nhỏ, loại sớm thêm bias |
-| Q5 | Prior của PAM | uniform / empirical | Uniform cho nhất quán với `balanced`; kiểm tra API `NearestCentroid` của sklearn 1.7.2 |
-| Q6 | Có chạy P14 (LightGBM), P15 (marker) không? | có / không | P15 có (rẻ, giúp diễn giải); P14 chỉ nếu còn người và thời gian |
-| Q7 | Cỡ ROPE | 0,01 / 0,02 | 0,01; báo cáo thêm kết quả với 0,02 |
-| Q8 | Chính sách warning (ConvergenceWarning của `saga`) | mọi warning là lỗi / cho phép có ghi log | Giữ nghiêm như 2.0; tăng `max_iter` ở vòng A |
-| Q9 | Inner scoring | mean macro-F1 theo fold (như 2.0) / macro-F1 gộp OOF của inner | Giữ theo fold ở 3.0 (P02 mới tái tạo được Round 1); gộp OOF ổn định hơn cho lớp hiếm, cân nhắc cho vòng sau |
-| Q10 | Ai lấy danh sách 206 barcode (Cell 2017 Table S1) và đối chiếu nhãn? | — | Làm **song song** ngay bây giờ (W3); nếu khác biệt lớn thì có thể đổi kế hoạch |
-| Q11 | Thời điểm refactor engine | trước / sau khi tag `svm-p2.0` | **Sau** (D7). Protocol 3.0 phụ thuộc vào Phase 3 trong architecture.md |
-| Q12 | Đưa "pipeline thắng" vào app như thế nào | xem D11 | Refit trên 254 ca với CV tuning; model card ghi rõ con số META-SELECT và hạn chế |
-
----
-
-## 8. Chia việc (theo workstream; trưởng nhóm gán người)
-
-| WS | Việc | Đầu ra | Phụ thuộc | Khối lượng | Kỹ năng |
-| --- | --- | --- | --- | --- | --- |
-| **W0** Điều phối | Chốt Q1–Q12; viết bản protocol 3.0 cuối; tag `p3.0-frozen`; review PR | `docs/protocol.md` 3.0, ADR | — | Nhỏ, kéo dài suốt vòng | Tổng quan |
-| **W1** Engine | Model registry; runner tổng quát (theo Phase 3 của architecture.md); transformer `LowExpressionFilter`, `MADSelector`, wrapper `PriorShift(α)`; hỗ trợ `imblearn.Pipeline`; lưu điểm inner của mọi ứng viên và macro-F1 theo outer fold; config cho P01–P15; test leakage L1, L2, L4 | Code + test xanh; P02 tái tạo đúng 0,772 | Tag `svm-p2.0` | **Lớn**, nên 2 người (1 runner/registry, 1 transformer/test) | Python, sklearn |
-| **W2** Thống kê | Module META-SELECT (5.1), Bayesian correlated t-test, corrected t-test + Holm, Wilson CI, MCC, sinh bảng/biểu đồ so sánh | `compare` mới + test trên dữ liệu giả | Định dạng output của W1 (thống nhất sớm) | Trung bình | Thống kê |
-| **W3** Dữ liệu & nhãn | Join 254 ca với 206 barcode đã review; bảng chéo TSS×subtype; sinh split S-TSS, S-206 và nhãn S-5CLASS có manifest | Báo cáo khác biệt nhãn; split mới | Không (bắt đầu ngay) | Trung bình | Dữ liệu, đọc supplementary |
-| **W4a** Chạy lô SVM | P01–P05: smoke → vòng A → vòng B | Run folder + báo cáo screening | W1 | Nhỏ (~6 phút/repeat) | Chạy pipeline |
-| **W4b** Chạy lô LR | P06–P08 (P07 nặng nhất) | như trên | W1 | Trung bình (~40 phút/repeat) | Chạy pipeline |
-| **W4c** Chạy lô FS & imbalance | P09, P10, P15 | như trên | W1 (+ imblearn) | Trung bình (~20 phút/repeat) | Chạy pipeline |
-| **W4d** Chạy lô baseline khác | P11–P14 | như trên | W1 (+ lightgbm) | Nhỏ–TB | Chạy pipeline |
-| **W5** Diễn giải | Đối chiếu gene/trọng số với bảng marker `[R3 Rec. 1]`; audit lỗi UPS/MFS theo MDM2/CDK4 và panel cơ trơn `[R3 Rec. 6]`; độ ổn định gene Nogueira Φ `[R1§3]` | Chương "phân tích lỗi" | Output vòng B | Trung bình | Sinh học + Python |
-| **W6** Tài liệu & trích dẫn | Kiểm chứng các mục **[UNVERIFIED]** trong R1–R3; viết Methods từ protocol; sinh bảng kết quả | `refs.bib`, bản nháp Methods | Song song | Trung bình | Viết, tra cứu |
-
-Gợi ý: lô W4 có thể giao cho cùng những người làm W1/W2/W3 sau khi họ xong việc chính, vì chạy chỉ tốn ít công khi engine đã ổn. Mỗi lô vẫn theo quy trình 2.0: smoke → run → validate → review chéo.
-
-**Thứ tự:**
-
-```mermaid
-flowchart LR
-  subgraph G0["Giai đoạn 0 — làm ngay, không cần engine"]
-    direction TB
-    W0a["W0 chốt Q1–Q12"]
-    W3["W3 đối chiếu nhãn 206 ca<br/>bảng TSS × subtype"]
-    W6["W6 kiểm chứng trích dẫn"]
-  end
-  T1(["⛳ tag svm-p2.0<br/>(Round 1 đóng)"])
-  subgraph G1["Giai đoạn 1 — xây công cụ"]
-    direction TB
-    W1["W1 engine + transformer + test"]
-    W2["W2 module thống kê<br/>(dùng dữ liệu giả)"]
-  end
-  subgraph G2["Giai đoạn 2 — chạy"]
-    direction TB
-    A["W4a–d vòng A<br/>screening"]
-    F(["🧊 W0 đóng băng<br/>p3.0-frozen"])
-    B["W4a–d vòng B<br/>repeat 2–3"]
-    A --> F --> B
-  end
-  subgraph G3["Giai đoạn 3 — phân tích"]
-    direction TB
-    AN["W2 META-SELECT + kiểm định"]
-    W5["W5 diễn giải, audit lỗi"]
-    SE["Độ nhạy<br/>S-TSS · S-206 · S-5CLASS"]
-  end
-  W0a --> W1
-  T1 --> W1
-  W1 --> A
-  W2 --> AN
-  B --> AN
-  AN --> W5
-  AN --> SE
-  W3 -->|"split S-TSS, S-206"| SE
-  W6 --> P["Methods / báo cáo"]
-  W5 --> P
-```
-
-Ai cần output của ai (nên chốt **định dạng file** giữa W1 và W2 ngay từ đầu):
-
-```mermaid
-flowchart LR
-  W1["W1 engine"] -->|"run folder:<br/>predictions.csv<br/>search_results (điểm inner mọi ứng viên)<br/>per-fold macro-F1"| W4["W4a–d người chạy"]
-  W4 -->|"run đã validate"| W2["W2 thống kê"]
-  W2 -->|"bảng so sánh,<br/>META-SELECT,<br/>confusion matrix"| W5["W5 diễn giải"]
-  W3["W3 dữ liệu & nhãn"] -->|"split + nhãn mới"| W4
-  W2 --> W6["W6 tài liệu"]
-  W5 --> W6
-```
-
-Bốn lô chạy, chia theo khối lượng (ước tính mỗi repeat, một lõi):
-
-```mermaid
-flowchart TB
-  subgraph A["W4a · lô SVM · ~6 phút"]
-    a["P01 · P02 · P03 · P04 · P05"]
-  end
-  subgraph B["W4b · lô LR · ~40 phút"]
-    b["P06 · P07 ⏳ · P08"]
-  end
-  subgraph C["W4c · lô FS & imbalance · ~20 phút"]
-    c["P09 · P10 · P15"]
-  end
-  subgraph D["W4d · lô baseline khác · ~10 phút"]
-    d["P11 · P12 · P13 · P14"]
-  end
-```
-
----
-
-## 9. Mở rộng thành methodology cho bài toán RNA-seq n nhỏ, p lớn
+## 7. Mở rộng thành methodology cho bài toán RNA-seq n nhỏ, p lớn
 
 Các phần không phụ thuộc vào sarcoma, tái sử dụng được:
 
@@ -593,7 +482,7 @@ flowchart TD
   D --> E["4. Screening mù outer<br/>→ đóng băng config"]
   E --> F["5. Chạy chính thức"]
   F --> G["6. META-SELECT = con số chính"]
-  F --> H["7. So sánh đăng ký trước<br/>corrected / Bayesian t-test"]
+  F --> H["7. So sánh đăng ký trước<br/>Bayesian correlated t-test + ROPE"]
   G --> I["8. Độ nhạy: batch · nhãn · ranh giới sinh học"]
   H --> I
 ```
@@ -602,7 +491,7 @@ flowchart TD
 2. **Shortlist theo vai trò**: sàn → tham chiếu → chuỗi ablation từng stage một → ứng viên → đối chứng âm, thay cho full factorial.
 3. **Screening mù outer**, sau đó đóng băng config.
 4. **Chọn pipeline bên trong inner CV** (META-SELECT) để có con số chính, không cần fit thêm nếu mọi pipeline dùng chung inner split.
-5. **Các phép so sánh đăng ký trước**, dùng kiểm định hiệu chỉnh cho repeated CV và ROPE.
+5. **Các phép so sánh đăng ký trước**, dùng một kiểm định đã hiệu chỉnh cho repeated CV (Bayesian correlated t-test) với ROPE.
 6. **Phân tích độ nhạy theo batch/nhãn/ranh giới sinh học.**
 
-Phần riêng của sarcoma (marker, MFS↔UPS, 206 ca đã review) nằm ở các mục độ nhạy và W5, nên tách ra dễ dàng.
+Phần riêng của sarcoma (marker, MFS↔UPS, 206 ca đã review) nằm ở phân tích độ nhạy và phần diễn giải kết quả, nên tách ra dễ dàng.
