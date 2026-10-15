@@ -73,3 +73,14 @@ Follow the [comparison guide](docs/combining_results.md) to review accepted SVM 
 `configs/data.yaml` uses JSON syntax, which is valid YAML; preserve that syntax when editing. `configs/svm.json` contains the current agreed SVM settings. Paths resolve from the repository root.
 
 `requirements.txt` installs data preparation dependencies. `requirements-experiments.txt` adds the numerical experiment packages, and `requirements-notebooks.txt` adds optional notebook and plotting tools. These files pin direct dependencies; they are not a complete environment lock.
+
+## PCA-order experiment: one command, one CSV
+
+Use the [PCA-order protocol](docs/pca_order_experiment.md) for this week's assignments and setup. After setup, each member runs:
+
+```powershell
+python -m src.experiments.pca_order check
+python -m src.experiments.pca_order run --member 1
+```
+
+Replace `1` with your assigned member number. Submit only `results/pca_order/memberN_results.csv`; partial files are not submissions. The collector recalculates team metrics from the four member CSVs. Official runs must use the same reviewed commit and a clean working tree.

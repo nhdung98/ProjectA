@@ -29,6 +29,13 @@ def build_pipeline(configuration, settings):
         steps.append(("reduction", PCA(n_components=k, **settings["pca"])))
     elif reduction != "none":
         raise ValueError(f"Unknown reduction: {reduction}")
+    order = configuration.get("order", "scale_pca")
+    if order not in {"scale_pca", "pca_scale"}:
+        raise ValueError(f"Unknown preprocessing order: {order}")
+    if order == "pca_scale":
+        if reduction != "pca":
+            raise ValueError("PCA-before-scaling requires PCA reduction")
+        steps = [steps[0], steps[1], steps[3], steps[2]]
     steps.append(("model", SVC(kernel=configuration["kernel"], **settings["model"])))
     return Pipeline(steps)
 
