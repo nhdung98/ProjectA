@@ -78,7 +78,7 @@ flowchart TD
 
   subgraph G6["GĐ 6 · Phân tích: 3 câu hỏi"]
     Q1["Câu 1 · META-SELECT<br/>➜ CON SỐ CHÍNH của dự án"]:::fin
-    Q2["Câu 2 · ~11 cặp ablation<br/>➜ stage nào quan trọng"]:::fin
+    Q2["Câu 2 · 11 cặp ablation<br/>➜ stage nào quan trọng"]:::fin
     Q3["Câu 3 · nhóm tương đương<br/>➜ pipeline mang sang app"]:::fin
   end
 
@@ -250,7 +250,7 @@ flowchart TD
   OTE -.->|"mô hình refit của từng pipeline<br/>chỉ predict, không fit"| O1
 ```
 
-Trong một outer fold có tổng cộng **461 fit** (cộng các số "fit" ở trên). Pipeline tuỳ chọn P15 (panel marker, G=5) nếu chạy thì cũng nằm trong khung này. P01 và P15 chạy để tham chiếu nhưng **không** được tham gia META-SELECT.
+Trong một outer fold có tổng cộng **461 fit** (cộng các số "fit" ở trên). P01 chạy để tham chiếu nhưng **không** được tham gia META-SELECT.
 
 Pipeline nào chạy trước không quan trọng. Trên thực tế mỗi người chạy một lô, và mỗi run tự lặp qua 15 outer fold:
 
@@ -431,7 +431,7 @@ flowchart TD
   classDef fin fill:#dcfce7,stroke:#16a34a,color:#14532d
 
   subgraph F["Trong MỘT outer fold, ví dụ R1·F1"]
-    C["Bảng C của R1·F1:<br/>điểm inner (mean 4 inner fold) của 111 cặp<br/>(pipeline, ứng viên) thuộc P02–P13<br/>không gồm P01, P15"]:::out
+    C["Bảng C của R1·F1:<br/>điểm inner (mean 4 inner fold) của 111 cặp<br/>(pipeline, ứng viên) thuộc P02–P13<br/>không gồm P01"]:::out
     C --> W["Lấy cặp cao nhất, ví dụ P07·g5 = 0,790<br/>hoà ➜ theo thứ tự đơn giản ở mục 5.1 proposal"]:::run
     W --> T["Lấy 51 dự đoán outer của P07 ở R1·F1<br/>đã có sẵn, KHÔNG fit thêm"]:::run
   end
@@ -499,7 +499,7 @@ flowchart LR
 | Tần suất mỗi pipeline thắng | Câu 1 | Không | Báo cáo độ ổn định của việc chọn |
 | Kết luận ablation | Câu 2 | Không | Báo cáo: stage nào quan trọng |
 | Pipeline được chọn | Câu 3 | Độ nhạy; refit cuối | |
-| Mô hình cuối (refit trên 254 ca) | GĐ 7 | App | Cách tune chính xác còn chờ quyết định Q12 |
+| Mô hình cuối (refit trên 254 ca) | GĐ 7 | App | Cách làm theo quyết định D11 trong [architecture.md](architecture.md) |
 
 ---
 
@@ -520,7 +520,7 @@ flowchart LR
 | Dự đoán outer dùng cho phân tích (vòng B) | 9.906 | 13 pipeline × 254 ca × 3 repeat |
 | Mô hình refit của vòng B (bỏ sau khi dự đoán) | 195 | 13 × 15 |
 
-Chưa tính P15 (tuỳ chọn) và các phân tích độ nhạy.
+Chưa tính các phân tích độ nhạy.
 
 ---
 

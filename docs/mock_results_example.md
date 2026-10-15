@@ -50,13 +50,11 @@ Mỗi ô là macro-F1 tính trên **254 dự đoán** của một repeat, tức 
 | P11 PAM | Baseline omics | 0,763 | 0,756 | 0,761 | 0,760 ± 0,004 |
 | P12 RF-BAL | Baseline phi tuyến | 0,743 | 0,730 | 0,739 | 0,737 ± 0,007 |
 | P13 KNN | Baseline đơn giản | 0,713 | 0,710 | 0,710 | 0,711 ± 0,002 |
-| P15 MARKER *(tuỳ chọn)* | Diễn giải, không được làm winner | 0,737 | 0,739 | 0,747 | 0,741 ± 0,005 |
 
 **Cách đọc:**
 
 - **P01** có hai biến thể, đều là sàn. Biến thể most_frequent luôn đoán LMS. Biến thể stratified đoán ngẫu nhiên theo tỉ lệ lớp, nên điểm dao động nhẹ giữa các repeat. Pipeline nào không vượt xa khoảng 0,10–0,17 thì gần như chưa học được gì.
 - **P02** là bài kiểm tra engine mới. Mean phải ra đúng 0,772 như Round 1. Nếu lệch thì engine có lỗi, và phải sửa trước khi đọc tiếp.
-- **P15** chỉ dùng vài gene marker. Nó được báo cáo để trả lời câu "toàn genome hơn vài marker bao nhiêu" (mục 6), nhưng không tham gia META-SELECT và không được chọn mang sang app. Các marker được tìm ra trên chính TCGA-SARC, nên điểm của P15 có xu hướng lạc quan.
 - **SD** ở đây chỉ phản ánh việc chia dữ liệu khác nhau giữa 3 repeat. Đó **không** phải khoảng tin cậy, vì 3 repeat dùng lại cùng 254 bệnh nhân.
 - Bảng này **không** được dùng để tuyên bố "P07 thắng, đạt 0,807". Chọn dòng cao nhất rồi báo cáo chính số đó là con số lạc quan (xem mục 5).
 
@@ -82,12 +80,11 @@ BA (balanced accuracy) và MCC là mean ± SD qua 3 repeat, tính trên 254 dự
 | P11 PAM | 0,744 ± 0,002 | 0,737 ± 0,005 | 14/25 = 0,560 (0,371–0,733) | 6/9 = 0,667 (0,354–0,879) |
 | P12 RF-BAL | 0,727 ± 0,005 | 0,715 ± 0,004 | 13/25 = 0,520 (0,335–0,700) | 5/9 = 0,556 (0,267–0,811) |
 | P13 KNN | 0,699 ± 0,007 | 0,683 ± 0,006 | 9/25 = 0,360 (0,202–0,555) | 4/9 = 0,444 (0,189–0,733) |
-| P15 MARKER | 0,735 ± 0,006 | 0,714 ± 0,015 | 10/25 = 0,400 (0,234–0,593) | 5/9 = 0,556 (0,267–0,811) |
 
 **Cách đọc:**
 
 - **BA và MCC xếp hạng gần giống macro-F1.** Nếu một pipeline có macro-F1 cao nhưng BA thấp hẳn, nó đang đánh đổi recall của lớp nhỏ để lấy precision. Đó là dấu hiệu cần xem confusion matrix của nó.
-- **Recall MPNST không phân biệt được các pipeline.** P02 đúng 7/9 còn P06 đúng 6/9, nhưng hai khoảng tin cậy (0,45–0,94 và 0,35–0,88) chồng lên nhau gần hết. Với 9 ca, chênh 1 ca là chuyện ngẫu nhiên. Vì vậy protocol **cấm** chọn pipeline theo recall của một lớp (ràng buộc L10).
+- **Recall MPNST không phân biệt được các pipeline.** P02 đúng 7/9 còn P06 đúng 6/9, nhưng hai khoảng tin cậy (0,45–0,94 và 0,35–0,88) chồng lên nhau gần hết. Với 9 ca, chênh 1 ca là chuyện ngẫu nhiên. Vì vậy protocol **cấm** chọn pipeline theo recall của một lớp (ràng buộc L9).
 - **Đề xuất, chờ nhóm chốt:** proposal yêu cầu "recall MFS/MPNST có Wilson CI" nhưng không nói tính trên một repeat hay gộp 3 repeat. File này dùng repeat 1, vì gộp 3 repeat sẽ đếm mỗi bệnh nhân 3 lần và làm CI hẹp một cách giả tạo (xem mục 8).
 
 ---
@@ -112,7 +109,6 @@ Mỗi ô là macro-F1 trên ≈51 ca outer test của **một** outer fold. Mỗ
 | P11 | 0,753 | 0,735 | 0,797 | 0,708 | 0,777 | 0,764 | 0,731 | 0,765 | 0,698 | 0,777 | 0,768 | 0,759 | 0,711 | 0,803 | 0,719 | 0,751 |
 | P12 | 0,753 | 0,744 | 0,757 | 0,674 | 0,742 | 0,712 | 0,710 | 0,739 | 0,689 | 0,755 | 0,741 | 0,728 | 0,691 | 0,791 | 0,698 | 0,728 |
 | P13 | 0,705 | 0,725 | 0,744 | 0,634 | 0,712 | 0,696 | 0,688 | 0,732 | 0,675 | 0,714 | 0,729 | 0,697 | 0,682 | 0,748 | 0,649 | 0,702 |
-| P15 | 0,717 | 0,721 | 0,761 | 0,702 | 0,739 | 0,719 | 0,714 | 0,777 | 0,672 | 0,767 | 0,728 | 0,742 | 0,675 | 0,813 | 0,732 | 0,732 |
 
 **Cách đọc:**
 
@@ -135,12 +131,11 @@ Mỗi ô là g\*, tức ứng viên grid có điểm inner cao nhất của pipe
 | P06 | C 0,1 | C 0,1 | C 0,01 | C 0,01 | C 0,01 | C 0,1 | C 0,1 | C 0,1 | C 0,01 | C 0,01 | C 0,01 | C 0,01 | C 0,1 | C 0,1 | C 1 |
 | P07 | 0,5 · 0,1 | 0,9 · 0,1 | 0,5 · 1 | 0,5 · 0,1 | 0,1 · 0,1 | 0,1 · 1 | 0,1 · 1 | 0,5 · 0,01 | 0,5 · 0,1 | 0,9 · 1 | 0,1 · 0,01 | 0,5 · 1 | 0,5 · 0,1 | 0,5 · 0,1 | 0,1 · 0,1 |
 | P08 | 0,1 · α 0 | 0,01 · α 0,5 | 0,1 · α 0,5 | 0,1 · α 0,5 | 0,01 · α 0 | 1 · α 1 | 1 · α 0 | 0,1 · α 0,5 | 0,01 · α 0,5 | 0,1 · α 1 | 0,01 · α 0,5 | 0,1 · α 0 | 0,1 · α 0 | 1 · α 0 | 0,1 · α 0,5 |
-| P09 | 500 · 0,01 | 500 · 1 | 1000 · 0,01 | 500 · 0,1 | 2000 · 0,1 | 1000 · 0,1 | 1000 · 0,1 | 2000 · 0,01 | 2000 · 0,01 | 500 · 0,1 | 2000 · 0,1 | 2000 · 0,01 | 1000 · 1 | 1000 · 1 | 2000 · 0,1 |
-| P10 | 500 · 1 | 2000 · 0,1 | 1000 · 0,1 | 2000 · 0,1 | 2000 · 0,1 | 1000 · 0,01 | 1000 · 1 | 1000 · 0,01 | 1000 · 1 | 1000 · 1 | 2000 · 0,1 | 500 · 0,01 | 2000 · 0,1 | 2000 · 0,1 | 1000 · 0,1 |
+| P09 | 500 · 0,01 | 500 · 1 | 1000 · 0,01 | 1000 · 0,1 | 2000 · 0,1 | 1000 · 0,1 | 1000 · 0,1 | 2000 · 0,01 | 2000 · 0,01 | 500 · 0,1 | 2000 · 0,1 | 2000 · 0,01 | 1000 · 1 | 1000 · 1 | 2000 · 0,1 |
+| P10 | 500 · 1 | 2000 · 0,1 | 1000 · 0,1 | 2000 · 0,1 | 1000 · 0,1 | 1000 · 0,01 | 1000 · 1 | 1000 · 0,01 | 1000 · 1 | 1000 · 1 | 2000 · 0,1 | 500 · 0,01 | 2000 · 0,1 | 2000 · 0,1 | 1000 · 0,1 |
 | P11 | shrink 1 | shrink 1 | shrink 1 | shrink 4 | shrink 0,5 | shrink 2 | shrink 0,5 | shrink 2 | shrink 1 | shrink 2 | shrink 1 | shrink 1 | shrink 1 | shrink 1 | shrink 1 |
 | P12 | sqrt · 1 | 0,01 · 1 | 0,01 · 3 | sqrt · 1 | sqrt · 3 | sqrt · 1 | sqrt · 1 | sqrt · 1 | sqrt · 1 | sqrt · 1 | 0,01 · 3 | sqrt · 1 | 0,01 · 1 | sqrt · 3 | sqrt · 1 |
 | P13 | 500 · 7 | 500 · 5 | 100 · 5 | 100 · 5 | 500 · 5 | 500 · 7 | 100 · 5 | 500 · 3 | 100 · 3 | 100 · 7 | 500 · 5 | 500 · 5 | 100 · 5 | 100 · 5 | 100 · 5 |
-| P15 | C 1 | C 1 | C 1 | C 0,1 | C 1 | C 0,1 | C 0,01 | C 0,01 | C 1 | C 0,1 | C 0,01 | C 0,1 | C 10 | C 0,01 | C 1 |
 
 **Cách đọc:**
 
@@ -148,23 +143,22 @@ Mỗi ô là g\*, tức ứng viên grid có điểm inner cao nhất của pipe
 - **Ổn định:** P06 gần như luôn chọn C = 0,01 hoặc 0,1, nghĩa là mô hình cần regularization khá mạnh. P08 chọn α = 0 ở 6/15 fold, tức là ngưỡng hiệu chỉnh thường không được dùng. Điều này khớp với kết quả ablation P06 → P08 ở mục 6.
 - Bảng này cũng là chỗ để kiểm toán META-SELECT: cặp thắng ở mục 5 phải trùng với g\* của pipeline đó ở cùng fold.
 
-**Chạm biên grid.** Ở vòng B, grid đã đóng băng, nên việc chạm biên chỉ được **báo cáo**, không được dẫn tới sửa grid (quy tắc mở rộng biên chỉ áp dụng ở vòng A). Các trường hợp g\* nằm ở cùng một biên ở ≥3/5 fold trong một repeat:
+**Chạm biên grid.** Ở vòng B, grid đã đóng băng, nên việc chạm biên chỉ được **báo cáo**, không được dẫn tới sửa grid (quy tắc mở rộng biên chỉ áp dụng ở vòng A). Repeat 1 của vòng B dùng cùng split, seed và config với vòng A, nên g\* ở R1 trùng với vòng A. Vì vậy R1 không thể có pipeline nào chạm biên ở ≥3/5 fold: nếu có, vòng A đã mở rộng grid trước khi đóng băng. Các trường hợp chạm biên chỉ có thể xuất hiện ở R2 và R3. Các trường hợp g\* nằm ở cùng một biên ở ≥3/5 fold trong một repeat:
 
 | Pipeline | Tham số | Repeat | Biên | Số fold | Ý nghĩa |
 | --- | --- | --- | --- | --- | --- |
 | P07 | C | R2 | trên (C = 1) | 3/5 | Chỉ ở một repeat; R1 và R3 không lặp lại |
 | P08 | α | R3 | dưới (α = 0) | 3/5 | α = 0 là "không hiệu chỉnh ngưỡng", một giới hạn tự nhiên chứ không phải grid quá hẹp |
-| P09 | k | R1 | dưới (k = 500) | 3/5 | Hai repeat chạm hai biên ngược nhau, nên không có hướng nhất quán |
-| P09 | k | R3 | trên (k = 2000) | 3/5 | (như trên) |
-| P10 | k | R1 và R3 | trên (k = 2000) | 3/5 mỗi repeat | **Có hướng nhất quán:** có thể k lớn hơn sẽ tốt hơn. Ghi vào phần hạn chế và để dành cho vòng sau |
+| P09 | k | R3 | trên (k = 2000) | 3/5 | Chỉ ở một repeat; R1 và R2 không lặp lại |
+| P10 | k | R3 | trên (k = 2000) | 3/5 | Cùng hướng với P09 ở cùng repeat (hai pipeline có chung bước ANOVA). Có thể k lớn hơn sẽ tốt hơn. Ghi vào phần hạn chế và để dành cho vòng sau |
 
-Hai trường hợp không được tính. P13 tune k ANOVA trên grid chỉ có 2 giá trị, nên giá trị nào cũng là biên và quy tắc không có nghĩa. P12 thường chọn `min_samples_leaf = 1`, nhưng 1 là giá trị nhỏ nhất có thể có nên không có gì để mở rộng.
+Ba trường hợp không được tính. P13 tune k ANOVA trên grid chỉ có 2 giá trị, nên giá trị nào cũng là biên và quy tắc không có nghĩa. `max_features` của P12 cũng chỉ có 2 giá trị, nên tương tự. P12 thường chọn `min_samples_leaf = 1`, nhưng 1 là giá trị nhỏ nhất có thể có nên không có gì để mở rộng.
 
 ---
 
 ## 5. Câu 1 · META-SELECT: con số chính của dự án
 
-Trong mỗi outer fold, chọn cặp (pipeline, tham số) có **điểm inner** cao nhất trong P02–P13 (không gồm P01 và P15), rồi lấy dự đoán outer của cặp đó. Điểm outer không tham gia vào việc chọn.
+Trong mỗi outer fold, chọn cặp (pipeline, tham số) có **điểm inner** cao nhất trong P02–P13 (không gồm P01), rồi lấy dự đoán outer của cặp đó. Điểm outer không tham gia vào việc chọn.
 
 | Outer fold | Pipeline thắng (theo inner) | Điểm inner | Điểm outer của nó (từ Bảng B) |
 | --- | --- | --- | --- |
@@ -218,7 +212,7 @@ Trong mỗi outer fold, chọn cặp (pipeline, tham số) có **điểm inner**
 
 Kết quả là **xác suất**, không phải p-value, nên không có hiệu chỉnh Holm. Số phép so sánh được giữ nhỏ bằng cách chỉ kiểm định các cặp đã đăng ký trước.
 
-### 6.2 Toàn bộ 12 cặp đã đăng ký trước, ROPE 0,01
+### 6.2 Toàn bộ 11 cặp đã đăng ký trước, ROPE 0,01
 
 d = (pipeline sau mũi tên) − (pipeline trước mũi tên). "Kém / Tương đương / Tốt hơn" là ba xác suất Bayesian, nói về pipeline sau mũi tên.
 
@@ -235,18 +229,16 @@ d = (pipeline sau mũi tên) − (pipeline trước mũi tên). "Kém / Tương 
 | P06 → P11 | Họ khác: PAM | −0,040 | **0,99** | 0,01 | 0,00 | **P06 tốt hơn PAM** |
 | P06 → P12 | Họ khác: RF | −0,063 | **1,00** | 0,00 | 0,00 | **P06 tốt hơn RF** |
 | P09 → P13 | Họ khác: kNN | −0,091 | **1,00** | 0,00 | 0,00 | **P09 tốt hơn kNN** |
-| P06 → P15 | Toàn genome → vài marker | −0,059 | **1,00** | 0,00 | 0,00 | **Toàn genome tốt hơn panel marker** |
 
 **Cách đọc:**
 
-- Các thay đổi **lớn** (đổi sang PAM, RF, kNN, hoặc chỉ dùng panel marker) cho kết luận rõ ràng.
+- Các thay đổi **lớn** (đổi sang PAM, RF, kNN) cho kết luận rõ ràng.
 - Các thay đổi **nhỏ** trong cùng họ (class weight, k, ANOVA, elastic-net, ngưỡng α) đều "chưa kết luận được". Proposal đã ghi trước điều này ở mục 5.2: với 15 fold, chênh lệch dưới khoảng 0,03–0,05 nhiều khả năng không có ý nghĩa. "Không phân biệt được" là một kết quả hợp lệ và phải được báo cáo như vậy.
 - Muốn khẳng định "hai pipeline **tương đương**" thì cột "Tương đương" phải ≥ 0,95. Với ROPE 0,01 chưa cặp nào đạt, nên chỉ được viết "chưa kết luận được", không được viết "không khác nhau".
-- Proposal ghi "khoảng 11 cặp". Cột "So với" của proposal thực ra có **12 cặp**, nếu tính cả P06 → P15 (xem mục 13).
 
-### 6.3 Cùng 12 cặp, với ROPE 0,02
+### 6.3 Cùng 11 cặp, với ROPE 0,02
 
-Proposal (Q7) yêu cầu báo cáo thêm kết quả với ROPE 0,02. ROPE rộng hơn nghĩa là nhóm coi chênh lệch tới 0,02 là không đáng kể.
+Proposal mục 5.2 chỉ quy định ROPE ±0,01. File này thêm ROPE 0,02 như một phân tích độ nhạy (**đề xuất, chờ nhóm chốt**, xem mục 13) để cho thấy cỡ ROPE ảnh hưởng tới kết luận ra sao. ROPE rộng hơn nghĩa là nhóm coi chênh lệch tới 0,02 là không đáng kể.
 
 | Cặp | Kém hơn | Tương đương | Tốt hơn | Kết luận | Đổi so với ROPE 0,01? |
 | --- | --- | --- | --- | --- | --- |
@@ -261,7 +253,6 @@ Proposal (Q7) yêu cầu báo cáo thêm kết quả với ROPE 0,02. ROPE rộn
 | P06 → P11 | 0,94 | 0,06 | 0,00 | Chưa kết luận, nghiêng P06 tốt hơn | **Có** (mất kết luận) |
 | P06 → P12 | **1,00** | 0,00 | 0,00 | **P06 tốt hơn RF** | Không |
 | P09 → P13 | **1,00** | 0,00 | 0,00 | **P09 tốt hơn kNN** | Không |
-| P06 → P15 | **0,99** | 0,01 | 0,00 | **Toàn genome tốt hơn panel marker** | Không |
 
 **Cách đọc:**
 
@@ -272,7 +263,7 @@ Proposal (Q7) yêu cầu báo cáo thêm kết quả với ROPE 0,02. ROPE rộn
 
 ## 7. Câu 3 · Chọn pipeline mang sang app
 
-1. **T** = pipeline có mean cao nhất trong Bảng A, ở đây là **P07** (0,807). P01 và P15 không được xét vì không được phép làm winner.
+1. **T** = pipeline có mean cao nhất trong Bảng A, ở đây là **P07** (0,807). P01 không được xét vì không được phép làm winner.
 2. So T với từng pipeline X bằng Bayesian t-test trên Bảng B (d = T − X). X **bị loại** nếu P(T tốt hơn X quá ROPE) ≥ 0,95. Ngược lại thì X nằm trong **nhóm tương đương** với T.
 
 | X | Mean d (T − X) | P(T tốt hơn X quá ROPE) | Kết quả với ROPE 0,01 | P(…) với ROPE 0,02 | Kết quả với ROPE 0,02 |
@@ -296,7 +287,7 @@ Proposal (Q7) yêu cầu báo cáo thêm kết quả với ROPE 0,02. ROPE rộn
 
 - Pipeline được chọn **không phải** pipeline có điểm cao nhất, và đó là chủ ý. P07 chỉ hơn P06 0,007 và không phân biệt được với P06, trong khi P06 ít tham số hơn (không có thành phần L1, 5 thay vì 9 ứng viên grid) và theo bảng runtime ở mục 10 thì chạy nhanh hơn khoảng 16 lần.
 - Khi báo cáo hiệu năng của P06, dùng **con số META-SELECT 0,803 ± 0,005**, không dùng 0,800 của riêng P06 và không dùng 0,807 của P07.
-- **Cỡ ROPE thay đổi kết quả.** Với ROPE 0,02, nhóm tương đương mở rộng thêm cả P02–P05, và pipeline được chọn sẽ là **P03 SVM-BAL**. Đây là lý do proposal yêu cầu báo cáo cả hai mức (Q7), và cùng lý do với mục 6.3: ROPE phải được chốt trước.
+- **Cỡ ROPE thay đổi kết quả.** Với ROPE 0,02, nhóm tương đương mở rộng thêm cả P02–P05, và pipeline được chọn sẽ là **P03 SVM-BAL**. Đây là lý do file này đề xuất báo cáo cả hai mức, và cùng lý do với mục 6.3: ROPE phải được chốt trước.
 
 ---
 
@@ -379,7 +370,6 @@ Máy (giả lập): 8 lõi, chạy 1 lõi mỗi fit, Python 3.12, scikit-learn 1
 | P12 | 4 | 255 | 3,30 | 14,0 |
 | P13 | 8 | 495 | 0,31 | 2,6 |
 | **Lõi P01–P13** | | **6.915** | | **≈ 239 phút ≈ 4,0 giờ** |
-| P15 *(tuỳ chọn)* | 5 | 315 | 0,25 | 1,3 |
 
 **Cách đọc:**
 
@@ -393,7 +383,7 @@ Máy (giả lập): 8 lõi, chạy 1 lõi mỗi fit, Python 3.12, scikit-learn 1
 
 Proposal không yêu cầu đoạn này. Nó chỉ minh hoạ cách các output ở trên được ghép thành văn bản.
 
-> Quy trình chọn pipeline trong nested CV (META-SELECT) đạt macro-F1 0,803 ± 0,005 qua 3 repeat (dữ liệu giả lập). Họ LR được chọn ở 14/15 outer fold. Pipeline mang sang ứng dụng là LR-L2 có class weight (P06), là pipeline đơn giản nhất trong nhóm không phân biệt được với pipeline đứng đầu (ROPE ±0,01). Các biến thể trong họ LR (elastic-net, ngưỡng α, thêm ANOVA) không khác nhau một cách thuyết phục. LR có xu hướng tốt hơn SVM tuyến tính nhưng chưa đủ chắc (P = 0,91), còn LR vượt rõ PAM, random forest và kNN. SMOTE không cải thiện so với class weight. Mô hình dùng toàn genome tốt hơn mô hình chỉ dùng panel marker khoảng 0,06 macro-F1. Recall MPNST là 6/9 (95% Wilson CI 0,35–0,88). Phần lớn lỗi nằm ở ranh giới UPS/MFS. Hiệu năng giảm 0,05 khi tách theo nơi lấy mẫu, cho thấy có một phần tín hiệu từ TSS.
+> Quy trình chọn pipeline trong nested CV (META-SELECT) đạt macro-F1 0,803 ± 0,005 qua 3 repeat (dữ liệu giả lập). Họ LR được chọn ở 14/15 outer fold. Pipeline mang sang ứng dụng là LR-L2 có class weight (P06), là pipeline đơn giản nhất trong nhóm không phân biệt được với pipeline đứng đầu (ROPE ±0,01). Các biến thể trong họ LR (elastic-net, ngưỡng α, thêm ANOVA) không khác nhau một cách thuyết phục. LR có xu hướng tốt hơn SVM tuyến tính nhưng chưa đủ chắc (P = 0,91), còn LR vượt rõ PAM, random forest và kNN. SMOTE không cải thiện so với class weight. Recall MPNST là 6/9 (95% Wilson CI 0,35–0,88). Phần lớn lỗi nằm ở ranh giới UPS/MFS. Hiệu năng giảm 0,05 khi tách theo nơi lấy mẫu, cho thấy có một phần tín hiệu từ TSS.
 
 Mọi con số trong đoạn trên đều giả lập. Khi có kết quả thật, chỉ cần thay số; cấu trúc câu và thứ tự trình bày giữ nguyên.
 
@@ -410,7 +400,7 @@ File này chỉ minh hoạ các bảng **kết quả** của vòng B. Protocol c
 | Đối chiếu gene và trọng số với bảng marker; audit lỗi UPS/MFS theo MDM2/CDK4 và panel cơ trơn; độ ổn định gene Nogueira Φ | W5 | Thuộc chương phân tích lỗi, cần dữ liệu gene thật |
 | Báo cáo khác biệt nhãn khi đối chiếu với 206 ca đã review; bảng chéo TSS × subtype | W3 | Là đầu vào của S-206 và S-TSS, làm trước khi chạy |
 | Chạy xác nhận top 2–3 với outer seed mới | Tuỳ chọn (mục 5.3, bước 4) | Không bắt buộc. Nếu chạy, phải ghi rõ đây không phải validation độc lập |
-| Mô hình cuối refit trên 254 ca và model card cho app | Sau phân tích (Q12, D11) | Thuộc giai đoạn đưa sang app |
+| Mô hình cuối refit trên 254 ca và model card cho app | Sau phân tích (D11 trong [architecture.md](architecture.md)) | Thuộc giai đoạn đưa sang app |
 
 ---
 
@@ -424,6 +414,5 @@ File này chỉ minh hoạ các bảng **kết quả** của vòng B. Protocol c
 | 2 | Wilson CI tính trên một repeat hay gộp 3 repeat | Repeat 1 | Gộp 3 repeat làm CI hẹp giả tạo, vì đếm mỗi bệnh nhân 3 lần |
 | 3 | Recall MFS/MPNST có Wilson CI: báo cáo cho mọi pipeline hay chỉ pipeline được chọn | Mọi pipeline (Bảng A2) | Chỉ báo cáo cho pipeline được chọn thì gọn hơn nhưng mất phần so sánh |
 | 4 | "Winner" trong phân tích độ nhạy | Pipeline được chọn ở Câu 3 (P06) | Nếu là T (P07) thì phải chạy độ nhạy thêm cho P07 |
-| 5 | Cặp P06 → P15 có nằm trong nhóm cặp kiểm định không | Có, nên tổng là 12 cặp | Proposal đang ghi "khoảng 11 cặp", cần sửa thành 12 hoặc ghi rõ P15 nằm ngoài |
-| 6 | Ngưỡng "giảm mạnh" của S-TSS | Chưa có; file chỉ mô tả mức giảm | Không có ngưỡng thì không thể kết luận "mô hình đang học TSS" một cách khách quan |
-| 7 | Cỡ ROPE chính | 0,01, báo cáo thêm 0,02 (theo Q7) | Mục 6.3 và 7 cho thấy ROPE đổi cả kết luận ablation lẫn pipeline được chọn |
+| 5 | Ngưỡng "giảm mạnh" của S-TSS | Chưa có; file chỉ mô tả mức giảm | Không có ngưỡng thì không thể kết luận "mô hình đang học TSS" một cách khách quan |
+| 6 | Có báo cáo thêm ROPE 0,02 không | Có, như phân tích độ nhạy; ROPE chính vẫn là 0,01 theo proposal mục 5.2 | Mục 6.3 và 7 cho thấy ROPE đổi cả kết luận ablation lẫn pipeline được chọn |
