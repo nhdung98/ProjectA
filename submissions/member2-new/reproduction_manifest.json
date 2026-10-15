@@ -1,0 +1,298 @@
+{
+  "status": "complete_independently_validated",
+  "purpose": "Leader-requested reproduction of Member 2 configurations, not original Member 2 outputs",
+  "training_commit": "5d9076790437c7be304395ff702e9f4f11136899",
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "original_outputs_available": false,
+  "started_local_client_date": "2026-10-13",
+  "runs": [
+    {
+      "configuration": "SVM-STD-ANOVA-50-LINEAR",
+      "run_id": "20261013T022440Z-e88d439a",
+      "runtime_seconds": 591.1717669001082,
+      "summary_matches_reported_precision": true,
+      "macro_f1_mean": 0.6923627058251974,
+      "macro_f1_sample_std": 0.04575430883317226,
+      "balanced_accuracy_mean": 0.6895179646307467,
+      "balanced_accuracy_sample_std": 0.0353700065464441,
+      "folder": "runs\\SVM-STD-ANOVA-50-LINEAR\\20261013T022440Z-e88d439a",
+      "audit": {
+        "status": "passed",
+        "configuration": "SVM-STD-ANOVA-50-LINEAR",
+        "fits": 15,
+        "predictions": 762,
+        "inner_search_checked": true,
+        "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+        "warning_log_empty": true,
+        "metrics_independently_recomputed": true
+      },
+      "original_reported": {
+        "original_run_id": "20261012T025050Z-d2d653e4",
+        "macro_f1": [
+          0.692,
+          0.046
+        ],
+        "balanced_accuracy": [
+          0.69,
+          0.035
+        ]
+      },
+      "files_sha256": {
+        "config.json": "8ee6197defbcc724f32ce86620d46969fa2c9e5c6476ee964cdf9fc25cb2d1b3",
+        "feature_details.json": "582309f86940d4f0af19d71a2a34559b6e20085b521a246c912963a319a51aea",
+        "metrics.json": "d0ccdeb6131b5fdff426c1dc75cd28eff55c2200a26cf7524423a6c880fa92d0",
+        "predictions.csv": "79c87cf44b7d83d9754aa53ede735ca47e5eb7a839d8c49ae8c74c80abef15ec",
+        "run_manifest.json": "8c51d0b29a49e128bbbb5ef53681782c06a899298ef65d7572573c43072cb83f",
+        "search_results.json": "d9504301de02045e27a8b554bdb2470a473d7bcbf42246336835b1dddde56600",
+        "submission.md": "cd6baae0e6ad74694a8d1c7b82949b8d6bcec165d39c0cb2c900a06846632412",
+        "validation.json": "fc12f846284e372be7190c34f646f6a91f56dc032b00ee57860521275ada83f1",
+        "warnings.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "SVM-STD-ANOVA-50-RBF",
+      "run_id": "20261013T024858Z-4fc499d6",
+      "runtime_seconds": 1163.4274188000709,
+      "summary_matches_reported_precision": true,
+      "macro_f1_mean": 0.7340978362821556,
+      "macro_f1_sample_std": 0.04216014348491688,
+      "balanced_accuracy_mean": 0.7296412658630703,
+      "balanced_accuracy_sample_std": 0.04163798965128419,
+      "folder": "runs\\SVM-STD-ANOVA-50-RBF\\20261013T024858Z-4fc499d6",
+      "audit": {
+        "status": "passed",
+        "configuration": "SVM-STD-ANOVA-50-RBF",
+        "fits": 15,
+        "predictions": 762,
+        "inner_search_checked": true,
+        "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+        "warning_log_empty": true,
+        "metrics_independently_recomputed": true
+      },
+      "original_reported": {
+        "original_run_id": "20261012T025318Z-d1db4f6e",
+        "macro_f1": [
+          0.734,
+          0.042
+        ],
+        "balanced_accuracy": [
+          0.73,
+          0.042
+        ]
+      },
+      "files_sha256": {
+        "config.json": "2c3cb803c5b4b1c79b6126de03e0ebe7aed4b356e8de3a41487d82837b3d3122",
+        "feature_details.json": "582309f86940d4f0af19d71a2a34559b6e20085b521a246c912963a319a51aea",
+        "metrics.json": "fbd354cfd99fd07147c75ba5c8c79fcccaebba70d3019eb5e8cc901f6b7e965a",
+        "predictions.csv": "f617ad4526269fd7f8dc25e369a6c5f5359044f96305f4a7d1d84274273a36b3",
+        "run_manifest.json": "b4763362f1fd5d70a76e366b98bea2e33156974ce1499aef5ac03682d27ec1d8",
+        "search_results.json": "18677668737b7d6f4f65cb5b838f4218e6f409be2d051f13a94b6c1550ef4f4d",
+        "submission.md": "801b856688f369bf545a319a5c3b74fba26acafd60af4617bfb1cf8314dcf428",
+        "validation.json": "0202b96d90bef94135292cc19dc13a56236ac53ed5e8de40fa5c2f2428828ade",
+        "warnings.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "SVM-STD-ANOVA-100-LINEAR",
+      "run_id": "20261013T031244Z-dc09734a",
+      "runtime_seconds": 549.4636609998997,
+      "summary_matches_reported_precision": true,
+      "macro_f1_mean": 0.7346540740462562,
+      "macro_f1_sample_std": 0.007308608308984271,
+      "balanced_accuracy_mean": 0.7424304299617583,
+      "balanced_accuracy_sample_std": 0.0053026838726372705,
+      "folder": "runs\\SVM-STD-ANOVA-100-LINEAR\\20261013T031244Z-dc09734a",
+      "audit": {
+        "status": "passed",
+        "configuration": "SVM-STD-ANOVA-100-LINEAR",
+        "fits": 15,
+        "predictions": 762,
+        "inner_search_checked": true,
+        "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+        "warning_log_empty": true,
+        "metrics_independently_recomputed": true
+      },
+      "original_reported": {
+        "original_run_id": "20261012T025857Z-46a19635",
+        "macro_f1": [
+          0.735,
+          0.007
+        ],
+        "balanced_accuracy": [
+          0.742,
+          0.005
+        ]
+      },
+      "files_sha256": {
+        "config.json": "29ba33065eb8919d326009682e770c3ab3a978c18ef889731bed344cc843ce2e",
+        "feature_details.json": "0831bce278eacc143a264f16b9f50fa063dfcbe3b38182cf788a7ce4d5a5203c",
+        "metrics.json": "b5d36c99dcbd54d968d014e3048d2fdd9cc1a00b9b547c414b3f986a389b3dbe",
+        "predictions.csv": "e89af2a15461982ecbcda3708f181e69aa31286f0c8aef02f14969a4076c649b",
+        "run_manifest.json": "840cac0b0f3aea19d7181249669af7cfb953ae5132d3f0fcc3bf0537c5bcf7fd",
+        "search_results.json": "6c5918f5b9e66b9d1c95807c08d581cfffe9ef0a9b0b96093ebdee1ed1bcb35a",
+        "submission.md": "c3231dbabf2521f56b9856ebc16c3e1e606844da973c67f8f8e827cc79079910",
+        "validation.json": "46eadce0d4656a8f6d1c4f3e422add13d9aa156ea9fb07d4e59d834c0d3cc33e",
+        "warnings.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "SVM-STD-ANOVA-100-RBF",
+      "run_id": "20261013T032602Z-a1fd2c59",
+      "runtime_seconds": 1094.6177797995042,
+      "summary_matches_reported_precision": true,
+      "macro_f1_mean": 0.7652834897524428,
+      "macro_f1_sample_std": 0.025034782448354786,
+      "balanced_accuracy_mean": 0.7684945575171138,
+      "balanced_accuracy_sample_std": 0.02245977048838749,
+      "folder": "runs\\SVM-STD-ANOVA-100-RBF\\20261013T032602Z-a1fd2c59",
+      "audit": {
+        "status": "passed",
+        "configuration": "SVM-STD-ANOVA-100-RBF",
+        "fits": 15,
+        "predictions": 762,
+        "inner_search_checked": true,
+        "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+        "warning_log_empty": true,
+        "metrics_independently_recomputed": true
+      },
+      "original_reported": {
+        "original_run_id": "20261012T030123Z-14fb358a",
+        "macro_f1": [
+          0.765,
+          0.025
+        ],
+        "balanced_accuracy": [
+          0.768,
+          0.022
+        ]
+      },
+      "files_sha256": {
+        "config.json": "2424b0cb97bc13c76be887a138c04336b8f86ccea8ceb3fc371e0fdd74fa5743",
+        "feature_details.json": "0831bce278eacc143a264f16b9f50fa063dfcbe3b38182cf788a7ce4d5a5203c",
+        "metrics.json": "c5a94f9ec60dbb2a69914bd1f2dcb35360c06abe59f33027d0a8a4880a107cdb",
+        "predictions.csv": "f0465ad102828600ba89af9573248fed32e0cadee41210e88246f80986801a01",
+        "run_manifest.json": "5392035a307b3cf75644b0258517c5c2815d008b2283cf302c167af194c82e9f",
+        "search_results.json": "775778003286076d41ccddb5f63320e24a03187d8802ff1e85504d34367a98ac",
+        "submission.md": "0d1cb6f9afdfc8e4161feed273aa5ba860381afa8f91bebe10129c013d116d48",
+        "validation.json": "def1496f25b55b1b46c1a94e55bd360b6f78b012c1a215f1b6d27117eea52d07",
+        "warnings.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "SVM-STD-ANOVA-150-LINEAR",
+      "run_id": "20261013T034657Z-3614ed00",
+      "runtime_seconds": 349.54996130021755,
+      "summary_matches_reported_precision": true,
+      "macro_f1_mean": 0.7716584601536155,
+      "macro_f1_sample_std": 0.0026944881262280073,
+      "balanced_accuracy_mean": 0.7671787374418954,
+      "balanced_accuracy_sample_std": 0.007270860905591778,
+      "folder": "runs\\SVM-STD-ANOVA-150-LINEAR\\20261013T034657Z-3614ed00",
+      "audit": {
+        "status": "passed",
+        "configuration": "SVM-STD-ANOVA-150-LINEAR",
+        "fits": 15,
+        "predictions": 762,
+        "inner_search_checked": true,
+        "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+        "warning_log_empty": true,
+        "metrics_independently_recomputed": true
+      },
+      "original_reported": {
+        "original_run_id": "20261012T030648Z-7ff14d84",
+        "macro_f1": [
+          0.772,
+          0.003
+        ],
+        "balanced_accuracy": [
+          0.767,
+          0.007
+        ]
+      },
+      "files_sha256": {
+        "config.json": "1baba865db78713af6a781efeeaa3343d111d3683a9b33a0a4dc2d77781136a2",
+        "feature_details.json": "41ca71d150b8c79cbe3e44574c070cb4a422e63a42694ef94fdb42e61174bd9f",
+        "metrics.json": "c88c4b83e0b5652f847fc925408cd8e9e3be71f6a140e342abd9462b64561d24",
+        "predictions.csv": "78848e283c957f758ca98e33754425bede830642d1464f38e51180c8ce004a39",
+        "run_manifest.json": "3554cb20978bdfc4acb1ef0f8552a257b42e3e34c896b3d195ffc4dfdb5d5386",
+        "search_results.json": "296c77b3317f555c80f3c9f52b3687f9f546e31ad8ceb518874ac36759007617",
+        "submission.md": "9547a1ad6adf019c92a1f4d0ac49161f6fe4467030b58f0e1089d47ada0fc537",
+        "validation.json": "4ed040355a487cc0d4fde96b0d03170952963b5c8442ca1349e800a445a4c507",
+        "warnings.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "configuration": "SVM-STD-ANOVA-150-RBF",
+      "run_id": "20261013T035519Z-aac8660a",
+      "runtime_seconds": 835.8584375000792,
+      "summary_matches_reported_precision": true,
+      "macro_f1_mean": 0.7684919310222154,
+      "macro_f1_sample_std": 0.01943665899623191,
+      "balanced_accuracy_mean": 0.76402359174289,
+      "balanced_accuracy_sample_std": 0.01971977581017793,
+      "folder": "runs\\SVM-STD-ANOVA-150-RBF\\20261013T035519Z-aac8660a",
+      "audit": {
+        "status": "passed",
+        "configuration": "SVM-STD-ANOVA-150-RBF",
+        "fits": 15,
+        "predictions": 762,
+        "inner_search_checked": true,
+        "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+        "warning_log_empty": true,
+        "metrics_independently_recomputed": true
+      },
+      "original_reported": {
+        "original_run_id": "20261012T030908Z-b74ed4f7",
+        "macro_f1": [
+          0.768,
+          0.019
+        ],
+        "balanced_accuracy": [
+          0.764,
+          0.02
+        ]
+      },
+      "files_sha256": {
+        "config.json": "3bc561ad3eb88179af94f52551153b237d5d9f4300bcdb65e3bc8658cf543ad6",
+        "feature_details.json": "41ca71d150b8c79cbe3e44574c070cb4a422e63a42694ef94fdb42e61174bd9f",
+        "metrics.json": "17604e689f3f539d81689eb314b08b64bf5a63808fa0f004df2faf8f9cbc2f9b",
+        "predictions.csv": "325a8e85e5b2bab79af0e6f574d7f36ffd1fcc4db853c6e93968e89cf887c849",
+        "run_manifest.json": "5e158e1fbd48731553e3008c9724a87afee72c849bb8a890624f8b65f71759c6",
+        "search_results.json": "278917b91dacea0a0b6235c73981c136c419c254b332bedbe9a0b3fd2a2703ac",
+        "submission.md": "2606cbc415cdc9150016696f0d6598491b48c8c173629020c90ce3bef8089959",
+        "validation.json": "ff16da0218ae679b3c619624e1cab3cdbe3003d60f69314cbcfce5e5cea5b878",
+        "warnings.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "provenance": {
+    "git_commit": "5d9076790437c7be304395ff702e9f4f11136899",
+    "git_dirty": false,
+    "packages": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scikit-learn": "1.7.2",
+      "scipy": "1.16.2",
+      "joblib": "1.5.2",
+      "threadpoolctl": "3.6.0"
+    },
+    "source_sha256": {
+      "data/raw/sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+      "data/raw/data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee"
+    },
+    "dataset_sha256": "e468ea37ed3863cb6c0c46bbe05fda398bae30b627586ff3ed94f2cea0e2476d",
+    "split_sha256": "92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7",
+    "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+    "code_sha256": {
+      "src/experiments/__init__.py": "bfb6210997b47b084f58c5c3a85aa1b9024d8ff7ac24e3de40fa71024cefdeb2",
+      "src/experiments/common.py": "12a64ae49d2a5d42b163feac63f61fedbb2859def9fc94431f4ab04989b1422a",
+      "src/experiments/validation.py": "55bc6e217706cf10d6b9a8d7e555f4b7745f38e12eb63ec43468c05b89ecd4cf",
+      "src/experiments/pipeline.py": "7629a5cfe891d830ab1a837eb017d4959c367ee2d9eb79b184c695cec37caf3a",
+      "src/experiments/metrics.py": "26498ba574b508f2921baef78dfac29bb036c5b15833220371126f56dc425c87",
+      "src/experiments/svm.py": "ac3d4e6a4a8858156e353bfd4b2e30f890c6d13ba341f8da70278c86ae316f8a",
+      "configs/svm.json": "5e19f8a3bf6fe68892b315997535087cf44b685b5ab2adf4ab2485ecbffcc7d8",
+      "requirements-experiments.txt": "39abdcf722ecb4a69f3826ad46400a3c09a55c2f01af97d0b9c7abdd6c874e1d"
+    }
+  }
+}

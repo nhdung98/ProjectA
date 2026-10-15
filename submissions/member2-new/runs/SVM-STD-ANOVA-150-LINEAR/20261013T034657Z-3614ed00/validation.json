@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "configuration": "SVM-STD-ANOVA-150-LINEAR",
+  "fits": 15,
+  "predictions": 762,
+  "inner_search_checked": true,
+  "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+  "warning_log_empty": true,
+  "metrics_independently_recomputed": true
+}
