@@ -4,6 +4,7 @@ Start with the [Protocol 3.0 proposal](protocol_3.0_proposal.md). Two companion 
 
 - [Nested CV diagram](nested_cv_diagram.md): what runs at each level, what each level saves, and where each output goes.
 - [Example results](mock_results_example.md): the shape of every result table and how to read it. All numbers are simulated.
+- [Run guide](protocol3_runbook.md): commands for each member and for the analyst.
 
 Background:
 

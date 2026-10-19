@@ -6,7 +6,7 @@ Predict six sarcoma subtypes from gene expression: 254 patients and 20,531 gene 
 
 Read the [Protocol 3.0 proposal](docs/protocol_3.0_proposal.md) first, then the [nested CV diagram](docs/nested_cv_diagram.md) and the [example of the expected results](docs/mock_results_example.md). All numbers in the example are simulated.
 
-The one-command runner for each member and the collection command for the analyst are being added on the `protocol3` branch. Until then, there is nothing to run for this round.
+Each member runs their batch with `python -m src.p3`; the analyst collects the four result folders with one command. The [run guide](docs/protocol3_runbook.md) lists every step, from setup to the final model for the app.
 
 ## One-time setup
 
@@ -17,9 +17,9 @@ git clone https://github.com/nhdung98/ProjectA.git
 cd ProjectA
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-experiments.txt
+python -m pip install -r requirements-protocol3.txt
 python -m src.data.prepare
-python -m src.experiments.svm check
+python -m src.p3 check
 ```
 
 The original inputs are included in `data/raw/`. Preparation creates `data/processed/` locally. All members use the same frozen outer and inner folds in `results/splits/`. Scalers, feature filtering and PCA are fitted inside training folds, including inner GridSearchCV folds.
@@ -29,7 +29,9 @@ The original inputs are included in `data/raw/`. Preparation creates `data/proce
 | Location | Purpose |
 | --- | --- |
 | [docs/](docs/README.md) | Protocol 3.0, architecture notes and research |
-| [src/experiments/](src/experiments/README.md) | Runners and shared training code |
+| `src/p3/` | Protocol 3.0 runner, analysis and final model |
+| [src/experiments/](src/experiments/README.md) | Protocol 2.0 runner and the shared data, split and metric code |
+| `experiments/p3.0/` | Submitted protocol 3.0 results |
 | `src/data/` and `data/` | Data preparation and source inputs |
 | `results/splits/` | Frozen patient assignments and manifests |
 | [reports/](reports/README.md) | Findings and supporting research evidence |
