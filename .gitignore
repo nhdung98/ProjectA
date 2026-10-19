@@ -21,3 +21,4 @@ results/splits/*
 # Private development verification records
 /reports/validation/
 /docs/svm_validation.md
+.DS_Store
