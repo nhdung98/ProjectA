@@ -1,6 +1,6 @@
 # Đề xuất Protocol 3.0: benchmark nhiều pipeline dưới cùng nested CV
 
-Trạng thái: **bản nháp để nhóm thảo luận** (14/10/2026, sửa 15/10/2026: bỏ P14 LightGBM và P15 MARKER, chỉ dùng một kiểm định thống kê, vòng B chạy lại đủ 3 repeat). Tài liệu này không thay thế [experiment_protocol.md](experiment_protocol.md) (protocol 2.0, vẫn áp dụng cho vòng SVM cho tới khi vòng đó được so sánh và tag `svm-p2.0`, xem D7 trong [architecture.md](architecture.md)). Nguồn: [R1](research/R1.md) (danh mục phương pháp), [R2](research/R2.md) (baseline), [R3](research/R3.md) (sinh học subtype), và kết quả Round 1.
+Trạng thái: **bản nháp để nhóm thảo luận** (14/10/2026, sửa 15/10/2026: bỏ P14 LightGBM và P15 MARKER, chỉ dùng một kiểm định thống kê, vòng B chạy lại đủ 3 repeat). Tài liệu này không thay thế [experiment_protocol.md](../archive/week01/docs/experiment_protocol.md) (protocol 2.0, vẫn áp dụng cho vòng SVM cho tới khi vòng đó được so sánh và tag `svm-p2.0`, xem D7 trong [architecture.md](architecture.md)). Nguồn: [R1](research/R1.md) (danh mục phương pháp), [R2](research/R2.md) (baseline), [R3](research/R3.md) (sinh học subtype), và kết quả Round 1.
 
 Mục tiêu: tìm pipeline tốt nhất cho bài toán 6 subtype TCGA-SARC, đồng thời có một **quy trình tái sử dụng được** cho các bài toán RNA-seq n nhỏ, p lớn, đa lớp, lệch lớp. Vì vậy mỗi pipeline có một **vai trò** (sàn, tham chiếu, ablation, ứng viên), không chạy full factorial.
 
