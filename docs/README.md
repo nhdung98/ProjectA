@@ -10,6 +10,6 @@ Background:
 
 - [Architecture notes](architecture.md): current code layout, coupling to SVM, and the proposed target structure. Written before the week 1 archive move, so some paths refer to the earlier layout.
 - [Research](research/): R1 (method catalogue), R2 (baselines), R3 (subtype biology). The proposal cites them as `[R1§4]` and similar.
-- [Slides](slides/protocol-3-0.html): a presentation of the protocol.
+- [Slides](slides/protocol-3-0-presentation.html): a presentation of the protocol.
 
 Earlier rounds are archived: [protocol 2.0 SVM round](../archive/week01/README.md) and [PCA-order round](../archive/week02/README.md).
