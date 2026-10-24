@@ -1,0 +1,1734 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protocol 3.0 Sarcoma</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&display=swap">
+<style>
+/* Layout: một cột cuộn dọc, mỗi "slide" là một section cao bằng màn hình; màu lấy từ thuốc nhuộm H&E (hematoxylin tím-lam, eosin hồng) của giải phẫu bệnh sarcoma. */
+:root {
+  --paper: #f4f5fa; --panel: #ffffff; --sunk: #eaecf5; --ink: #1a1d3a; --muted: #585d7e; --line: #d6d9e8;
+  --hema: #3b3fa6; --hema-soft: #e2e3f7; --eosin: #c92f66; --eosin-soft: #fbe2eb;
+  --good: #1d7f55; --good-soft: #d9f0e4; --warn: #9c6210; --warn-soft: #f7ead2; --bad: #bb3232; --bad-soft: #f7dede;
+  --c-lms: #5157c9; --c-ddlps: #d48a22; --c-ups: #1f8c7c; --c-mfs: #d95f40; --c-ss: #b23a80; --c-mpnst: #5a861c;
+  --r-floor: #868a9c; --r-floor-s: #ebebf1; --r-ref: #2d6ad1; --r-ref-s: #dce7fa; --r-abl: #b8740a; --r-abl-s: #f7ebd1;
+  --r-cand: #1b8650; --r-cand-s: #d8efe1; --r-neg: #c03838; --r-neg-s: #f7dcdc;
+  --f-display: "Literata", "Georgia", "Times New Roman", serif;
+  --f-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #11132a; --panel: #191c38; --sunk: #232648; --ink: #e6e7f4; --muted: #a0a4c4; --line: #31355c;
+    --hema: #969aff; --hema-soft: #2a2d5c; --eosin: #ff6f9f; --eosin-soft: #4a2036;
+    --good: #4cc98e; --good-soft: #173a2c; --warn: #e6a948; --warn-soft: #3d2e15; --bad: #ff7a7a; --bad-soft: #432023;
+    --c-lms: #8a8ff0; --c-ddlps: #f0b453; --c-ups: #4cc2b0; --c-mfs: #f28a6c; --c-ss: #e070b0; --c-mpnst: #93c24f;
+    --r-floor: #9a9db0; --r-floor-s: #2a2c40; --r-ref: #6ea0ff; --r-ref-s: #1e2d52; --r-abl: #f0b040; --r-abl-s: #3d3014;
+    --r-cand: #4ccf8a; --r-cand-s: #16382a; --r-neg: #ff7a7a; --r-neg-s: #432023;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #11132a; --panel: #191c38; --sunk: #232648; --ink: #e6e7f4; --muted: #a0a4c4; --line: #31355c;
+  --hema: #969aff; --hema-soft: #2a2d5c; --eosin: #ff6f9f; --eosin-soft: #4a2036;
+  --good: #4cc98e; --good-soft: #173a2c; --warn: #e6a948; --warn-soft: #3d2e15; --bad: #ff7a7a; --bad-soft: #432023;
+  --c-lms: #8a8ff0; --c-ddlps: #f0b453; --c-ups: #4cc2b0; --c-mfs: #f28a6c; --c-ss: #e070b0; --c-mpnst: #93c24f;
+  --r-floor: #9a9db0; --r-floor-s: #2a2c40; --r-ref: #6ea0ff; --r-ref-s: #1e2d52; --r-abl: #f0b040; --r-abl-s: #3d3014;
+  --r-cand: #4ccf8a; --r-cand-s: #16382a; --r-neg: #ff7a7a; --r-neg-s: #432023;
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+
+*, *::before, *::after { box-sizing: border-box; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--f-body); font-size: 17px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+[hidden] { display: none !important; }
+img, svg { max-width: 100%; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--eosin); outline-offset: 2px; border-radius: 4px; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+code { background: var(--sunk); padding: 0.08em 0.36em; border-radius: 4px; }
+b, strong { font-weight: 600; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- slide frame ---------- */
+.slide { min-height: 100svh; display: flex; align-items: center; padding-block: 88px 72px; border-bottom: 1px solid var(--line); scroll-margin-top: 0; }
+.wrap { width: 100%; max-width: 1140px; margin-inline: auto; display: flex; flex-direction: column; gap: 28px; }
+.kicker { font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hema); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.kicker .idx { background: var(--hema); color: var(--paper); padding: 2px 8px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.18; }
+h2 { font-size: clamp(28px, 3.6vw, 44px); font-weight: 600; letter-spacing: -0.01em; max-width: 26ch; }
+h3 { font-size: 21px; font-weight: 600; }
+.lead { font-size: 19px; color: var(--muted); max-width: 68ch; margin: 0; }
+p { margin: 0; }
+.head { display: flex; flex-direction: column; gap: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.split { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 860px) { .grid2, .grid3, .split { grid-template-columns: minmax(0, 1fr); } .slide { padding-block: 64px 56px; } }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; min-width: 0; }
+.panel.sunk { background: var(--sunk); border-color: transparent; }
+.panel-title { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+ul.pts { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+ul.pts li { position: relative; padding-left: 22px; }
+ul.pts li::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--hema); }
+ul.pts li.hot::before { background: var(--eosin); }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.tag.mock { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+.tag.draft { background: var(--eosin-soft); color: var(--eosin); font-weight: 600; }
+.hl { color: var(--eosin); font-weight: 600; }
+.callout { border-left: 3px solid var(--eosin); background: var(--eosin-soft); padding: 14px 18px; border-radius: 0 var(--radius) var(--radius) 0; }
+.callout.blue { border-color: var(--hema); background: var(--hema-soft); }
+
+/* controls */
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; background: var(--sunk); padding: 4px; border-radius: 9px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+.btn { border: 1px solid var(--line); background: var(--panel); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { border-color: var(--hema); }
+.btn.primary { background: var(--hema); color: var(--paper); border-color: var(--hema); }
+.ctrl-row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+.ctrl-row label { font-size: 13px; color: var(--muted); font-weight: 500; }
+input[type="range"] { accent-color: var(--hema); width: 220px; max-width: 100%; }
+
+/* reveal (visible at rest, animates when entering view) */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.js .rv.in { animation: rise 0.6s cubic-bezier(.2,.7,.2,1) both; }
+.js .rv.in.d1 { animation-delay: 0.08s; } .js .rv.in.d2 { animation-delay: 0.16s; } .js .rv.in.d3 { animation-delay: 0.24s; }
+@media (prefers-reduced-motion: reduce) { .js .rv.in { animation: none; } html { scroll-behavior: auto; } * { transition: none !important; } }
+
+/* ---------- chrome: progress, side nav, toolbar ---------- */
+.progress { position: fixed; top: 0; left: 0; right: 0; height: calc(3px + env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); z-index: 30; pointer-events: none; }
+.progress i { display: block; height: 3px; width: 0; background: var(--eosin); transition: width 0.15s linear; }
+.sidenav { position: fixed; right: calc(14px + env(safe-area-inset-right, 0px)); top: 50%; transform: translateY(-50%); z-index: 20; display: flex; flex-direction: column; gap: 4px; }
+.sidenav a { display: flex; align-items: center; justify-content: flex-end; gap: 8px; text-decoration: none; color: var(--muted); font-size: 12px; height: 22px; }
+.sidenav a span.lab { opacity: 0; transform: translateX(6px); transition: 0.2s; background: var(--panel); border: 1px solid var(--line); padding: 1px 8px; border-radius: 5px; white-space: nowrap; }
+.sidenav a:hover span.lab, .sidenav a:focus-visible span.lab { opacity: 1; transform: none; }
+.sidenav a i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: 0.2s; flex: none; }
+.sidenav a.on i { background: var(--eosin); height: 18px; border-radius: 5px; }
+.sidenav a.on { color: var(--ink); }
+@media (max-width: 1240px) { .sidenav { display: none; } }
+.toolbar { position: fixed; left: calc(14px + env(safe-area-inset-left, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; gap: 8px; align-items: center; }
+.toolbar .btn { padding: 6px 10px; font-size: 12px; font-weight: 500; background: var(--panel); }
+.toolbar .hint { font-size: 12px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); padding: 5px 10px; border-radius: 8px; }
+@media (max-width: 700px) { .toolbar .hint { display: none; } }
+kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--sunk); }
+
+/* ---------- hero ---------- */
+.hero .wrap { gap: 36px; }
+.hero h1 { font-size: clamp(54px, 9vw, 124px); font-weight: 700; letter-spacing: -0.03em; line-height: 0.95; }
+.hero h1 em { font-style: normal; color: var(--eosin); }
+.hero .sub { font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 28px); max-width: 30ch; line-height: 1.3; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.flow a { text-decoration: none; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 128px; flex: 1 1 128px; transition: 0.2s; position: relative; }
+.flow a:hover { border-color: var(--hema); transform: translateY(-2px); }
+.flow a small { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.flow a.freeze { background: var(--hema-soft); border-color: var(--hema); }
+.flow .arr { align-self: center; color: var(--muted); font-size: 18px; }
+@media (max-width: 700px) { .flow .arr { display: none; } }
+
+/* ---------- problem: gene → data → subtype ---------- */
+.gx { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .gx { grid-template-columns: minmax(0, 1fr); } }
+.gx-step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.gx-step .gx-n { font-family: var(--f-mono); font-size: 12px; color: var(--hema); font-weight: 600; letter-spacing: 0.05em; }
+.gx-step h3 { font-size: 19px; }
+.gx-step p { font-size: 15px; color: var(--muted); }
+.gx-vis { min-height: 54px; display: flex; align-items: center; }
+.mols { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 13px; font-weight: 600; }
+.mols span { padding: 6px 10px; border-radius: 7px; border: 1px solid var(--hema); background: var(--hema-soft); }
+.mols span.on { border-color: var(--eosin); background: var(--eosin-soft); color: var(--eosin); }
+.mols i { font-style: normal; color: var(--muted); }
+.xstrip { display: flex; align-items: flex-end; gap: 2px; height: 50px; width: 100%; }
+.xstrip i { flex: 1; background: var(--hema); border-radius: 2px 2px 0 0; opacity: 0.85; }
+.xstrip i.hi { background: var(--eosin); opacity: 1; }
+.js .rv.in .xstrip i { animation: rise 0.6s ease-out both; }
+.bm-wrap { overflow-x: auto; }
+table.bm { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+table.bm th, table.bm td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.bm th { font-weight: 600; color: var(--muted); font-size: 12px; }
+table.bm td:first-child { font-family: var(--f-mono); font-weight: 600; white-space: nowrap; }
+table.bm tr.hard td { background: var(--eosin-soft); }
+.lvl { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.lvl.easy { background: var(--good-soft); color: var(--good); }
+.lvl.mid { background: var(--warn-soft); color: var(--warn); }
+.lvl.hard { background: var(--bad-soft); color: var(--bad); }
+.qcard .why { font-size: 14px; color: var(--muted); }
+.qcard .ans a { color: var(--hema); font-weight: 600; text-decoration: none; }
+.qcard .ans a:hover { text-decoration: underline; }
+
+/* ---------- stat tiles ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.stat { border-top: 2px solid var(--ink); padding-top: 10px; }
+.stat b { display: block; font-family: var(--f-display); font-size: clamp(30px, 3.6vw, 42px); font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 14px; color: var(--muted); }
+@media (max-width: 700px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* class bars */
+.cbars { display: flex; flex-direction: column; gap: 10px; }
+.cbar { display: grid; grid-template-columns: 70px minmax(0, 1fr) 92px; gap: 12px; align-items: center; font-size: 15px; }
+.cbar .track { height: 24px; background: var(--sunk); border-radius: 5px; overflow: hidden; }
+.cbar .fill { height: 100%; background: var(--c); border-radius: 5px; transform-origin: left; }
+.js .rv.in .cbar .fill { animation: grow 0.9s cubic-bezier(.2,.7,.2,1) both; }
+.cbar .v { font-variant-numeric: tabular-nums; text-align: right; }
+.cbar .v small { color: var(--muted); }
+.cbar b { font-weight: 600; }
+.roles { display: flex; flex-wrap: wrap; gap: 8px; }
+.role { font-size: 13px; font-weight: 600; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--rc); color: var(--rc); background: var(--rs); }
+.role.floor { --rc: var(--r-floor); --rs: var(--r-floor-s); } .role.ref { --rc: var(--r-ref); --rs: var(--r-ref-s); }
+.role.abl { --rc: var(--r-abl); --rs: var(--r-abl-s); } .role.cand { --rc: var(--r-cand); --rs: var(--r-cand-s); } .role.neg { --rc: var(--r-neg); --rs: var(--r-neg-s); }
+
+/* ---------- nested CV explorer ---------- */
+.cv-rows { display: flex; flex-direction: column; gap: 10px; }
+.cv-row { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 10px; align-items: start; }
+.cv-lab { font-size: 13px; font-weight: 600; padding-top: 1px; }
+.cv-lab small { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+.cv-dots { display: flex; flex-wrap: wrap; gap: 3px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); border: 2px solid var(--c); transition: background 0.35s, border-color 0.35s, opacity 0.35s, transform 0.35s; }
+.dot.otest { background: transparent; border-style: dashed; opacity: 0.85; }
+.dot.ival { background: color-mix(in srgb, var(--c) 30%, transparent); transform: scale(0.85); }
+.lvl-outer .dot.otest, .lvl-inner .dot.otest { }
+.cv-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); }
+.cv-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.cv-legend .dot { --c: var(--muted); }
+table.tally { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+table.tally th, table.tally td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--line); }
+table.tally th:first-child, table.tally td:first-child { text-align: left; }
+table.tally th { font-weight: 600; color: var(--muted); font-size: 12px; }
+table.tally tr.rare td { color: var(--eosin); font-weight: 600; }
+table.tally tfoot td { font-weight: 600; border-bottom: 0; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-right: 6px; vertical-align: 0; }
+
+/* ---------- wilson ---------- */
+.ci-svg text { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
+.ci-svg .lbl { fill: var(--ink); font-family: var(--f-body); font-size: 13px; font-weight: 600; }
+
+/* ---------- pipeline explorer ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 5px 10px; cursor: pointer; font-family: var(--f-mono); font-size: 13px; font-weight: 600; display: inline-flex; gap: 6px; align-items: center; }
+.chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--rc); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chip.floor { --rc: var(--r-floor); } .chip.ref { --rc: var(--r-ref); } .chip.abl { --rc: var(--r-abl); } .chip.cand { --rc: var(--r-cand); } .chip.neg { --rc: var(--r-neg); }
+.chain { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: var(--f-mono); font-size: 14px; }
+.chain .lk { padding: 6px 11px; border-radius: 7px; background: var(--sunk); border: 1px solid transparent; transition: 0.3s; }
+.chain .lk.on { background: var(--hema-soft); border-color: var(--hema); }
+.chain .lk.ch { background: var(--eosin-soft); border-color: var(--eosin); color: var(--eosin); }
+.chain .lk.skip { opacity: 0.45; }
+.chain .ar { color: var(--muted); }
+@keyframes pop { 0% { transform: scale(0.9); opacity: 0.4; } 100% { transform: none; opacity: 1; } }
+.chain .lk.pop { animation: pop 0.35s ease-out; }
+.stage-frame { border: 1.5px dashed var(--hema); border-radius: 12px; padding: 30px 14px 14px; position: relative; }
+.stage-frame > .fl { position: absolute; top: -11px; left: 16px; background: var(--paper); padding: 0 8px; font-family: var(--f-mono); font-size: 12px; color: var(--hema); letter-spacing: 0.04em; }
+.stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 960px) { .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .stages { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.stage h4 { margin: 0 0 4px; font-size: 13px; font-family: var(--f-mono); font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+.stage h4 .badge { color: var(--eosin); font-size: 11px; }
+.opt { padding: 7px 9px; border-radius: 7px; background: var(--panel); border: 1px solid var(--line); font-size: 13px; line-height: 1.35; transition: 0.3s; opacity: 0.55; }
+.opt b { font-family: var(--f-mono); font-size: 12px; margin-right: 4px; }
+.opt small { display: block; color: var(--muted); font-size: 11.5px; }
+.opt.on { opacity: 1; border-color: var(--hema); background: var(--hema-soft); box-shadow: 0 0 0 1px var(--hema); }
+.stage.changed .opt.on { border-color: var(--eosin); background: var(--eosin-soft); box-shadow: 0 0 0 1px var(--eosin); }
+.stage.none .opt { opacity: 0.35; }
+.pinfo { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: baseline; }
+.pinfo .q { font-family: var(--f-display); font-size: 20px; }
+
+/* ---------- removed list ---------- */
+.rm-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .rm-list { grid-template-columns: minmax(0, 1fr); } }
+.rm { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; padding: 14px 16px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); transition: opacity 0.3s, border-color 0.3s; }
+.rm .k { font-family: var(--f-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 3px; }
+.rm h3 { font-family: var(--f-body); font-size: 16px; margin-bottom: 4px; }
+.rm p { font-size: 14px; color: var(--muted); }
+.rm[data-cat="r1"] .k { color: var(--r-ref); } .rm[data-cat="out"] .k { color: var(--r-neg); } .rm[data-cat="sens"] .k { color: var(--r-abl); } .rm[data-cat="later"] .k { color: var(--r-cand); }
+.rm.dim { opacity: 0.28; }
+.minibar { display: grid; grid-template-columns: 64px minmax(0, 1fr) 54px; gap: 8px; align-items: center; font-size: 12px; margin-top: 6px; }
+.minibar .t { height: 9px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
+.minibar .t i { display: block; height: 100%; background: var(--muted); border-radius: 3px; }
+.minibar .t i.a { background: var(--hema); }
+
+/* ---------- ablation map ---------- */
+.map-wrap { overflow-x: auto; }
+.map svg { width: 100%; min-width: 720px; height: auto; display: block; }
+.map .node rect { stroke-width: 1.5; transition: 0.25s; }
+.map .node { cursor: pointer; }
+.map .node text { font-family: var(--f-mono); font-size: 13px; font-weight: 600; fill: var(--ink); pointer-events: none; }
+.map .node text.nm { font-size: 10.5px; font-weight: 400; fill: var(--muted); }
+.map .node.floor rect { fill: var(--r-floor-s); stroke: var(--r-floor); } .map .node.ref rect { fill: var(--r-ref-s); stroke: var(--r-ref); }
+.map .node.abl rect { fill: var(--r-abl-s); stroke: var(--r-abl); } .map .node.cand rect { fill: var(--r-cand-s); stroke: var(--r-cand); }
+.map .node.neg rect { fill: var(--r-neg-s); stroke: var(--r-neg); }
+.map .node.sel rect { stroke: var(--ink); stroke-width: 3; }
+.map .node.fade { opacity: 0.35; }
+.map .edge line { stroke: var(--muted); stroke-width: 1.5; transition: 0.25s; }
+.map .edge.dash line { stroke-dasharray: 5 4; }
+.map .edge.on line { stroke: var(--eosin); stroke-width: 2.8; }
+.map .edge rect { fill: var(--paper); stroke: var(--line); }
+.map .edge text { font-family: var(--f-mono); font-size: 10.5px; fill: var(--muted); }
+.map .edge.on text { fill: var(--eosin); font-weight: 600; }
+.map .edge.on rect { stroke: var(--eosin); }
+.map .arrowhead path { fill: var(--muted); }
+.map .arrowhead.on path { fill: var(--eosin); }
+.detail h3 { font-family: var(--f-mono); font-size: 20px; }
+.detail dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin: 12px 0 0; font-size: 15px; }
+.detail dt { color: var(--muted); font-size: 13px; padding-top: 2px; }
+.detail dd { margin: 0; min-width: 0; }
+
+/* ---------- grid edge rule ---------- */
+.gbars { display: flex; flex-direction: column; gap: 5px; }
+.gbar { display: grid; grid-template-columns: 40px minmax(0, 1fr) 30px; gap: 8px; align-items: center; font-family: var(--f-mono); font-size: 12px; }
+.gbar .t { height: 14px; position: relative; background: var(--sunk); border-radius: 3px; }
+.gbar .t i { position: absolute; inset: 0 auto 0 0; background: var(--hema); border-radius: 3px; transform-origin: left; }
+.js .rv.in .gbar .t i { animation: grow 0.8s ease-out both; }
+.gbar .t::after { content: ""; position: absolute; top: -3px; bottom: -3px; left: 100%; border-left: 2px dashed var(--eosin); }
+.edge-grid { display: grid; gap: 4px; font-family: var(--f-mono); font-size: 12px; overflow-x: auto; }
+.edge-grid .row { display: grid; grid-template-columns: 76px repeat(var(--cols), minmax(44px, 1fr)); gap: 4px; align-items: center; }
+.edge-grid .hd { color: var(--muted); text-align: center; }
+.edge-grid button.cell { height: 30px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-family: var(--f-mono); font-size: 12px; }
+.edge-grid button.cell[aria-pressed="true"] { background: var(--hema); color: var(--paper); border-color: var(--hema); }
+.edge-grid button.cell.edge[aria-pressed="true"] { background: var(--eosin); border-color: var(--eosin); }
+.edge-grid .new { animation: rise 0.5s both; }
+.edge-grid .hd.new { color: var(--eosin); font-weight: 600; }
+.verdict { padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 15px; }
+.verdict.ok { background: var(--good-soft); color: var(--good); }
+.verdict.ex { background: var(--eosin-soft); color: var(--eosin); }
+
+/* ---------- two rounds stepper ---------- */
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; position: relative; }
+@media (max-width: 860px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.step { text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: 9px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: 0.25s; min-width: 0; }
+.step small { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.step b { font-size: 15px; line-height: 1.3; }
+.step .seal { font-size: 11px; font-family: var(--f-mono); display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.step.done { border-color: var(--hema); }
+.step.cur { background: var(--hema); color: var(--paper); border-color: var(--hema); }
+.step.cur small, .step.cur .seal { color: inherit; opacity: 0.85; }
+.step.freeze.cur { background: var(--ink); border-color: var(--ink); }
+.track { height: 4px; background: var(--sunk); border-radius: 2px; overflow: hidden; }
+.track i { display: block; height: 100%; background: var(--hema); transition: width 0.5s; }
+.do-dont { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 700px) { .do-dont { grid-template-columns: minmax(0, 1fr); } }
+.do-dont h4 { margin: 0 0 8px; font-size: 13px; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.do-dont .ok h4 { color: var(--good); } .do-dont .no h4 { color: var(--bad); }
+.do-dont ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.sealbox { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 13px; padding: 6px 12px; border-radius: 8px; font-weight: 600; transition: 0.3s; }
+.sealbox.locked { background: var(--eosin-soft); color: var(--eosin); }
+.sealbox.open { background: var(--good-soft); color: var(--good); }
+
+/* ---------- charts generic ---------- */
+.chart text { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
+.chart .ink { fill: var(--ink); }
+.chart .lb { font-family: var(--f-body); font-size: 12.5px; fill: var(--ink); font-weight: 500; }
+.chart .grid line { stroke: var(--line); }
+.chart .axis line, .chart .axis path { stroke: var(--muted); }
+
+/* ---------- selection bias ---------- */
+.qcards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .qcards { grid-template-columns: minmax(0, 1fr); } }
+.qcard { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.qcard .qn { font-family: var(--f-mono); font-size: 12px; color: var(--hema); font-weight: 600; letter-spacing: 0.05em; }
+.qcard h3 { font-size: 19px; }
+.qcard .ans { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); font-size: 15px; }
+.qcard.main { border-color: var(--eosin); box-shadow: 0 0 0 1px var(--eosin); }
+.qcard.main .qn { color: var(--eosin); }
+.ms-cands { display: flex; flex-direction: column; gap: 6px; }
+.ms-c { display: grid; grid-template-columns: 150px minmax(0, 1fr) 46px; gap: 10px; align-items: center; font-size: 13px; font-family: var(--f-mono); }
+.ms-c .t { height: 16px; background: var(--sunk); border-radius: 4px; position: relative; overflow: hidden; }
+.ms-c .t i { position: absolute; inset: 0 auto 0 0; background: var(--muted); border-radius: 4px; transition: width 0.6s, background 0.3s; }
+.ms-c.win .t i { background: var(--eosin); }
+.ms-c.win { font-weight: 600; color: var(--eosin); }
+.ms-out { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+.ms-out .arrow { color: var(--eosin); font-weight: 700; }
+
+/* ---------- leakage ---------- */
+.leak { display: grid; grid-template-columns: minmax(0, 1fr) 70px minmax(0, 1fr); gap: 0; align-items: stretch; }
+@media (max-width: 700px) { .leak { grid-template-columns: minmax(0, 1fr); } .leak .mid { display: none; } }
+.leak .col { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--panel); transition: 0.3s; }
+.leak .col h4 { margin: 0 0 4px; font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.leak .item { padding: 7px 10px; border-radius: 7px; background: var(--sunk); font-size: 14px; transition: 0.3s; }
+.leak .item small { display: block; font-size: 12px; color: var(--muted); }
+.leak .mid { display: flex; flex-direction: column; justify-content: space-around; align-items: center; color: var(--hema); font-size: 20px; padding-top: 30px; }
+.leak .mid span { transition: 0.3s; }
+.leak.wrong .col.test { border-color: var(--bad); background: var(--bad-soft); }
+.leak.wrong .col.test .item.peek { background: var(--panel); color: var(--bad); font-weight: 600; }
+.leak.wrong .mid { color: var(--bad); }
+.leak.wrong .mid span { transform: scaleX(-1); }
+.leak .item.nosmote { border: 1px dashed var(--bad); color: var(--bad); background: transparent; }
+.accbars { display: flex; flex-direction: column; gap: 10px; }
+.acc { display: grid; grid-template-columns: 150px minmax(0, 1fr) 56px; gap: 10px; align-items: center; font-size: 14px; }
+.acc .t { height: 22px; background: var(--sunk); border-radius: 5px; position: relative; overflow: hidden; }
+.acc .t i { position: absolute; inset: 0 auto 0 0; border-radius: 5px; transition: width 0.6s cubic-bezier(.2,.7,.2,1); }
+.acc .t::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 2px dotted var(--ink); opacity: 0.5; }
+.acc.w .t i { background: var(--bad); } .acc.r .t i { background: var(--good); }
+.acc .v { font-family: var(--f-mono); font-weight: 600; text-align: right; }
+
+/* ---------- sensitivity ---------- */
+.sens { display: flex; flex-direction: column; gap: 12px; }
+.sens .vis { height: 70px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.hosp { border: 1px solid var(--line); border-radius: 6px; padding: 4px; display: flex; flex-wrap: wrap; gap: 2px; width: 46px; }
+.hosp.test { border: 1.5px dashed var(--eosin); }
+.hosp i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.cbig { display: flex; gap: 4px; align-items: center; font-family: var(--f-mono); font-size: 12px; flex-wrap: wrap; }
+.cbig span { padding: 4px 8px; border-radius: 6px; background: color-mix(in srgb, var(--c) 22%, transparent); border: 1px solid var(--c); }
+.cbig span.m { background: linear-gradient(90deg, color-mix(in srgb, var(--c-ups) 30%, transparent), color-mix(in srgb, var(--c-mfs) 30%, transparent)); border-color: var(--ink); font-weight: 600; }
+
+/* ---------- mock results ---------- */
+.mock-band { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 12px 16px; border: 1.5px dashed var(--warn); border-radius: var(--radius); background: var(--warn-soft); color: var(--warn); font-size: 15px; font-weight: 500; }
+.foldstrip { display: grid; grid-template-columns: 52px repeat(5, minmax(0, 1fr)); gap: 4px; font-family: var(--f-mono); font-size: 12px; }
+.foldstrip .h { color: var(--muted); text-align: center; align-self: center; }
+.foldstrip .c { border-radius: 6px; padding: 7px 4px; text-align: center; font-weight: 600; background: color-mix(in srgb, var(--pc) 22%, var(--panel)); border: 1px solid var(--pc); cursor: default; line-height: 1.2; }
+.foldstrip .c small { display: block; font-weight: 400; font-size: 10.5px; color: var(--muted); }
+.freq { display: flex; gap: 6px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 12px; }
+.freq span { padding: 3px 8px; border-radius: 5px; background: color-mix(in srgb, var(--pc) 22%, var(--panel)); border: 1px solid var(--pc); }
+.pairs { display: flex; flex-wrap: wrap; gap: 5px; }
+.pairs button { border: 1px solid var(--line); background: var(--panel); padding: 4px 8px; border-radius: 6px; font-family: var(--f-mono); font-size: 12px; cursor: pointer; }
+.pairs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.probs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.probs div { border-radius: 8px; padding: 8px 10px; text-align: center; }
+.probs div b { display: block; font-family: var(--f-display); font-size: 26px; font-variant-numeric: tabular-nums; }
+.probs div small { font-size: 12px; }
+.probs .pl { background: var(--bad-soft); color: var(--bad); } .probs .pr { background: var(--sunk); color: var(--muted); } .probs .pg { background: var(--good-soft); color: var(--good); }
+.probs .hit { box-shadow: 0 0 0 2px currentColor; }
+.concl { font-family: var(--f-display); font-size: 19px; }
+.eqrows { display: flex; flex-direction: column; gap: 5px; }
+.eqr { display: grid; grid-template-columns: 46px minmax(0, 1fr) 52px 92px; gap: 10px; align-items: center; font-family: var(--f-mono); font-size: 12.5px; }
+.eqr .t { height: 15px; background: var(--sunk); border-radius: 3px; position: relative; }
+.eqr .t i { position: absolute; inset: 0 auto 0 0; border-radius: 3px; transition: width 0.5s, background 0.3s; }
+.eqr .t::after { content: ""; position: absolute; top: -3px; bottom: -3px; left: 95%; border-left: 2px dashed var(--ink); }
+.eqr.in .t i { background: var(--good); } .eqr.out .t i { background: color-mix(in srgb, var(--bad) 55%, var(--sunk)); }
+.eqr .st { font-weight: 600; } .eqr.in .st { color: var(--good); } .eqr.out .st { color: var(--muted); }
+.eqr.pick { outline: 2px solid var(--eosin); outline-offset: 3px; border-radius: 4px; }
+.eqr.pick .st { color: var(--eosin); }
+.pickline { font-family: var(--f-display); font-size: 21px; }
+.cm-wrap { overflow-x: auto; }
+table.cm { border-collapse: separate; border-spacing: 3px; font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+table.cm th { font-weight: 600; color: var(--muted); font-size: 11.5px; padding: 4px; }
+table.cm td { width: 48px; height: 40px; text-align: center; border-radius: 5px; font-weight: 600; }
+table.cm td.z { color: var(--muted); font-weight: 400; opacity: 0.5; }
+table.cm td.bd { outline: 2px solid var(--eosin); outline-offset: -2px; }
+.rc-row { display: grid; grid-template-columns: 62px minmax(0, 1fr) 168px; gap: 10px; align-items: center; font-size: 13px; font-family: var(--f-mono); }
+.rc-row .t { height: 14px; position: relative; background: var(--sunk); border-radius: 3px; }
+.rc-row .t .ci { position: absolute; top: 3px; bottom: 3px; background: color-mix(in srgb, var(--c) 45%, transparent); border-radius: 2px; }
+.rc-row .t .pt { position: absolute; top: -2px; width: 4px; height: 18px; margin-left: -2px; background: var(--c); border-radius: 2px; }
+.rc-row.rare { color: var(--eosin); font-weight: 600; }
+
+/* ---------- reuse flow ---------- */
+.rflow { display: flex; flex-direction: column; gap: 0; counter-reset: rs; }
+.rstep { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; position: relative; padding-bottom: 14px; transition: opacity 0.3s; }
+.rstep::before { counter-increment: rs; content: counter(rs); width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--hema); color: var(--hema); display: grid; place-items: center; font-family: var(--f-mono); font-weight: 600; font-size: 14px; background: var(--paper); z-index: 1; transition: 0.3s; }
+.rstep::after { content: ""; position: absolute; left: 16.5px; top: 34px; bottom: 0; border-left: 1.5px solid var(--line); }
+.rstep:last-child::after { display: none; }
+.rstep div { padding-top: 5px; }
+.rstep div b { display: block; }
+.rstep div span { font-size: 14px; color: var(--muted); }
+.rflow.playing .rstep { opacity: 0.35; }
+.rflow.playing .rstep.lit { opacity: 1; }
+.rstep.lit::before { background: var(--hema); color: var(--paper); }
+
+/* ---------- decisions ---------- */
+.dec { display: flex; flex-direction: column; gap: 8px; }
+.dec label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); cursor: pointer; font-size: 15px; align-items: start; }
+.dec input { margin-top: 4px; accent-color: var(--good); width: 16px; height: 16px; }
+.dec label:has(input:checked) { border-color: var(--good); background: var(--good-soft); }
+.dec label:has(input:checked) span { text-decoration: line-through; text-decoration-color: var(--good); color: var(--muted); }
+.timeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 700px) { .timeline { grid-template-columns: minmax(0, 1fr); } }
+.tl { border-top: 3px solid var(--hema); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.tl small { font-family: var(--f-mono); font-size: 11px; color: var(--hema); }
+.tl b { font-size: 15px; }
+.tl span { font-size: 13px; color: var(--muted); }
+footer.src { padding-block: 40px 90px; max-width: 1140px; margin-inline: auto; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+<nav class="sidenav" id="sidenav" aria-label="Danh sách slide"></nav>
+<div class="toolbar">
+  <button class="btn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">Sáng / Tối</button>
+  <span class="hint"><kbd>↓</kbd> <kbd>↑</kbd> hoặc <kbd>Space</kbd> để chuyển slide</span>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="slide hero" id="s0" data-title="Mở đầu">
+  <div class="wrap">
+    <div class="meta-row rv">
+      <span class="tag">COS40005 · Project A</span>
+      <span class="tag">TCGA-SARC · RNA-seq</span>
+      <span class="tag draft">Bản nháp để thảo luận · chưa chạy pipeline nào</span>
+    </div>
+    <h1 class="rv d1">Protocol <em>3.0</em></h1>
+    <p class="sub rv d2">So sánh công bằng nhiều pipeline học máy trên cùng một khung nested CV để phân loại 6 subtype sarcoma</p>
+    <div class="rv d3">
+      <div class="panel-title"><span>Cả protocol trong một hình · bấm vào từng bước để đi tới phần đó</span></div>
+      <div class="flow">
+        <a href="#s4"><small>Bước 1</small>Danh mục lựa chọn cho từng stage</a><span class="arr">→</span>
+        <a href="#s6"><small>Bước 2</small>Shortlist 13 pipeline theo vai trò</a><span class="arr">→</span>
+        <a href="#s8"><small>Bước 3</small>Vòng A: chạy thử, chưa xem điểm outer</a><span class="arr">→</span>
+        <a href="#s8" class="freeze"><small>Mốc</small>Đóng băng config, tag <code>p3.0-frozen</code></a><span class="arr">→</span>
+        <a href="#s8"><small>Bước 4</small>Vòng B: chạy chính thức, 3 repeat</a><span class="arr">→</span>
+        <a href="#s10"><small>Bước 5</small>META-SELECT và kiểm định</a><span class="arr">→</span>
+        <a href="#s12"><small>Bước 6</small>Kiểm tra độ vững, chọn pipeline cho app</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROBLEM: GENE EXPRESSION AND SUBTYPES ================= -->
+<section class="slide" id="sProblem" data-title="Bài toán">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">01</span>Bài toán: từ gene đến subtype</div>
+      <h2>Mỗi khối u để lại một "dấu vân tay" trong mức hoạt động của gene</h2>
+    </div>
+    <div class="gx rv d1">
+      <div class="gx-step">
+        <span class="gx-n">1 · GENE ĐƯỢC BẬT</span>
+        <div class="gx-vis"><div class="mols"><span>DNA</span><i>→</i><span class="on">RNA</span><i>→</i><span>Protein</span></div></div>
+        <h3>Cùng bộ gene, khác gene được bật</h3>
+        <p>Mọi tế bào có cùng một bộ gene, nhưng mỗi loại tế bào chỉ bật một số gene. Gene được bật sẽ được chép thành RNA, rồi RNA được dùng để tổng hợp protein.</p>
+      </div>
+      <div class="gx-step">
+        <span class="gx-n">2 · RNA-SEQ ĐẾM RNA</span>
+        <div class="gx-vis"><div class="xstrip" aria-hidden="true">
+          <i style="height:22%"></i><i style="height:48%"></i><i style="height:12%"></i><i class="hi" style="height:92%"></i><i style="height:35%"></i><i style="height:8%"></i><i style="height:60%"></i><i style="height:28%"></i><i style="height:15%"></i><i style="height:42%"></i><i class="hi" style="height:80%"></i><i style="height:10%"></i><i style="height:33%"></i><i style="height:55%"></i><i style="height:18%"></i><i style="height:6%"></i><i style="height:38%"></i><i style="height:25%"></i><i class="hi" style="height:74%"></i><i style="height:14%"></i><i style="height:46%"></i><i style="height:20%"></i><i style="height:9%"></i><i style="height:52%"></i><i style="height:30%"></i><i style="height:16%"></i><i style="height:40%"></i><i style="height:11%"></i>
+        </div></div>
+        <h3>Một khối u là một dãy 20.531 con số</h3>
+        <p>Gene càng hoạt động mạnh thì càng có nhiều RNA. Đếm RNA cho ta <b>mức biểu hiện</b> của từng gene trong mẫu u.</p>
+      </div>
+      <div class="gx-step">
+        <span class="gx-n">3 · BÀI TOÁN CỦA NHÓM</span>
+        <div class="gx-vis"><div class="cbig">
+          <span style="--c:var(--c-lms)">LMS</span><span style="--c:var(--c-ddlps)">DDLPS</span><span style="--c:var(--c-ups)">UPS</span><span style="--c:var(--c-mfs)">MFS</span><span style="--c:var(--c-ss)">SS</span><span style="--c:var(--c-mpnst)">MPNST</span></div></div>
+        <h3>Đọc dãy số, đoán subtype</h3>
+        <p>Từ mức biểu hiện gene của một bệnh nhân, mô hình đoán khối u thuộc subtype nào trong 6 subtype sarcoma mô mềm của TCGA-SARC.</p>
+      </div>
+    </div>
+    <div class="split">
+      <div class="panel rv d2">
+        <div class="panel-title"><span>Vì sao bài toán khó</span></div>
+        <ul class="pts">
+          <li>Sarcoma mô mềm hiếm (khoảng 1% ung thư ở người lớn) và có hơn 50 subtype. Phân biệt chúng dưới kính hiển vi khó, mà subtype lại ảnh hưởng đến cách điều trị.</li>
+          <li>Ngay cả nhãn cũng không chắc chắn: chỉ 206/254 ca đã qua review bệnh học độc lập (Cell 2017).</li>
+          <li class="hot">Có 254 bệnh nhân nhưng tới 20.531 gene. Khi số đặc trưng gấp khoảng 80 lần số mẫu, mô hình rất dễ "học thuộc" nhiễu.</li>
+          <li>Lệch lớp mạnh: LMS có 104 ca, MPNST chỉ có 9 ca.</li>
+        </ul>
+      </div>
+      <div class="panel rv d3">
+        <div class="panel-title"><span>Biomarker: subtype nào có dấu hiệu rõ</span><span class="tag">chỉ để diễn giải</span></div>
+        <div class="bm-wrap"><table class="bm">
+          <thead><tr><th>Subtype</th><th>Dấu hiệu sinh học</th><th>Dễ nhận?</th></tr></thead>
+          <tbody>
+            <tr><td><i class="swatch" style="--c:var(--c-lms)"></i>LMS</td><td>Đặc điểm cơ trơn (desmin, SMA)</td><td><span class="lvl easy">Rõ</span></td></tr>
+            <tr><td><i class="swatch" style="--c:var(--c-ddlps)"></i>DDLPS</td><td>Khuếch đại MDM2/CDK4</td><td><span class="lvl easy">Rõ</span></td></tr>
+            <tr><td><i class="swatch" style="--c:var(--c-ss)"></i>SS</td><td>Gene dung hợp SS18–SSX</td><td><span class="lvl easy">Rõ</span></td></tr>
+            <tr><td><i class="swatch" style="--c:var(--c-mpnst)"></i>MPNST</td><td>Mất NF1, mất H3K27me3</td><td><span class="lvl mid">Trung bình</span></td></tr>
+            <tr class="hard"><td><i class="swatch" style="--c:var(--c-ups)"></i>UPS</td><td>Không có marker riêng, chẩn đoán bằng cách loại trừ</td><td><span class="lvl hard">Khó</span></td></tr>
+            <tr class="hard"><td><i class="swatch" style="--c:var(--c-mfs)"></i>MFS</td><td>Không có marker riêng, giống UPS nhưng có chất nền nhầy</td><td><span class="lvl hard">Khó</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="callout blue small rv">Kỳ vọng mô hình nhầm nhiều nhất ở ranh giới <b>UPS ↔ MFS</b>, nên protocol có riêng phân tích độ nhạy S-5CLASS (slide 14). Bảng biomarker chỉ dùng để diễn giải kết quả, không đưa vào mô hình: panel marker cố định đã bị loại vì sẽ cho điểm cao hơn thực tế (slide 07).</div>
+  </div>
+</section>
+
+<!-- ================= THREE QUESTIONS ================= -->
+<section class="slide" id="sQuestions" data-title="Ba câu hỏi">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">02</span>Ba câu hỏi dự án trả lời</div>
+      <h2>Ngoài việc tìm mô hình tốt nhất, dự án phải trả lời ba câu hỏi</h2>
+      <p class="lead">Mỗi câu hỏi chặn một kiểu khiến kết quả trông đẹp hơn thực tế.</p>
+    </div>
+    <div class="qcards rv d1">
+      <div class="qcard main"><span class="qn">CÂU 1 · CON SỐ CHÍNH</span><h3>Con số báo cáo có trung thực không?</h3>
+        <p class="why">Thử 13 pipeline rồi báo điểm của pipeline cao nhất thì con số bị thổi phồng, vì pipeline đứng đầu thường là pipeline may mắn nhất.</p>
+        <p class="small"><b>META-SELECT</b> chấm điểm cả quy trình chọn: chọn pipeline bằng inner CV, chấm điểm bằng outer test mà bước chọn chưa từng thấy.</p>
+        <div class="ans"><a href="#s10">→ slide 12</a></div></div>
+      <div class="qcard"><span class="qn">CÂU 2</span><h3>Mỗi thay đổi có thật sự giúp, hay chỉ là may mắn?</h3>
+        <p class="why">Chênh vài phần nghìn macro-F1 có thể chỉ do cách chia dữ liệu, không phải do stage vừa đổi.</p>
+        <p class="small">11 cặp <b>ablation</b> đăng ký trước, mỗi cặp đổi đúng một stage. Kiểm định bằng Bayesian correlated t-test với ROPE ±0,01. "Tương đương thực tế" cũng là một kết quả hợp lệ.</p>
+        <div class="ans"><a href="#s10">→ slide 12</a> · <a href="#s13">slide 15</a></div></div>
+      <div class="qcard"><span class="qn">CÂU 3</span><h3>Pipeline nào mang ra dùng thực tế?</h3>
+        <p class="why">Pipeline điểm cao nhất có thể phức tạp và chậm hơn nhiều mà chỉ hơn vài phần nghìn.</p>
+        <p class="small">Chọn pipeline <b>đơn giản nhất</b> trong nhóm không kém rõ ràng so với pipeline đứng đầu. Hiệu năng vẫn báo bằng con số của câu 1.</p>
+        <div class="ans"><a href="#s13">→ slide 15</a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1. CONTEXT ================= -->
+<section class="slide" id="s1" data-title="Bối cảnh và mục tiêu">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">03</span>Bối cảnh và mục tiêu</div>
+      <h2>Sáu subtype, 254 bệnh nhân, lớp nhỏ nhất chỉ có 9 ca</h2>
+    </div>
+    <div class="stats rv d1">
+      <div class="stat"><b>254</b><span>bệnh nhân TCGA-SARC</span></div>
+      <div class="stat"><b>20.531</b><span>gene, đã chuẩn hoá RSEM</span></div>
+      <div class="stat"><b>6</b><span>subtype cần phân loại</span></div>
+      <div class="stat"><b>0,772</b><span>macro-F1 tốt nhất Round 1 (SVM linear + ANOVA k=150)</span></div>
+    </div>
+    <div class="split">
+      <div class="panel rv d2">
+        <div class="panel-title"><span>Lệch lớp: số ca mỗi subtype</span><span>% trên 254</span></div>
+        <div class="cbars" id="classBars"></div>
+      </div>
+      <div class="rv d3" style="display:flex;flex-direction:column;gap:18px">
+        <ul class="pts">
+          <li>Round 1 (protocol 2.0) chỉ thử SVM. Cấu hình tốt nhất là SVM linear + ANOVA k=150, macro-F1 0,772.</li>
+          <li class="hot">Mục tiêu 3.0: tìm pipeline tốt nhất, <b>và</b> xây một quy trình dùng lại được cho các bài toán RNA-seq tương tự: ít mẫu, rất nhiều gene, nhiều lớp, lớp lệch nhau.</li>
+          <li>Không thử mọi tổ hợp (full factorial). Mỗi pipeline được đưa vào vì một vai trò cụ thể:</li>
+        </ul>
+        <div class="roles">
+          <span class="role floor">Sàn</span><span class="role ref">Tham chiếu</span><span class="role abl">Ablation</span><span class="role cand">Ứng viên</span><span class="role neg">Đối chứng âm</span>
+        </div>
+        <div class="callout small"><b>Trạng thái:</b> bản nháp để nhóm thảo luận. Chưa có pipeline nào được chạy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. KEPT + NESTED CV ================= -->
+<section class="slide" id="s2" data-title="Giữ nguyên từ 2.0">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">04</span>Những gì giữ nguyên từ protocol 2.0</div>
+      <h2>Giữ nguyên nested CV và đúng cách chia dữ liệu của Round 1</h2>
+    </div>
+    <div class="split">
+      <div class="panel rv d1">
+        <div class="panel-title"><span>Mỗi chấm là một bệnh nhân · chia phân tầng theo lớp</span><span class="tag">minh hoạ, không phải outer.csv thật</span></div>
+        <div class="ctrl-row" style="margin-bottom:14px">
+          <div><label>Tầng</label><br><div class="seg" id="cvLevel" role="group" aria-label="Tầng hiển thị">
+            <button type="button" data-v="all">Toàn cohort</button><button type="button" data-v="outer">Outer</button><button type="button" data-v="inner" aria-pressed="true">Inner</button></div></div>
+          <div><label>Repeat</label><br><div class="seg" id="cvRep" role="group" aria-label="Repeat"></div></div>
+          <div><label>Outer fold</label><br><div class="seg" id="cvFold" role="group" aria-label="Outer fold"></div></div>
+          <div><label>Inner fold</label><br><div class="seg" id="cvInner" role="group" aria-label="Inner fold"></div></div>
+          <button class="btn" type="button" id="cvPlay">▶ Chạy qua 15 lần chia</button>
+        </div>
+        <div class="cv-rows" id="cvRows"></div>
+        <div class="cv-legend" style="margin-top:14px">
+          <span><i class="dot"></i>Inner train: huấn luyện pipeline</span>
+          <span><i class="dot ival"></i>Inner val: chấm điểm ứng viên grid</span>
+          <span><i class="dot otest"></i>Outer test: chỉ dùng để chấm điểm cuối</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="panel rv d2">
+          <div class="panel-title"><span>Số ca mỗi tầng ở lần chia đang chọn</span></div>
+          <table class="tally" id="cvTally"></table>
+          <p class="small muted" style="margin-top:10px">Mỗi tập inner val chỉ có 1–2 ca MPNST. Vì thế grid phải nhỏ, SMOTE chỉ dùng được <code>k_neighbors</code> ≤ 4, và recall của MPNST luôn phải kèm khoảng tin cậy.</p>
+        </div>
+        <ul class="pts rv d3">
+          <li>Cùng cohort, cùng biến đổi <code>log2(x+1)</code> trên RSEM normalized.</li>
+          <li>Outer CV 5 fold × 3 repeat (seed 42), inner CV 4 fold, dùng lại đúng <code>outer.csv</code> và <code>inner.csv</code>.</li>
+          <li>Vì dùng chung cách chia, mọi pipeline mới so được theo từng cặp với 24 cấu hình của Round 1.</li>
+          <li>Metric chính vẫn là macro-F1, tính trên 254 dự đoán gộp của mỗi repeat. Không dùng micro-F1 vì nó bị LMS, lớp đông nhất, chi phối.</li>
+          <li>Vẫn giữ các bước kiểm tra tính toàn vẹn: checksum dữ liệu và file split, chỉ chạy khi git tree sạch, và mọi warning đều phải được xem lại.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. METRICS ================= -->
+<section class="slide" id="s3" data-title="Metric và lưu kết quả">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">05</span>Thay đổi về metric và cách lưu kết quả</div>
+      <h2>Thêm metric để nhìn rõ lớp hiếm, và lưu đủ dữ liệu để kiểm định</h2>
+    </div>
+    <div class="split">
+      <div class="panel rv d1">
+        <div class="panel-title"><span>Vì sao cần Wilson CI cho recall lớp hiếm</span></div>
+        <div class="ctrl-row" style="margin-bottom:10px">
+          <div class="seg" id="wClass" role="group" aria-label="Chọn lớp">
+            <button type="button" data-n="9" aria-pressed="true">MPNST · 9 ca</button><button type="button" data-n="10">SS · 10 ca</button><button type="button" data-n="25">MFS · 25 ca</button><button type="button" data-n="104">LMS · 104 ca</button>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label for="wK">Số ca đoán đúng</label>
+          <input type="range" id="wK" min="0" max="9" value="6">
+          <span class="mono num" id="wKv">6/9</span>
+        </div>
+        <svg class="ci-svg" id="wSvg" viewBox="0 0 640 150" role="img" aria-label="So sánh khoảng tin cậy Wilson và Wald"></svg>
+        <p class="small muted" id="wNote"></p>
+      </div>
+      <ul class="pts rv d2">
+        <li><b>Multiclass MCC</b> làm metric phụ.</li>
+        <li class="hot"><b>Recall theo lớp kèm khoảng tin cậy Wilson</b>, nhất là cho MFS và MPNST. Khi số ca ít, khoảng Wald thông thường có thể tràn ra ngoài [0, 1].</li>
+        <li><b>Lưu macro-F1 theo từng outer fold</b> (15 giá trị) để chạy kiểm định thống kê. Điểm chính vẫn tính trên dự đoán gộp.</li>
+        <li>Scorer đặt <code>zero_division=0</code>. Fold validation chỉ có 1–2 ca MPNST nên mô hình có thể không đoán lớp này lần nào. Nếu không đặt, quy định "mọi warning là lỗi" sẽ làm dừng cả lần chạy.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. PIPELINE STAGES ================= -->
+<section class="slide" id="s4" data-title="Pipeline 5 stage">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">06</span>Pipeline 5 stage và danh mục lựa chọn</div>
+      <h2>Mỗi pipeline là một tổ hợp: chọn một phương án ở mỗi stage</h2>
+      <p class="lead">Bấm một pipeline để xem nó chọn gì ở từng stage. Stage tô hồng là chỗ nó khác với pipeline được dùng để so sánh.</p>
+    </div>
+    <div class="panel rv d1" style="display:flex;flex-direction:column;gap:18px">
+      <div class="chips" id="pChips" role="group" aria-label="Chọn pipeline"></div>
+      <div class="chain" id="pChain" aria-live="polite"></div>
+      <div class="stage-frame">
+        <span class="fl">Học lại từ đầu trong MỖI training fold</span>
+        <div class="stages" id="pStages"></div>
+      </div>
+      <div class="pinfo" id="pInfo"></div>
+    </div>
+    <ul class="pts rv d2 grid2" style="display:grid">
+      <li>Thứ tự: <code>log2</code> → S1 lọc gene → S2 scaler → S3 chọn đặc trưng → S4 xử lý imbalance → S5 classifier. Mọi bước, trừ <code>log2</code>, đều phải học từ dữ liệu train.</li>
+      <li>Ngưỡng lọc tính bằng số mẫu (≥ 5 mẫu) chứ không theo phần trăm, để không vô tình bỏ những gene chỉ bật ở lớp hiếm như MPNST hay SS (9/254 ≈ 3,5%).</li>
+      <li>S3 có hai hướng: không chọn gene mà để regularization tự giảm trọng số của gene vô ích, hoặc giữ k gene có điểm ANOVA cao nhất.</li>
+      <li>Mỗi lựa chọn đều có trích dẫn nguồn trong tài liệu research R1–R3.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 5. REMOVED ================= -->
+<section class="slide" id="s5" data-title="Bị loại hoặc hoãn">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">07</span>Những gì bị loại hoặc hoãn</div>
+      <h2>Những gì không đưa vào 3.0, và lý do</h2>
+    </div>
+    <div class="ctrl-row rv d1">
+      <div class="seg" id="rmFilter" role="group" aria-label="Lọc theo nhóm">
+        <button type="button" data-v="all" aria-pressed="true">Tất cả</button><button type="button" data-v="r1">Đã có ở Round 1</button><button type="button" data-v="out">Loại</button><button type="button" data-v="sens">Chỉ ở độ nhạy</button><button type="button" data-v="later">Hoãn</button>
+      </div>
+    </div>
+    <div class="rm-list rv d2" id="rmList">
+      <div class="rm" data-cat="r1"><span class="k">Round 1</span><div><h3>PCA thay cho ANOVA</h3><p>Round 1 đã cho thấy PCA kém hơn ANOVA. Thành phần chính đầu tiên chủ yếu phản ánh LMS, lớp đông nhất.</p>
+        <div class="minibar"><span>PCA</span><span class="t"><i style="width:71%"></i></span><span class="num">0,70–0,72</span></div>
+        <div class="minibar"><span>ANOVA</span><span class="t"><i class="a" style="width:77%"></i></span><span class="num">0,77</span></div></div></div>
+      <div class="rm" data-cat="r1"><span class="k">Round 1</span><div><h3>SVM RBF, MinMaxScaler</h3><p>RBF cho điểm ngang linear nhưng chậm hơn khoảng 2,2 lần. MinMaxScaler không có nguồn nào ủng hộ.</p>
+        <div class="minibar"><span>linear</span><span class="t"><i class="a" style="width:31%"></i></span><span class="num">1×</span></div>
+        <div class="minibar"><span>RBF</span><span class="t"><i style="width:68%"></i></span><span class="num">2,2×</span></div></div></div>
+      <div class="rm" data-cat="out"><span class="k">Loại</span><div><h3>Panel marker cố định</h3><p>Các marker như MDM2, CDK4, HOXA11 được tìm ra từ chính dữ liệu TCGA-SARC. Dùng lại chúng trên cùng dữ liệu sẽ cho điểm cao hơn thực tế.</p></div></div>
+      <div class="rm" data-cat="out"><span class="k">Loại</span><div><h3>mRMR, SVM-RFE, Boruta, autoencoder</h3><p>Không hơn được các filter đơn giản (Haury 2011), lại tốn tài nguyên và dễ overfit.</p></div></div>
+      <div class="rm" data-cat="out"><span class="k">Loại</span><div><h3>LightGBM, deep learning</h3><p>Chưa có bằng chứng tốt trên loại dữ liệu này. Với chỉ 254 mẫu, mạng nơ-ron thường kém hơn các mô hình đơn giản.</p></div></div>
+      <div class="rm" data-cat="out"><span class="k">Loại</span><div><h3>Random undersampling</h3><p>Phải hạ LMS từ khoảng 83 xuống khoảng 7 mẫu train, tức là bỏ hơn 90% dữ liệu LMS.</p>
+        <div class="minibar"><span>trước</span><span class="t"><i class="a" style="width:100%"></i></span><span class="num">~83</span></div>
+        <div class="minibar"><span>sau</span><span class="t"><i style="width:8.5%"></i></span><span class="num">~7</span></div></div></div>
+      <div class="rm" data-cat="sens"><span class="k">Độ nhạy</span><div><h3>ComBat theo nơi lấy mẫu</h3><p>Chỉ dùng trong phân tích độ nhạy, vì đưa nhãn vào làm covariate sẽ tạo ra khác biệt giả giữa các lớp (Nygaard 2016).</p></div></div>
+      <div class="rm" data-cat="later"><span class="k">Hoãn</span><div><h3>GSVA/ssGSEA, mô hình phân cấp 2 tầng, TabPFN</h3><p>Có cơ sở, nhưng cần thêm hạ tầng nên để sang vòng sau.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. SHORTLIST / ABLATION MAP ================= -->
+<section class="slide" id="s6" data-title="Shortlist 13 pipeline">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">08</span>Shortlist 13 pipeline theo vai trò</div>
+      <h2>Mỗi mũi tên đổi một stage và trả lời một câu hỏi</h2>
+      <p class="lead">Đọc từ P02 (Round 1) sang phải. Bấm vào một pipeline để xem câu hỏi mà nó trả lời.</p>
+    </div>
+    <div class="panel map rv d1">
+        <div class="map-wrap"><svg id="mapSvg" viewBox="0 0 1000 480" role="img" aria-label="Bản đồ ablation 13 pipeline"></svg></div>
+        <div class="roles" style="margin-top:10px">
+          <span class="role floor">Sàn</span><span class="role ref">Tham chiếu / baseline</span><span class="role abl">Ablation</span><span class="role cand">Ứng viên</span><span class="role neg">Đối chứng âm</span>
+          <span class="small muted">Nét liền: đổi một stage · nét đứt: so với họ mô hình khác</span>
+        </div>
+    </div>
+    <div class="grid2">
+      <div class="panel detail rv d2" id="mapDetail" aria-live="polite"></div>
+      <ul class="pts rv d3">
+        <li>P01 Dummy là sàn (macro-F1 ≈ 0,10–0,17).</li>
+        <li>P02 chạy lại cấu hình tốt nhất của Round 1. Engine mới phải ra đúng 0,772, nếu không thì code có lỗi.</li>
+        <li>P03–P05 và P08 là ablation: mỗi pipeline chỉ đổi <b>một</b> stage so với pipeline đối chứng.</li>
+        <li class="hot">P07 LR elastic-net + class weight là ứng viên chính. P06 và P09 cũng là ứng viên.</li>
+        <li>P10 (SMOTE) là đối chứng âm, tức là pipeline được kỳ vọng không hơn class weight. P11 PAM, P12 RF, P13 kNN là baseline thuộc họ mô hình khác.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. HYPERPARAMETER ================= -->
+<section class="slide" id="s7" data-title="Hyperparameter">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">09</span>Hyperparameter</div>
+      <h2>Grid nhỏ có chủ ý: tối đa 20 ứng viên mỗi pipeline</h2>
+    </div>
+    <div class="grid2">
+      <div class="panel rv d1">
+        <div class="panel-title"><span>Số ứng viên grid G của từng pipeline</span><span>vạch hồng: G = 20</span></div>
+        <div class="gbars" id="gBars"></div>
+        <ul class="pts small" style="margin-top:16px">
+          <li>Mỗi tập inner val chỉ có 1–2 ca MPNST. Grid càng lớn thì càng dễ chọn trúng một ứng viên chỉ đơn giản là gặp may (Cawley &amp; Talbot 2010).</li>
+          <li>Khai báo grid từ regularization mạnh tới yếu. Khi hoà điểm, chọn ứng viên đứng trước, tức là mô hình đơn giản hơn.</li>
+          <li>Thêm thư viện <code>imbalanced-learn</code> cho SMOTE, ghim phiên bản tương thích với <code>scikit-learn==1.7.2</code>.</li>
+        </ul>
+      </div>
+      <div class="panel rv d2" style="display:flex;flex-direction:column;gap:14px">
+        <div class="panel-title"><span>Quy tắc biên grid · thử bấm chọn C ở mỗi fold</span></div>
+        <p class="small">Mỗi hàng là một outer fold của vòng A. Ô tô màu là giá trị <code>C</code> mà inner CV chọn. Nếu tham số chạm <b>cùng một biên</b> ở ≥ 3/5 fold, grid được mở rộng một bước theo hướng đó.</p>
+        <div class="edge-grid" id="edgeGrid"></div>
+        <div class="verdict" id="edgeVerdict"></div>
+        <p class="small muted">Chỉ mở rộng một lần, chỉ ở vòng A, và chỉ dựa vào giá trị mà inner CV chọn, không nhìn điểm outer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. TWO ROUNDS ================= -->
+<section class="slide" id="s8" data-title="Quy trình 2 vòng">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">10</span>Quy trình 2 vòng</div>
+      <h2>Chạy thử khi chưa xem điểm outer, khoá config, rồi mới chạy chính thức</h2>
+    </div>
+    <div class="panel rv d1" style="display:flex;flex-direction:column;gap:16px">
+      <div class="steps" id="steps"></div>
+      <div class="track"><i id="stepTrack"></i></div>
+      <div class="ctrl-row" style="justify-content:space-between">
+        <span class="sealbox locked" id="sealBox"></span>
+        <div class="ctrl-row"><button class="btn" type="button" id="stepPrev">← Bước trước</button><button class="btn primary" type="button" id="stepNext">Bước tiếp →</button></div>
+      </div>
+      <div id="stepDetail" aria-live="polite"></div>
+    </div>
+    <div class="callout rv d2"><b>Vì sao vòng A không được xem điểm outer, dù kết quả vòng A sẽ bị bỏ?</b> Vòng B dùng lại đúng file <code>outer.csv</code>. Xem điểm outer ở vòng A rồi chỉnh config thì cũng là đang chỉnh theo đề thi của vòng B.</div>
+  </div>
+</section>
+
+<!-- ================= 9. COMPUTE ================= -->
+<section class="slide" id="s9" data-title="Chi phí tính toán">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">11</span>Chi phí tính toán</div>
+      <h2>9.220 lần fit, khoảng một nửa so với protocol 2.0</h2>
+    </div>
+    <div class="split">
+      <div class="panel rv d1">
+        <div class="panel-title"><span id="cmpTitle">Mỗi repeat, theo pipeline</span>
+          <div class="seg" id="cmpMode" role="group" aria-label="Chọn đại lượng"><button type="button" data-v="fit" aria-pressed="true">Số fit</button><button type="button" data-v="min">Phút CPU (ước tính)</button></div></div>
+        <svg class="chart" id="cmpSvg" viewBox="0 0 640 400" role="img" aria-label="Biểu đồ số fit và thời gian theo pipeline"></svg>
+        <p class="small muted">Cách tính: mỗi outer fold cần 4·G lần fit ở inner và 1 lần refit, nên mỗi repeat có 5·(4G + 1) lần fit. Đối chiếu với 2.0: SVM linear với G = 5 cho 15 × 21 = 315 lần.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="panel rv d2">
+          <div class="panel-title"><span>Tổng số fit</span></div>
+          <svg class="chart" id="totSvg" viewBox="0 0 420 150" role="img" aria-label="So sánh tổng số fit"></svg>
+        </div>
+        <div class="panel rv d3">
+          <div class="panel-title"><span>Thời gian mỗi repeat khi chạy song song</span></div>
+          <div class="ctrl-row"><label for="cores">Số lõi CPU</label><input type="range" id="cores" min="1" max="8" value="4"><span class="mono num" id="coresV">4 lõi</span></div>
+          <p style="font-family:var(--f-display);font-size:24px;margin-top:8px" id="coresOut"></p>
+          <p class="small muted">Ước tính tổng cộng khoảng 4,7 giờ CPU trên một lõi (dao động 4–14 giờ). Số đo thật duy nhất là SVM của Round 1, khoảng 0,44 giây mỗi lần fit. Các số còn lại là giả định và sẽ được chỉnh lại sau smoke run. P07 (solver <code>saga</code>) dự kiến chậm nhất.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10. SELECTION BIAS ================= -->
+<section class="slide" id="s10" data-title="Chọn pipeline thắng">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">12</span>Chọn pipeline thắng mà không bị selection bias</div>
+      <h2>Dùng một đề thi vừa để chọn vừa để chấm thì điểm sẽ cao ảo</h2>
+    </div>
+    <div class="split">
+      <div class="panel rv d1">
+        <div class="panel-title"><span>Mô phỏng: 12 pipeline thật ra ngang nhau (đều 0,780)</span><span class="tag">mô phỏng ngẫu nhiên</span></div>
+        <svg class="chart" id="sbStrip" viewBox="0 0 640 120" role="img" aria-label="Điểm quan sát của 12 pipeline"></svg>
+        <svg class="chart" id="sbHist" viewBox="0 0 640 160" role="img" aria-label="Phân bố độ thổi phồng điểm của pipeline đứng đầu"></svg>
+        <div class="ctrl-row" style="margin-top:8px">
+          <button class="btn primary" type="button" id="sb1">Chạy 1 lần</button>
+          <button class="btn" type="button" id="sb500">Chạy 500 lần</button>
+          <button class="btn" type="button" id="sb0">Đặt lại</button>
+          <span class="mono small" id="sbStat"></span>
+        </div>
+      </div>
+      <div class="rv d2" style="display:flex;flex-direction:column;gap:14px">
+        <p>Mỗi cách chia dữ liệu cho mỗi pipeline một điểm hơi khác. Pipeline đứng đầu thường là pipeline <b>gặp may nhiều nhất</b>, nên điểm của nó thường cao hơn giá trị thật.</p>
+        <p class="muted">Vì vậy protocol tách thành ba câu hỏi (xem slide 02), mỗi câu có cách trả lời riêng.</p>
+        <div class="callout blue small">Kiểm định cặp dùng <b>Bayesian correlated t-test</b> với ROPE ±0,01 (chênh dưới 0,01 macro-F1 coi như bằng nhau). Phương sai được nhân với 1/15 + n_test/n_train ≈ 0,317 vì các fold dùng chung dữ liệu train (tương đương hiệu chỉnh Nadeau &amp; Bengio). Thử trực tiếp ở slide 15.</div>
+      </div>
+    </div>
+    <div class="qcards rv d2">
+      <div class="qcard main"><span class="qn">CÂU 1 · CON SỐ CHÍNH</span><h3>Quy trình của nhóm đạt bao nhiêu?</h3>
+        <p class="small">META-SELECT: trong mỗi outer fold, chọn pipeline bằng <b>điểm inner</b>, rồi lấy dự đoán outer của nó. Không cần fit thêm, vì mọi pipeline dùng chung inner split và đã lưu điểm của mọi ứng viên.</p>
+        <div class="ans">→ con số báo cáo chính của dự án</div></div>
+      <div class="qcard"><span class="qn">CÂU 2</span><h3>Cải thiện ở mỗi stage có thật không?</h3>
+        <p class="small">Chỉ kiểm định 11 cặp ablation đã đăng ký trước. Kết quả là ba xác suất: kém hơn, tương đương thực tế, tốt hơn.</p>
+        <div class="ans">→ "không khác biệt" là kết quả hợp lệ</div></div>
+      <div class="qcard"><span class="qn">CÂU 3</span><h3>Mang pipeline nào sang app?</h3>
+        <p class="small">Chọn pipeline <b>đơn giản nhất</b> trong nhóm không phân biệt được với pipeline đứng đầu. Hiệu năng vẫn báo bằng con số META-SELECT.</p>
+        <div class="ans">→ vẫn báo cáo mọi pipeline, không chỉ pipeline thắng</div></div>
+    </div>
+    <div class="panel rv d3">
+      <div class="panel-title"><span>META-SELECT trong một outer fold</span><span class="tag">số minh hoạ</span></div>
+      <div class="grid2" style="align-items:center">
+        <div class="ms-cands" id="msCands"></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="ms-out" id="msOut"></div>
+          <button class="btn" type="button" id="msPlay" style="align-self:flex-start">▶ Chạy lại bước chọn</button>
+          <p class="small muted">Ở fold khác, pipeline thắng có thể là P06 hay P09. Chuyện này bình thường. Số lần mỗi pipeline được chọn cũng sẽ được báo cáo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11. LEAKAGE ================= -->
+<section class="slide" id="s11" data-title="Chống data leakage">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">13</span>Chống data leakage</div>
+      <h2>Học trên training fold, chỉ áp dụng lên validation và test</h2>
+    </div>
+    <div class="ctrl-row rv d1">
+      <div class="seg" id="leakMode" role="group" aria-label="Chế độ">
+        <button type="button" data-v="right" aria-pressed="true">Đúng: fit trong fold</button><button type="button" data-v="wrong">Sai: tính trên cả 254 ca trước khi chia</button>
+      </div>
+    </div>
+    <div class="leak rv d1" id="leak">
+      <div class="col train"><h4>Training fold · fit</h4>
+        <div class="item">Lọc F1/F2<small>học: gene nào qua ngưỡng, top MAD</small></div>
+        <div class="item">Scaler<small>học: mean, SD từng gene</small></div>
+        <div class="item">ANOVA<small>học: k gene nào</small></div>
+        <div class="item">SMOTE<small>sinh mẫu giả cho lớp nhỏ, chỉ lúc fit</small></div>
+        <div class="item">Classifier<small>học: trọng số, prior π, centroid</small></div>
+      </div>
+      <div class="mid" aria-hidden="true"><span>→</span><span>→</span><span>→</span><span>·</span><span>→</span></div>
+      <div class="col test"><h4 id="leakTestH">Validation / test fold · chỉ transform</h4>
+        <div class="item peek" data-r="Giữ đúng danh sách gene đã học" data-w="MAD đã tính cả trên ca test">Giữ đúng danh sách gene đã học</div>
+        <div class="item" data-r="Áp mean, SD đã học" data-w="Áp mean, SD đã học">Áp mean, SD đã học</div>
+        <div class="item peek" data-r="Giữ đúng k gene đã chọn" data-w="ANOVA đã thấy nhãn của ca test">Giữ đúng k gene đã chọn</div>
+        <div class="item nosmote" data-r="Không SMOTE trên test" data-w="SMOTE đã nội suy từ ca test">Không SMOTE trên test</div>
+        <div class="item" data-r="Dự đoán" data-w="Dự đoán: điểm cao ảo">Dự đoán</div>
+      </div>
+    </div>
+    <div class="split">
+      <div class="panel rv d2">
+        <div class="panel-title"><span>Thử nghiệm: dữ liệu nhiễu ngẫu nhiên, nhãn ngẫu nhiên</span><span class="tag">chạy trong trình duyệt</span></div>
+        <p class="small">60 mẫu, 2.000 "gene" nhiễu, 2 lớp gán ngẫu nhiên. Dữ liệu không có tín hiệu thật, nên accuracy trung thực phải quanh 50%. Chọn top-20 gene theo t-test rồi phân loại bằng nearest centroid, 5-fold CV.</p>
+        <div class="accbars" style="margin-top:14px">
+          <div class="acc w"><span>Chọn gene trên cả 60 mẫu</span><span class="t"><i id="accW" style="width:0"></i></span><span class="v" id="accWv">–</span></div>
+          <div class="acc r"><span>Chọn gene trong từng fold</span><span class="t"><i id="accR" style="width:0"></i></span><span class="v" id="accRv">–</span></div>
+        </div>
+        <div class="ctrl-row" style="margin-top:12px"><button class="btn primary" type="button" id="leakRun">Chạy lại với dữ liệu mới</button><span class="small muted mono" id="leakAvg"></span></div>
+      </div>
+      <ul class="pts rv d3">
+        <li>Mọi bước cần học từ dữ liệu (lọc gene, scaler, ANOVA, SMOTE, prior, centroid) đều nằm trong một <code>Pipeline</code>.</li>
+        <li>SMOTE chỉ chạy lúc fit, sau bước chọn gene, không bao giờ chạm test.</li>
+        <li>Không sửa grid hay pipeline sau khi đã xem điểm outer. Điều này được kiểm tra bằng cách so hash config với tag.</li>
+        <li>Không chọn pipeline theo recall của một lớp, ví dụ MPNST.</li>
+        <li class="hot">Lỗi hay gặp: tính MAD, ANOVA hay SMOTE trên cả 254 ca trước khi chia fold.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 12. SENSITIVITY ================= -->
+<section class="slide" id="s12" data-title="Phân tích độ nhạy">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">14</span>Phân tích độ nhạy</div>
+      <h2>Ba phép thử xem kết quả có còn đứng vững khi nhìn dữ liệu theo cách khác</h2>
+    </div>
+    <div class="grid3">
+      <div class="panel sens rv d1">
+        <span class="tag" style="align-self:flex-start">S-TSS</span>
+        <h3>Mô hình học "bệnh viện" hay học "subtype"?</h3>
+        <div class="vis" id="tssVis"></div>
+        <p class="small muted">Chia outer theo nơi lấy mẫu (<code>StratifiedGroupKFold</code>). Bệnh viện ở outer test chưa từng có trong train. Nếu macro-F1 giảm mạnh, mô hình đang nhận ra bệnh viện thay vì subtype.</p>
+      </div>
+      <div class="panel sens rv d2">
+        <span class="tag" style="align-self:flex-start">S-206</span>
+        <h3>Nhãn có nhiễu không?</h3>
+        <div class="vis"><div style="width:100%">
+          <div class="minibar" style="grid-template-columns:72px minmax(0,1fr) 40px"><span>Toàn bộ</span><span class="t"><i class="a" style="width:100%"></i></span><span class="num">254</span></div>
+          <div class="minibar" style="grid-template-columns:72px minmax(0,1fr) 40px"><span>Đã review</span><span class="t"><i class="a" style="width:81.1%"></i></span><span class="num">206</span></div></div></div>
+        <p class="small muted">Chạy lại chỉ với 206 ca đã qua review bệnh học (Cell 2017). Nếu điểm tăng rõ, nhãn của các ca còn lại có thể có nhiễu.</p>
+      </div>
+      <div class="panel sens rv d3">
+        <span class="tag" style="align-self:flex-start">S-5CLASS</span>
+        <h3>Bao nhiêu lỗi nằm ở ranh giới MFS ↔ UPS?</h3>
+        <div class="vis"><div class="cbig">
+          <span style="--c:var(--c-lms)">LMS</span><span style="--c:var(--c-ddlps)">DDLPS</span><span class="m">UPS + MFS</span><span style="--c:var(--c-ss)">SS</span><span style="--c:var(--c-mpnst)">MPNST</span></div></div>
+        <p class="small muted">Gộp MFS và UPS thành một lớp, vì hai subtype này có thể chỉ là hai đầu của cùng một phổ sinh học.</p>
+      </div>
+    </div>
+    <p class="rv muted">Chỉ chạy cho pipeline được chọn và P02, mỗi phân tích một repeat.</p>
+  </div>
+</section>
+
+<!-- ================= 13. MOCK RESULTS ================= -->
+<section class="slide" id="s13" data-title="Kết quả mẫu (giả lập)">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">15</span>Kết quả mẫu</div>
+      <h2>Output sẽ trông như thế nào, và đọc ra sao</h2>
+    </div>
+    <div class="mock-band rv d1"><b>TOÀN BỘ SỐ Ở SLIDE NÀY LÀ GIẢ LẬP.</b> Sinh bằng script ngẫu nhiên có seed, chỉ để minh hoạ hình dạng output và cách đọc. Không trích vào báo cáo.</div>
+
+    <div class="grid2">
+      <div class="panel rv d1">
+        <div class="panel-title"><span>Macro-F1 gộp 254 ca, mean ± SD qua 3 repeat</span><span class="tag mock">giả lập</span></div>
+        <svg class="chart" id="tabA" viewBox="0 0 560 380" role="img" aria-label="Macro-F1 của 12 pipeline"></svg>
+        <p class="small">META-SELECT <b class="hl">0,803</b> thấp hơn 0,807 của pipeline đứng đầu (P07). Khoảng chênh đó là phần bị thổi phồng nếu chỉ báo điểm của pipeline đứng đầu. P01 (sàn) ở mức 0,10–0,17, nằm ngoài khung hình.</p>
+      </div>
+      <div class="panel rv d2" style="display:flex;flex-direction:column;gap:12px">
+        <div class="panel-title"><span>META-SELECT: pipeline thắng ở mỗi outer fold</span><span class="tag mock">giả lập</span></div>
+        <div class="foldstrip" id="foldStrip"></div>
+        <div class="freq" id="foldFreq"></div>
+        <p class="small">Họ LR được chọn ở <b>14/15</b> outer fold, nhưng không có cấu hình LR nào áp đảo. Inner chỉ dùng để <b>chọn</b>, outer chỉ dùng để <b>chấm</b>.</p>
+      </div>
+    </div>
+
+    <div class="panel rv d1" style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel-title"><span>Bayesian correlated t-test trên 15 outer fold · chọn một cặp ablation</span>
+        <span style="display:flex;gap:8px;align-items:center"><span>ROPE</span><span class="seg" id="ropeSeg" role="group" aria-label="Độ rộng ROPE"><button type="button" data-v="0.01" aria-pressed="true">±0,01</button><button type="button" data-v="0.02">±0,02</button></span></span></div>
+      <div class="pairs" id="pairBtns" role="group" aria-label="Chọn cặp ablation"></div>
+      <div class="split" style="grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)">
+        <svg class="chart" id="ttSvg" viewBox="0 0 640 230" role="img" aria-label="Phân phối hậu nghiệm của chênh lệch macro-F1"></svg>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="probs" id="ttProbs"></div>
+          <p class="concl" id="ttConcl"></p>
+          <p class="small muted" id="ttStats"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel rv d1" style="display:flex;flex-direction:column;gap:12px">
+        <div class="panel-title"><span>Câu 3: nhóm tương đương với P07 (đứng đầu)</span><span class="tag mock">giả lập</span></div>
+        <p class="small">Mỗi thanh là xác suất P07 tốt hơn X một khoảng lớn hơn ROPE. X bị loại nếu thanh vượt vạch 0,95. Trong nhóm còn lại, chọn pipeline đơn giản nhất theo thứ tự đã khai báo trước. Đổi ROPE ở bảng phía trên để xem kết quả thay đổi.</p>
+        <div class="eqrows" id="eqRows"></div>
+        <p class="pickline" id="eqPick"></p>
+      </div>
+      <div class="panel rv d2" style="display:flex;flex-direction:column;gap:12px">
+        <div class="panel-title"><span>Confusion matrix của P06, repeat 1</span><span class="tag mock">giả lập</span></div>
+        <div class="cm-wrap"><table class="cm" id="cm"></table></div>
+        <p class="small">Lỗi tập trung ở ranh giới <b class="hl">UPS ↔ MFS</b> (7 + 8 ca, viền hồng).</p>
+        <div class="panel-title" style="margin:6px 0 0"><span>Recall theo lớp, 95% Wilson CI</span></div>
+        <div style="display:flex;flex-direction:column;gap:5px" id="rcRows"></div>
+        <p class="small">Recall MPNST là 6/9, nhưng khoảng tin cậy trải từ 0,35 đến 0,88. Với 9 ca, đoán đúng thêm hay bớt 1 ca có thể chỉ là ngẫu nhiên.</p>
+      </div>
+    </div>
+    <ul class="pts rv grid2" style="display:grid">
+      <li class="hot">Pipeline mang sang app là <b>P06 (LR L2)</b>, không phải P07: P06 đơn giản hơn, nhanh hơn khoảng 16 lần, và không có bằng chứng rõ là kém hơn.</li>
+      <li>Nới ROPE từ 0,01 lên 0,02 thì pipeline được chọn đổi từ P06 sang P03. Vì vậy ROPE phải được chốt trước khi mở niêm phong điểm outer.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 14. REUSE ================= -->
+<section class="slide" id="s14" data-title="Quy trình tái sử dụng">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">16</span>Quy trình tái sử dụng</div>
+      <h2>Một quy trình dùng lại được cho các bài toán RNA-seq ít mẫu, nhiều gene</h2>
+    </div>
+    <div class="split">
+      <div class="panel rv d1">
+        <div class="panel-title"><span>Bài toán mới: n nhỏ · p lớn · đa lớp · lệch lớp</span><button class="btn" type="button" id="rPlay">▶ Đi qua từng bước</button></div>
+        <div class="rflow" id="rFlow">
+          <div class="rstep"><div><b>Cập nhật danh mục stage theo bằng chứng</b><span>Danh mục đã có trích dẫn, chỉ cần cập nhật nguồn cho bài toán mới.</span></div></div>
+          <div class="rstep"><div><b>Shortlist theo vai trò</b><span>Sàn → tham chiếu → ablation từng stage một → ứng viên → đối chứng âm, thay cho full factorial.</span></div></div>
+          <div class="rstep"><div><b>Nested CV chung split cho mọi pipeline</b><span>Để so được theo cặp và chạy META-SELECT không cần fit thêm.</span></div></div>
+          <div class="rstep"><div><b>Chạy thử khi chưa xem điểm outer, rồi khoá config</b><span>Tương tự đăng ký trước (pre-registration).</span></div></div>
+          <div class="rstep"><div><b>Chạy chính thức</b><span>Từ đúng commit đã tag.</span></div></div>
+          <div class="rstep"><div><b>META-SELECT làm con số chính</b><span>Chọn pipeline bên trong inner CV.</span></div></div>
+          <div class="rstep"><div><b>So sánh đăng ký trước</b><span>Bayesian correlated t-test + ROPE.</span></div></div>
+          <div class="rstep"><div><b>Phân tích độ nhạy</b><span>Theo batch, theo chất lượng nhãn và theo ranh giới sinh học.</span></div></div>
+        </div>
+      </div>
+      <div class="callout blue rv d2" style="align-self:center">
+        <p style="font-family:var(--f-display);font-size:21px;line-height:1.35">Những phần chỉ dành cho sarcoma (marker, ranh giới MFS ↔ UPS, 206 ca đã review) chỉ nằm ở phân tích độ nhạy và phần diễn giải, nên dễ tách ra khi áp dụng cho bệnh khác.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 15. DECISIONS ================= -->
+<section class="slide" id="s15" data-title="Việc cần chốt">
+  <div class="wrap">
+    <div class="head rv">
+      <div class="kicker"><span class="idx">17</span>Việc cần chốt và bước tiếp theo</div>
+      <h2>Những điểm nhóm cần chốt trước khi mở niêm phong điểm outer</h2>
+    </div>
+    <div class="split">
+      <div class="dec rv d1" id="decList">
+        <label><input type="checkbox" id="dec1"><span>Ngưỡng xác suất để kết luận một cặp ablation (đang giả định 0,95).</span></label>
+        <label><input type="checkbox" id="dec2"><span>Wilson CI tính trên 1 repeat hay gộp 3 repeat. Gộp sẽ đếm mỗi bệnh nhân 3 lần và làm CI hẹp giả tạo.</span></label>
+        <label><input type="checkbox" id="dec3"><span>Phân tích độ nhạy chạy cho pipeline được chọn sang app, hay cho pipeline có điểm cao nhất.</span></label>
+        <label><input type="checkbox" id="dec4"><span>Cần định nghĩa bằng số thế nào là "giảm mạnh" trong S-TSS.</span></label>
+        <label><input type="checkbox" id="dec5"><span>Có báo cáo thêm kết quả với ROPE 0,02 như một phân tích độ nhạy không?</span></label>
+        <label><input type="checkbox" id="dec6"><span>Một số nguồn trong R1–R3 còn nhãn [UNVERIFIED], phải kiểm lại trước khi đưa vào báo cáo.</span></label>
+      </div>
+      <div class="rv d2" style="display:flex;flex-direction:column;gap:16px">
+        <h3>Bước tiếp theo</h3>
+        <div class="timeline">
+          <div class="tl"><small>1</small><b>Implement engine mới</b><span>13 pipeline, lưu điểm mọi ứng viên</span></div>
+          <div class="tl"><small>2</small><b>Smoke run</b><span>1 outer fold mỗi pipeline, đo runtime</span></div>
+          <div class="tl"><small>3</small><b>P02 tái tạo 0,772</b><span>kiểm tra engine mới chạy đúng</span></div>
+          <div class="tl"><small>4</small><b>Chạy vòng A</b><span>chạy thử, chưa xem điểm outer</span></div>
+        </div>
+        <p class="small muted">Đánh dấu ở cột trái chỉ lưu trên trình duyệt này, để ghi lại những điểm đã thống nhất trong buổi họp.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="src">
+  <span>Nguồn: <code>docs/protocol_3.0_proposal.md</code>, <code>docs/mock_results_example.md</code>, <code>plans/reports/slide-outline-261017-1133-protocol-3-0.md</code>.</span>
+  <span>Sơ đồ nested CV ở slide 4 và thử nghiệm leakage ở slide 13 là minh hoạ sinh trong trình duyệt, không dùng dữ liệu thật.</span>
+</footer>
+
+<script>
+(() => {
+"use strict";
+document.documentElement.classList.add("js");
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const fmt = (x, d = 3) => x.toFixed(d).replace(".", ",");
+const fmtInt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs = {}, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffle(arr, rng) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+function gauss(rng) { let u = 0, v = 0; while (u === 0) u = rng(); while (v === 0) v = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function segInit(root, onChange) {
+  root.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || !root.contains(b)) return;
+    $$("button", root).forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    onChange(b.dataset.v, b);
+  });
+}
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+/* ---------- theme ---------- */
+$("#themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  root.dataset.theme = cur === "dark" ? "light" : "dark";
+  store("p3-theme", root.dataset.theme);
+  redrawAll();
+});
+const savedTheme = store("p3-theme"); if (savedTheme === "dark" || savedTheme === "light") document.documentElement.dataset.theme = savedTheme;
+
+/* ---------- navigation ---------- */
+const slides = $$("section.slide");
+const nav = $("#sidenav");
+slides.forEach((s, i) => {
+  const a = document.createElement("a"); a.href = "#" + s.id;
+  a.innerHTML = `<span class="lab">${i === 0 ? "" : String(i).padStart(2, "0") + " · "}${s.dataset.title}</span><i></i>`;
+  nav.appendChild(a);
+});
+const navLinks = $$("a", nav);
+function currentIndex() {
+  const mid = innerHeight * 0.35; let idx = 0;
+  slides.forEach((s, i) => { if (s.getBoundingClientRect().top <= mid) idx = i; });
+  return idx;
+}
+let ticking = false;
+function onScroll() {
+  if (ticking) return; ticking = true;
+  requestAnimationFrame(() => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    $("#prog").style.width = (h > 0 ? (scrollY / h) * 100 : 0) + "%";
+    const idx = currentIndex(); navLinks.forEach((a, i) => a.classList.toggle("on", i === idx));
+    ticking = false;
+  });
+}
+addEventListener("scroll", onScroll, { passive: true }); onScroll();
+addEventListener("keydown", e => {
+  const t = e.target;
+  if (t.closest && t.closest("input, select, textarea, button, [contenteditable]")) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const idx = currentIndex(); let to = null;
+  if (["ArrowDown", "PageDown", "ArrowRight"].includes(e.key) || (e.key === " " && !e.shiftKey)) to = Math.min(slides.length - 1, idx + 1);
+  else if (["ArrowUp", "PageUp", "ArrowLeft"].includes(e.key) || (e.key === " " && e.shiftKey)) {
+    const top = slides[idx].getBoundingClientRect().top; to = top < -40 ? idx : Math.max(0, idx - 1);
+  }
+  else if (e.key === "Home") to = 0; else if (e.key === "End") to = slides.length - 1;
+  if (to !== null) { e.preventDefault(); slides[to].scrollIntoView({ behavior: "smooth", block: "start" }); }
+});
+
+/* ---------- reveal ---------- */
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { rootMargin: "0px 0px 10% 0px" });
+  $$(".rv").forEach(x => io.observe(x));
+}
+
+/* ================= DATA ================= */
+const CLASSES = [["LMS", 104, "--c-lms"], ["DDLPS", 57, "--c-ddlps"], ["UPS", 49, "--c-ups"], ["MFS", 25, "--c-mfs"], ["SS", 10, "--c-ss"], ["MPNST", 9, "--c-mpnst"]];
+const N = 254;
+
+/* ---------- slide 3: class bars ---------- */
+$("#classBars").innerHTML = CLASSES.map(([k, n, c]) =>
+  `<div class="cbar" style="--c:var(${c})"><b>${k}</b><span class="track"><span class="fill" style="display:block;width:${(n / 104) * 100}%"></span></span><span class="v"><b>${n}</b> <small>${fmt(n / N * 100, 1)}%</small></span></div>`).join("");
+
+/* ---------- slide 4: nested CV explorer ---------- */
+const patients = []; CLASSES.forEach((c, ci) => { for (let i = 0; i < c[1]; i++) patients.push(ci); });
+function outerAssign(r) {
+  const rng = mulberry32(4200 + r), fold = new Int8Array(N); let off = 0;
+  CLASSES.forEach((c, ci) => { const idx = []; patients.forEach((p, i) => { if (p === ci) idx.push(i); }); shuffle(idx, rng); idx.forEach((i, j) => fold[i] = (off + j) % 5); off += idx.length; });
+  return fold;
+}
+const OUTER = [0, 1, 2].map(outerAssign);
+function innerAssign(r, f) {
+  const rng = mulberry32(9100 + r * 10 + f), fold = new Int8Array(N).fill(-1), outer = OUTER[r]; let off = 0;
+  CLASSES.forEach((c, ci) => { const idx = []; for (let i = 0; i < N; i++) if (patients[i] === ci && outer[i] !== f) idx.push(i); shuffle(idx, rng); idx.forEach((i, j) => fold[i] = (off + j) % 4); off += idx.length; });
+  return fold;
+}
+const cv = { level: "inner", r: 0, f: 0, g: 0 };
+function makeSeg(id, n, key, label) {
+  const root = $(id); root.innerHTML = Array.from({ length: n }, (_, i) => `<button type="button" data-v="${i}" aria-pressed="${i === cv[key]}" aria-label="${label} ${i + 1}">${i + 1}</button>`).join("");
+  segInit(root, v => { cv[key] = +v; stopCvPlay(); drawCV(); });
+}
+makeSeg("#cvRep", 3, "r", "Repeat"); makeSeg("#cvFold", 5, "f", "Outer fold"); makeSeg("#cvInner", 4, "g", "Inner fold");
+segInit($("#cvLevel"), v => { cv.level = v; drawCV(); });
+const rowsEl = $("#cvRows");
+rowsEl.innerHTML = CLASSES.map(([k, n, c], ci) => `<div class="cv-row" style="--c:var(${c})"><span class="cv-lab">${k} <small>${n}</small></span><div class="cv-dots">${patients.map((p, i) => p === ci ? `<i class="dot" data-i="${i}"></i>` : "").join("")}</div></div>`).join("");
+const dots = $$(".dot[data-i]", rowsEl);
+function drawCV() {
+  const outer = OUTER[cv.r], inner = innerAssign(cv.r, cv.f);
+  const tally = CLASSES.map(() => [0, 0, 0]);
+  dots.forEach(d => {
+    const i = +d.dataset.i, isTest = outer[i] === cv.f, isVal = !isTest && inner[i] === cv.g;
+    d.classList.toggle("otest", cv.level !== "all" && isTest);
+    d.classList.toggle("ival", cv.level === "inner" && isVal);
+    tally[patients[i]][isTest ? 2 : isVal ? 1 : 0]++;
+  });
+  ["#cvFold", "#cvInner"].forEach((s, k) => $(s).parentElement.style.opacity = (k === 0 ? cv.level === "all" : cv.level !== "inner") ? 0.4 : 1);
+  const tot = [0, 0, 0]; tally.forEach(t => t.forEach((v, j) => tot[j] += v));
+  $("#cvTally").innerHTML = `<thead><tr><th>Lớp</th><th>Inner train</th><th>Inner val</th><th>Outer test</th></tr></thead><tbody>` +
+    CLASSES.map(([k, n, c], ci) => `<tr class="${k === "MPNST" ? "rare" : ""}"><td><span class="swatch" style="--c:var(${c})"></span>${k}</td><td>${tally[ci][0]}</td><td>${tally[ci][1]}</td><td>${tally[ci][2]}</td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>Tổng</td><td>${tot[0]}</td><td>${tot[1]}</td><td>${tot[2]}</td></tr></tfoot>`;
+}
+let cvTimer = null;
+function stopCvPlay() { if (cvTimer) { clearInterval(cvTimer); cvTimer = null; $("#cvPlay").textContent = "▶ Chạy qua 15 lần chia"; } }
+function syncSeg(id, v) { $$("button", $(id)).forEach(b => b.setAttribute("aria-pressed", +b.dataset.v === v ? "true" : "false")); }
+$("#cvPlay").addEventListener("click", () => {
+  if (cvTimer) return stopCvPlay();
+  if (cv.level === "all") { cv.level = "outer"; syncSeg("#cvLevel", -1); $$("#cvLevel button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === "outer")); }
+  $("#cvPlay").textContent = "■ Dừng";
+  let k = cv.r * 5 + cv.f;
+  cvTimer = setInterval(() => { k = (k + 1) % 15; cv.r = Math.floor(k / 5); cv.f = k % 5; syncSeg("#cvRep", cv.r); syncSeg("#cvFold", cv.f); drawCV(); }, 1100);
+});
+drawCV();
+
+/* ---------- slide 5: Wilson ---------- */
+function wilson(k, n, z = 1.96) { const p = k / n, d = 1 + z * z / n, c = (p + z * z / (2 * n)) / d, h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; return [Math.max(0, c - h), Math.min(1, c + h)]; }
+function wald(k, n, z = 1.96) { const p = k / n, h = z * Math.sqrt(p * (1 - p) / n); return [p - h, p + h]; }
+let wn = 9;
+const wK = $("#wK");
+segInit($("#wClass"), (v, b) => { const old = wn; wn = +b.dataset.n; wK.max = wn; wK.value = Math.round(+wK.value / old * wn); drawW(); });
+wK.addEventListener("input", drawW);
+function drawW() {
+  const k = +wK.value, svg = $("#wSvg"); svg.innerHTML = "";
+  $("#wKv").textContent = `${k}/${wn}`;
+  const X = v => 40 + (v + 0.2) / 1.4 * 560;
+  el("rect", { x: X(-0.2), y: 18, width: X(0) - X(-0.2), height: 100, fill: "var(--bad-soft)" }, svg);
+  el("rect", { x: X(1), y: 18, width: X(1.2) - X(1), height: 100, fill: "var(--bad-soft)" }, svg);
+  el("text", { x: X(-0.1), y: 32, "text-anchor": "middle", fill: "var(--bad)" }, svg, "< 0");
+  el("text", { x: X(1.1), y: 32, "text-anchor": "middle", fill: "var(--bad)" }, svg, "> 1");
+  [0, 0.25, 0.5, 0.75, 1].forEach(v => { el("line", { x1: X(v), x2: X(v), y1: 18, y2: 118, stroke: "var(--line)" }, svg); el("text", { x: X(v), y: 136, "text-anchor": "middle" }, svg, fmt(v, 2)); });
+  const p = k / wn;
+  const rows = [["Wilson", wilson(k, wn), "var(--hema)", 56], ["Wald (p ± 1,96·SE)", wald(k, wn), "var(--muted)", 96]];
+  rows.forEach(([lab, [lo, hi], col, y]) => {
+    const clo = Math.max(-0.2, lo), chi = Math.min(1.2, hi);
+    el("line", { x1: X(clo), x2: X(chi), y1: y, y2: y, stroke: col, "stroke-width": 8, "stroke-linecap": "round", opacity: 0.85 }, svg);
+    if (lo < 0 || hi > 1) { if (lo < 0) el("circle", { cx: X(clo), cy: y, r: 6, fill: "var(--bad)" }, svg); if (hi > 1) el("circle", { cx: X(chi), cy: y, r: 6, fill: "var(--bad)" }, svg); }
+    el("circle", { cx: X(p), cy: y, r: 5, fill: "var(--panel)", stroke: "var(--ink)", "stroke-width": 2 }, svg);
+    el("text", { x: X(clo), y: y - 10, class: "lbl" }, svg, `${lab}: ${fmt(lo, 3)} – ${fmt(hi, 3)}`);
+  });
+  const [wl, wh] = wald(k, wn);
+  $("#wNote").innerHTML = (wl < 0 || wh > 1) ? `Với ${k}/${wn}, khoảng Wald tràn ra ngoài [0, 1], vô nghĩa với một tỉ lệ. Wilson luôn nằm trong [0, 1].`
+    : (k === 0 || k === wn) ? `Với ${k}/${wn}, Wald co về một điểm (độ rộng 0), tức là tỏ ra chắc chắn tuyệt đối, điều không thể đúng với số ca ít như vậy. Wilson vẫn cho khoảng hợp lý.`
+    : `Với ${wn} ca, khoảng tin cậy rộng khoảng ${fmt((wilson(k, wn)[1] - wilson(k, wn)[0]) * 100, 0)} điểm phần trăm. Thử kéo thanh trượt về 0 hoặc ${wn}.`;
+}
+drawW();
+
+/* ---------- pipelines ---------- */
+const STAGES = [
+  { id: "S1", name: "Lọc gene", opts: [["F0", "VarianceThreshold(0)", "như Round 1"], ["F1", "Lọc biểu hiện thấp", "log2 > 1 ở ≥ 5 mẫu train"], ["F2", "F1 + top-5000 MAD", "N cố định, không tune"]] },
+  { id: "S2", name: "Scaler", opts: [["Z1", "StandardScaler", "cho SVM, LR, kNN"], ["Z0", "Không scale", "cho RF"]] },
+  { id: "S3", name: "Chọn đặc trưng", opts: [["R0", "Không chọn", "để L2/EN tự xử lý"], ["R1", "ANOVA top-k", "SelectKBest trong fold"]] },
+  { id: "S4", name: "Imbalance", opts: [["I0", "Không xử lý", ""], ["I1", "Class weight", "balanced, mặc định"], ["I2", "Ngưỡng theo prior", "α ∈ {0; 0,5; 1}"], ["I3", "SMOTE", "k_neighbors = 3"], ["I4", "RF bootstrap cân bằng", "balanced_subsample"]] },
+  { id: "S5", name: "Classifier", opts: [["C0", "Dummy", "sàn"], ["C1", "SVM linear", ""], ["C2", "LR L2", "lbfgs"], ["C3", "LR elastic-net", "saga"], ["C4", "PAM", "shrunken centroids"], ["C5", "Random forest", "500 cây"], ["C6", "kNN", "weights = distance"]] },
+];
+const P = {
+  P01: { name: "DUMMY", role: "floor", rl: "Sàn", G: 1, s: [null, null, null, null, "C0"], vs: null, q: "Mức điểm khi mô hình không học gì (≈ 0,10–0,17).", note: "2 biến thể: most_frequent và stratified" },
+  P02: { name: "R1-REF", role: "ref", rl: "Tham chiếu Round 1", G: 5, s: ["F0", "Z1", "R1", "I0", "C1"], k: "k = 150", vs: "Round 1", q: "Engine mới có tái tạo đúng 0,772 của Round 1 không?" },
+  P03: { name: "SVM-BAL", role: "abl", rl: "Ablation S4", G: 5, s: ["F0", "Z1", "R1", "I1", "C1"], k: "k = 150", vs: "P02", q: "Class weight có giúp không?" },
+  P04: { name: "SVM-BAL-K", role: "abl", rl: "Ablation S3 (kích thước)", G: 20, s: ["F0", "Z1", "R1", "I1", "C1"], k: "k ∈ {150, 500, 1000, 2000}", vs: "P03", q: "Nhiều gene hơn có giúp không?" },
+  P05: { name: "SVM-BAL-MAD", role: "abl", rl: "Ablation S3 (có/không chọn có giám sát)", G: 5, s: ["F2", "Z1", "R0", "I1", "C1"], vs: "P04", q: "Có cần ANOVA không?" },
+  P06: { name: "LR-L2-BAL", role: "cand", rl: "Ứng viên", G: 5, s: ["F2", "Z1", "R0", "I1", "C2"], vs: "P05", q: "LR hay SVM?" },
+  P07: { name: "LR-EN-BAL", role: "cand", rl: "Ứng viên chính", G: 9, s: ["F2", "Z1", "R0", "I1", "C3"], vs: "P06", q: "Thêm thành phần L1 có giúp không?" },
+  P08: { name: "LR-L2-PRIOR", role: "abl", rl: "Ablation S4", G: 15, s: ["F2", "Z1", "R0", "I2", "C2"], vs: "P06", q: "Chỉnh ngưỡng theo prior hay class weight?" },
+  P09: { name: "LR-L2-ANOVA", role: "cand", rl: "Ứng viên", G: 15, s: ["F1", "Z1", "R1", "I1", "C2"], k: "k ∈ {500, 1000, 2000}", vs: "P06", q: "ANOVA có giúp LR không?" },
+  P10: { name: "LR-L2-ANOVA-SMOTE", role: "neg", rl: "Đối chứng âm", G: 15, s: ["F1", "Z1", "R1", "I3", "C2"], k: "k ∈ {500, 1000, 2000}", vs: "P09", q: "SMOTE có hơn class weight không?" },
+  P11: { name: "PAM", role: "ref", rl: "Baseline omics", G: 5, s: ["F2", null, null, null, "C4"], vs: "P06", q: "PAM (centroid co rút) có bằng LR không?", note: "PAM tự co rút gene; prior uniform" },
+  P12: { name: "RF-BAL", role: "ref", rl: "Baseline phi tuyến", G: 4, s: ["F2", "Z0", "R0", "I4", "C5"], vs: "P06", q: "Mô hình phi tuyến (RF) có hơn LR không?" },
+  P13: { name: "KNN", role: "ref", rl: "Baseline đơn giản", G: 8, s: ["F1", "Z1", "R1", "I0", "C6"], k: "k ∈ {100, 500}", vs: "P09", q: "kNN trên cùng bộ gene ANOVA có bằng LR không?" },
+};
+const PIDS = Object.keys(P);
+function optLabel(code) { for (const st of STAGES) for (const o of st.opts) if (o[0] === code) return o[1]; return code; }
+function changedStages(id) {
+  const p = P[id], c = P[p.vs]; if (!c) return [];
+  return p.s.map((v, i) => (v !== c.s[i] || (i === 2 && (p.k || "") !== (c.k || ""))) ? i : -1).filter(i => i >= 0);
+}
+
+/* ---------- slide 6: pipeline explorer ---------- */
+let curP = "P07";
+$("#pChips").innerHTML = PIDS.map(id => `<button type="button" class="chip ${P[id].role}" data-v="${id}" aria-pressed="${id === curP}"><i></i>${id}</button>`).join("");
+segInit($("#pChips"), v => { curP = v; drawP(true); });
+function drawP(anim) {
+  const p = P[curP], ch = changedStages(curP);
+  const links = [`<span class="lk on">log2</span>`].concat(p.s.map((v, i) => {
+    const cls = v ? (ch.includes(i) ? "lk ch" : "lk on") : "lk skip";
+    const txt = v ? (i === 2 && v === "R1" && p.k ? `ANOVA ${p.k}` : `${v} ${optLabel(v)}`) : `${STAGES[i].id} –`;
+    return `<span class="${cls}${anim ? " pop" : ""}" style="animation-delay:${i * 60}ms">${txt}</span>`;
+  }));
+  $("#pChain").innerHTML = links.join(`<span class="ar">→</span>`) + `<span class="ar">→</span><span class="lk">1 trong 6 subtype</span>`;
+  $("#pStages").innerHTML = STAGES.map((st, i) => {
+    const v = p.s[i], c = ch.includes(i);
+    return `<div class="stage ${c ? "changed" : ""} ${v ? "" : "none"}"><h4>${st.id} ${st.name}${c ? `<span class="badge">đổi so với ${p.vs}</span>` : ""}</h4>` +
+      st.opts.map(o => `<div class="opt ${o[0] === v ? "on" : ""}"><b>${o[0]}</b>${o[1]}${o[2] ? `<small>${o[2]}</small>` : ""}</div>`).join("") + `</div>`;
+  }).join("");
+  $("#pInfo").innerHTML = `<span class="role ${p.role}">${p.rl}</span><span class="mono small">${curP} ${p.name} · G = ${p.G}</span>` +
+    (p.vs ? `<span class="q">So với ${p.vs}: ${p.q}</span>` : `<span class="q">${p.q}</span>`) + (p.note ? `<span class="small muted">${p.note}</span>` : "");
+}
+drawP(false);
+
+/* ---------- slide 7: filter ---------- */
+segInit($("#rmFilter"), v => $$(".rm").forEach(r => r.classList.toggle("dim", v !== "all" && r.dataset.cat !== v)));
+
+/* ---------- slide 8: ablation map ---------- */
+const POS = { P01: [90, 60], P02: [90, 200], P03: [245, 200], P04: [400, 200], P05: [555, 200], P06: [710, 200], P07: [890, 60], P08: [890, 165], P11: [890, 275], P12: [890, 385], P09: [710, 340], P10: [530, 340], P13: [710, 445] };
+const EDGES = [["P02", "P03", "S4"], ["P03", "P04", "S3"], ["P04", "P05", "S3"], ["P05", "P06", "S5"], ["P06", "P07", "S5"], ["P06", "P08", "S4"], ["P06", "P09", "S3"], ["P09", "P10", "S4"], ["P06", "P11", "", 1], ["P06", "P12", "", 1], ["P09", "P13", "", 1]];
+const EDGE_TXT = { "P02-P03": "S4: + class weight", "P03-P04": "S3: k 150 → tune 150–2000", "P04-P05": "S3: bỏ ANOVA, dùng MAD 5000", "P05-P06": "S5: SVM → LR L2", "P06-P07": "S5: L2 → elastic-net", "P06-P08": "S4: class weight → ngưỡng α", "P06-P09": "S3: + ANOVA", "P09-P10": "S4: class weight → SMOTE", "P06-P11": "họ mô hình khác: PAM", "P06-P12": "họ mô hình khác: RF", "P09-P13": "họ mô hình khác: kNN" };
+const NW = 124, NH = 48;
+let mapSel = "P07";
+function clip(ax, ay, bx, by) { const dx = bx - ax, dy = by - ay; const t = Math.min(dx ? (NW / 2 + 3) / Math.abs(dx) : Infinity, dy ? (NH / 2 + 3) / Math.abs(dy) : Infinity); return [ax + dx * t, ay + dy * t]; }
+function drawMap() {
+  const svg = $("#mapSvg"); svg.innerHTML = "";
+  const defs = el("defs", {}, svg);
+  ["", "on"].forEach(k => { const m = el("marker", { id: "ah" + k, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse", class: "arrowhead " + k }, defs); el("path", { d: "M0,0 L10,5 L0,10 z" }, m); });
+  const p = P[mapSel];
+  const onEdges = new Set(EDGES.filter(e => e[1] === mapSel || e[0] === mapSel).map(e => e[0] + "-" + e[1]));
+  const related = new Set([mapSel]); EDGES.forEach(e => { if (e[0] === mapSel) related.add(e[1]); if (e[1] === mapSel) related.add(e[0]); });
+  EDGES.forEach(([a, b, tag, dash]) => {
+    const key = a + "-" + b, on = onEdges.has(key);
+    const g = el("g", { class: `edge${dash ? " dash" : ""}${on ? " on" : ""}` }, svg);
+    const [x1, y1] = clip(...POS[a], ...POS[b]), [x2, y2] = clip(...POS[b], ...POS[a]);
+    el("line", { x1, y1, x2, y2, "marker-end": `url(#ah${on ? "on" : ""})` }, g);
+    const lab = on ? EDGE_TXT[key] : tag;
+    if (lab) {
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2, w = lab.length * 6.6 + 12;
+      el("rect", { x: mx - w / 2, y: my - 10, width: w, height: 20, rx: 5 }, g);
+      el("text", { x: mx, y: my + 4, "text-anchor": "middle" }, g, lab);
+    }
+  });
+  PIDS.forEach(id => {
+    const [x, y] = POS[id], q = P[id];
+    const g = el("g", { class: `node ${q.role}${id === mapSel ? " sel" : ""}${related.has(id) ? "" : " fade"}`, tabindex: 0, role: "button", "aria-label": `${id} ${q.name}` }, svg);
+    el("rect", { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: 8 }, g);
+    el("text", { x, y: y - 3, "text-anchor": "middle" }, g, id + (id === "P07" ? " ★" : ""));
+    el("text", { x, y: y + 13, "text-anchor": "middle", class: "nm" }, g, q.name);
+    const pick = () => { mapSel = id; drawMap(); };
+    g.addEventListener("click", pick);
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); pick(); } });
+  });
+  const ch = changedStages(mapSel);
+  $("#mapDetail").innerHTML = `<div class="panel-title"><span>Pipeline đang chọn</span><span class="role ${p.role}">${p.rl}</span></div>
+    <h3>${mapSel} ${p.name}</h3>
+    <dl>
+      <dt>Chuỗi stage</dt><dd class="mono small">log2 → ${p.s.map((v, i) => v ? (i === 2 && v === "R1" && p.k ? "ANOVA " + p.k : v) : "–").join(" → ")}</dd>
+      <dt>So với</dt><dd>${p.vs || "Không so sánh"}${ch.length ? ` · đổi <b class="hl">${ch.map(i => STAGES[i].id).join(", ")}</b>` : ""}</dd>
+      <dt>Câu hỏi</dt><dd style="font-family:var(--f-display);font-size:18px">${p.q}</dd>
+      <dt>Grid</dt><dd>G = ${p.G} ứng viên · ${5 * (4 * p.G + 1)} fit mỗi repeat</dd>
+    </dl>`;
+}
+drawMap();
+
+/* ---------- slide 9: grid bars + edge rule ---------- */
+$("#gBars").innerHTML = PIDS.map(id => `<div class="gbar"><span>${id}</span><span class="t" style="width:${20 / 20 * 100}%"><i style="width:${P[id].G / 20 * 100}%;${id === "P04" ? "background:var(--eosin)" : ""}"></i></span><span>${P[id].G}</span></div>`).join("");
+const C_GRID = ["0,01", "0,1", "1", "10", "100"];
+let picks = [4, 4, 3, 4, 2], expanded = 0;
+function drawEdge() {
+  const cols = C_GRID.slice(); if (expanded === 1) cols.push("1000"); if (expanded === -1) cols.unshift("0,001");
+  const shift = expanded === -1 ? 1 : 0;
+  const g = $("#edgeGrid"); g.style.setProperty("--cols", cols.length);
+  let html = `<div class="row"><span class="hd" style="text-align:left">C →</span>${cols.map((c, j) => `<span class="hd ${(expanded === 1 && j === cols.length - 1) || (expanded === -1 && j === 0) ? "new" : ""}">${c}</span>`).join("")}</div>`;
+  picks.forEach((pk, r) => {
+    html += `<div class="row"><span class="hd" style="text-align:left">Fold ${r + 1}</span>` + cols.map((c, j) => {
+      const isNew = (expanded === 1 && j === cols.length - 1) || (expanded === -1 && j === 0);
+      const on = !isNew && j - shift === pk; const edge = !isNew && (j - shift === 0 || j - shift === 4);
+      return isNew ? `<span class="hd new" style="border:1px dashed var(--eosin);border-radius:6px;height:30px;display:grid;place-items:center">mới</span>` : `<button type="button" class="cell ${edge ? "edge" : ""}" data-r="${r}" data-j="${j - shift}" aria-pressed="${on}" aria-label="Fold ${r + 1}, C = ${c}">${on ? "●" : ""}</button>`;
+    }).join("") + `</div>`;
+  });
+  g.innerHTML = html;
+  const hi = picks.filter(p => p === 4).length, lo = picks.filter(p => p === 0).length;
+  const v = $("#edgeVerdict");
+  if (expanded) { v.className = "verdict ex"; v.textContent = `Đã mở rộng một bước (thêm C = ${expanded === 1 ? "1000" : "0,001"}), rồi đóng băng. Không mở rộng thêm lần nữa.`; }
+  else if (hi >= 3 || lo >= 3) { v.className = "verdict ex"; v.innerHTML = `${Math.max(hi, lo)}/5 fold chạm biên ${hi >= 3 ? "trên (C = 100)" : "dưới (C = 0,01)"} → mở rộng một bước. <button class="btn" type="button" id="doExpand" style="margin-left:8px">Mở rộng</button>`; $("#doExpand").onclick = () => { expanded = hi >= 3 ? 1 : -1; drawEdge(); }; }
+  else { v.className = "verdict ok"; v.textContent = `Biên trên ${hi}/5, biên dưới ${lo}/5 fold. Chưa tới 3/5, giữ nguyên grid.`; }
+}
+$("#edgeGrid").addEventListener("click", e => { const b = e.target.closest("button.cell"); if (!b) return; picks[+b.dataset.r] = +b.dataset.j; expanded = 0; drawEdge(); });
+drawEdge();
+
+/* ---------- slide 10: stepper ---------- */
+const STEPS = [
+  { t: "Smoke run", s: "1 outer fold mỗi pipeline", seal: 1, d: "Đo runtime thật và bắt lỗi sớm, trước khi tốn thời gian chạy cả vòng.", ok: ["Đo s/fit thật để hiệu chỉnh ước tính", "Bắt lỗi cài đặt, convergence"], no: ["Đọc điểm outer"] },
+  { t: "Vòng A: screening", s: "repeat 1 · 5 fold × 13 pipeline", seal: 1, d: "Báo cáo screening chỉ chứa thông tin kỹ thuật và inner CV: warning, convergence, runtime, tham số được chọn, các lần chạm biên grid, điểm inner.", ok: ["Xem warning, lỗi, convergence, runtime", "Xem tham số được chọn và lần chạm biên grid", "Xem điểm inner"], no: ["Tính hay xem metric outer", "Loại pipeline vì điểm thấp"] },
+  { t: "Sửa lỗi kỹ thuật", s: "chỉ những gì được phép", seal: 1, d: "Nếu có vấn đề kỹ thuật thì sửa và chạy lại vòng A cho pipeline đó, vẫn không xem điểm outer, để xác nhận lỗi đã hết.", ok: ["Sửa lỗi, tăng max_iter", "Mở rộng biên grid một lần", "Bỏ pipeline chỉ khi không chạy được trong ngân sách thời gian"], no: ["Đổi grid dựa vào điểm outer", "Loại pipeline theo hiệu năng"] },
+  { t: "Đóng băng config", s: "commit + tag p3.0-frozen", seal: 1, freeze: 1, d: "Tương tự đăng ký trước (pre-registration): danh sách pipeline, grid, metric và các phép so sánh được khoá bằng một commit có tag.", ok: ["Ghi lại danh sách pipeline, grid, metric, 11 cặp so sánh", "Chốt ROPE và ngưỡng kết luận"], no: ["Sửa bất cứ thứ gì sau mốc này"] },
+  { t: "Vòng B: chính thức", s: "đủ 3 repeat từ commit đã tag", seal: 1, d: "Chạy lại đủ 3 repeat cho mọi pipeline. Kết quả vòng A bị bỏ, nên mọi kết quả chính thức đến từ cùng một phiên bản code.", ok: ["Chạy từ đúng commit đã tag", "Kiểm tra hash config so với tag"], no: ["Dùng lại repeat 1 của vòng A"] },
+  { t: "Mở niêm phong", s: "phân tích ba câu hỏi", seal: 0, d: "Chỉ sau vòng B mới mở điểm outer và chạy META-SELECT, kiểm định ablation, chọn pipeline sang app.", ok: ["META-SELECT, 11 cặp ablation, nhóm tương đương", "Báo cáo mọi pipeline"], no: ["Quay lại sửa config"] },
+];
+let stepI = 1;
+const lockSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+const unlockSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>`;
+$("#steps").innerHTML = STEPS.map((s, i) => `<button type="button" class="step${s.freeze ? " freeze" : ""}" data-i="${i}"><small>${i === 3 ? "Mốc" : "Bước " + (i + 1)}</small><b>${s.t}</b><small>${s.s}</small><span class="seal">${s.seal ? lockSvg + " outer niêm phong" : unlockSvg + " outer mở"}</span></button>`).join("");
+$("#steps").addEventListener("click", e => { const b = e.target.closest(".step"); if (b) { stepI = +b.dataset.i; drawStep(); } });
+$("#stepNext").onclick = () => { stepI = Math.min(STEPS.length - 1, stepI + 1); drawStep(); };
+$("#stepPrev").onclick = () => { stepI = Math.max(0, stepI - 1); drawStep(); };
+function drawStep() {
+  $$(".step").forEach((b, i) => { b.classList.toggle("cur", i === stepI); b.classList.toggle("done", i < stepI); });
+  $("#stepTrack").style.width = ((stepI + 1) / STEPS.length * 100) + "%";
+  const s = STEPS[stepI], sb = $("#sealBox");
+  sb.className = "sealbox " + (s.seal ? "locked" : "open");
+  sb.innerHTML = s.seal ? lockSvg + " Metric outer: đang niêm phong" : unlockSvg + " Metric outer: đã mở";
+  $("#stepDetail").innerHTML = `<p style="margin-bottom:14px">${s.d}</p><div class="do-dont"><div class="ok"><h4>Được làm</h4><ul>${s.ok.map(x => `<li>${x}</li>`).join("")}</ul></div><div class="no"><h4>Không được làm</h4><ul>${s.no.map(x => `<li>${x}</li>`).join("")}</ul></div></div>`;
+}
+drawStep();
+
+/* ---------- slide 11: compute ---------- */
+const MINS = { P01: 0.5, P02: 1, P03: 1, P04: 3, P05: 1, P06: 3, P07: 30, P08: 8, P09: 8, P10: 10, P11: 1, P12: 4, P13: 1 };
+let cmpMode = "fit";
+segInit($("#cmpMode"), v => { cmpMode = v; drawCmp(); });
+function drawCmp() {
+  const svg = $("#cmpSvg"); svg.innerHTML = "";
+  const vals = PIDS.map(id => cmpMode === "fit" ? 5 * (4 * P[id].G + 1) : MINS[id]);
+  const max = cmpMode === "fit" ? 450 : 32, x0 = 56, w = 520, rowH = 28;
+  const ticks = cmpMode === "fit" ? [0, 100, 200, 300, 400] : [0, 10, 20, 30];
+  const gg = el("g", { class: "grid" }, svg);
+  ticks.forEach(t => { const x = x0 + t / max * w; el("line", { x1: x, x2: x, y1: 8, y2: 8 + rowH * 13 }, gg); el("text", { x, y: 8 + rowH * 13 + 16, "text-anchor": "middle" }, svg, fmtInt(t)); });
+  PIDS.forEach((id, i) => {
+    const y = 12 + i * rowH, v = vals[i], bw = Math.max(2, v / max * w);
+    el("text", { x: x0 - 8, y: y + 15, "text-anchor": "end", class: "ink" }, svg, id);
+    const r = el("rect", { x: x0, y, width: bw, height: rowH - 9, rx: 3, fill: id === "P07" ? "var(--eosin)" : "var(--hema)", opacity: id === "P07" ? 1 : 0.8 }, svg);
+    r.animate && r.animate([{ width: 0 }, { width: bw }], { duration: 600, easing: "cubic-bezier(.2,.7,.2,1)" });
+    el("text", { x: x0 + bw + 6, y: y + 14 }, svg, cmpMode === "fit" ? fmtInt(v) : (v < 1 ? "< 1 phút" : "~" + v + " phút"));
+  });
+  const tot = vals.reduce((a, b) => a + b, 0);
+  $("#cmpTitle").textContent = cmpMode === "fit" ? `Số fit mỗi repeat · tổng ${fmtInt(tot)}` : `Phút CPU mỗi repeat (ước tính) · tổng ~70 phút, P07 chiếm ~${Math.round(30 / 70 * 100)}%`;
+}
+drawCmp();
+function drawTot() {
+  const svg = $("#totSvg"); svg.innerHTML = "";
+  const rows = [["2.0", 18360, "var(--muted)", null], ["3.0", 9220, "var(--hema)", [2305, 6915]]];
+  const w = 330, x0 = 40;
+  rows.forEach(([lab, v, col, parts], i) => {
+    const y = 18 + i * 60;
+    el("text", { x: 0, y: y + 22, class: "ink" }, svg, lab);
+    if (parts) {
+      const w1 = parts[0] / 18360 * w, w2 = parts[1] / 18360 * w;
+      el("rect", { x: x0, y, width: w1, height: 32, fill: "var(--hema)", opacity: 0.55, rx: 3 }, svg);
+      el("rect", { x: x0 + w1, y, width: w2, height: 32, fill: "var(--hema)", rx: 3 }, svg);
+      el("text", { x: x0 + 4, y: y + 46 }, svg, "A: 2.305");
+      el("text", { x: x0 + w1 + 4, y: y + 46 }, svg, "B: 6.915");
+      el("text", { x: x0 + w1 + w2 + 6, y: y + 21, class: "ink" }, svg, "9.220");
+    } else {
+      el("rect", { x: x0, y, width: w, height: 32, fill: col, opacity: 0.45, rx: 3 }, svg);
+      el("text", { x: x0 + w - 6, y: y + 21, "text-anchor": "end", class: "ink" }, svg, "18.360");
+    }
+  });
+}
+drawTot();
+const coresEl = $("#cores");
+function drawCores() { const c = +coresEl.value; $("#coresV").textContent = c + " lõi"; const m = 70 / c; $("#coresOut").textContent = `≈ ${m >= 60 ? fmt(m / 60, 1) + " giờ" : Math.round(m) + " phút"} mỗi repeat`; }
+coresEl.addEventListener("input", drawCores); drawCores();
+
+/* ---------- slide 12: selection bias sim ---------- */
+const TRUE = 0.78, SD = 0.012, NP = 12;
+let sbRng = mulberry32(7), sbLast = null, sbHist = [];
+function sbOnce() { const v = Array.from({ length: NP }, () => TRUE + SD * gauss(sbRng)); sbLast = v; sbHist.push(Math.max(...v) - TRUE); }
+function drawSB() {
+  const s = $("#sbStrip"); s.innerHTML = "";
+  const X = v => 30 + (v - 0.74) / 0.08 * 580;
+  [0.74, 0.76, 0.78, 0.80, 0.82].forEach(t => { el("line", { x1: X(t), x2: X(t), y1: 20, y2: 88, stroke: "var(--line)" }, s); el("text", { x: X(t), y: 104, "text-anchor": "middle" }, s, fmt(t, 2)); });
+  el("line", { x1: X(TRUE), x2: X(TRUE), y1: 14, y2: 90, stroke: "var(--ink)", "stroke-width": 2, "stroke-dasharray": "4 3" }, s);
+  el("text", { x: X(TRUE) - 6, y: 12, class: "ink", "text-anchor": "end" }, s, "giá trị thật 0,780");
+  if (sbLast) {
+    const mx = Math.max(...sbLast);
+    sbLast.forEach((v, i) => { const c = el("circle", { cx: X(Math.min(0.819, Math.max(0.741, v))), cy: 40 + (i % 4) * 12, r: v === mx ? 7 : 5, fill: v === mx ? "var(--eosin)" : "var(--hema)", opacity: v === mx ? 1 : 0.6 }, s); c.animate && c.animate([{ opacity: 0 }, { opacity: v === mx ? 1 : 0.6 }], { duration: 300, delay: i * 25 }); });
+    el("text", { x: X(Math.min(0.81, mx)), y: 86, "text-anchor": "middle", fill: "var(--eosin)", "font-weight": 600 }, s, "đứng đầu " + fmt(mx));
+  } else el("text", { x: 320, y: 60, "text-anchor": "middle" }, s, "Bấm \"Chạy 1 lần\" để rút điểm cho 12 pipeline");
+  const h = $("#sbHist"); h.innerHTML = "";
+  const bins = 20, bw = 0.0025, counts = new Array(bins).fill(0);
+  sbHist.forEach(o => { const b = Math.floor(o / bw); if (b >= 0 && b < bins) counts[b]++; });
+  const cmax = Math.max(1, ...counts), x0 = 30, W = 580;
+  for (let b = 0; b < bins; b++) { const hh = counts[b] / cmax * 100; el("rect", { x: x0 + b * W / bins + 1, y: 120 - hh, width: W / bins - 2, height: hh, fill: "var(--eosin)", opacity: 0.75, rx: 2 }, h); }
+  el("line", { x1: x0, x2: x0 + W, y1: 120, y2: 120, stroke: "var(--muted)" }, h);
+  [0, 0.01, 0.02, 0.03, 0.04, 0.05].forEach(t => el("text", { x: x0 + t / 0.05 * W, y: 136, "text-anchor": "middle" }, h, "+" + fmt(t, 2)));
+  el("text", { x: x0, y: 154 }, h, "Độ thổi phồng = điểm đứng đầu − giá trị thật");
+  if (sbHist.length) {
+    const m = sbHist.reduce((a, b) => a + b, 0) / sbHist.length;
+    el("line", { x1: x0 + m / 0.05 * W, x2: x0 + m / 0.05 * W, y1: 10, y2: 120, stroke: "var(--ink)", "stroke-dasharray": "4 3" }, h);
+    el("text", { x: x0 + m / 0.05 * W + 6, y: 20, class: "ink" }, h, "trung bình +" + fmt(m));
+    $("#sbStat").textContent = `${sbHist.length} lần · pipeline đứng đầu cao hơn thật trung bình +${fmt(m)}`;
+  } else $("#sbStat").textContent = "";
+}
+$("#sb1").onclick = () => { sbOnce(); drawSB(); };
+$("#sb500").onclick = () => { for (let i = 0; i < 500; i++) sbOnce(); drawSB(); };
+$("#sb0").onclick = () => { sbHist = []; sbLast = null; sbRng = mulberry32(7); drawSB(); };
+for (let i = 0; i < 300; i++) sbOnce(); drawSB();
+
+const MS = [["P03 · C=0,1", 0.74], ["P06 · C=0,01", 0.77], ["P07 · l1=0,5, C=0,1", 0.79], ["P09 · k=1000, C=0,1", 0.76], ["P12 · sqrt, leaf=1", 0.70]];
+function drawMS(anim) {
+  $("#msCands").innerHTML = MS.map(([l, v]) => `<div class="ms-c" data-v="${v}"><span>${l}</span><span class="t"><i style="width:${anim ? 0 : (v - 0.6) / 0.25 * 100}%"></i></span><span>${fmt(v, 2)}</span></div>`).join("");
+  $("#msOut").innerHTML = `<span class="muted">Điểm inner chỉ tính trên outer train. Chọn pipeline cao nhất…</span>`;
+  const done = () => { const best = Math.max(...MS.map(m => m[1])); $$(".ms-c").forEach(r => r.classList.toggle("win", +r.dataset.v === best)); $("#msOut").innerHTML = `<b>Thắng fold này: P07 (l1=0,5, C=0,1)</b><span class="arrow">→</span><span>lấy dự đoán outer test của P07 ở fold này, đã có sẵn, không fit thêm</span><span class="arrow">→</span><span>ghép 15 fold thành META-SELECT</span>`; };
+  if (anim) { requestAnimationFrame(() => requestAnimationFrame(() => { $$(".ms-c").forEach(r => r.querySelector("i").style.width = ((+r.dataset.v - 0.6) / 0.25 * 100) + "%"); setTimeout(done, 700); })); }
+  else done();
+}
+$("#msPlay").onclick = () => drawMS(true);
+drawMS(false);
+
+/* ---------- slide 13: leakage ---------- */
+segInit($("#leakMode"), v => {
+  const w = v === "wrong"; $("#leak").classList.toggle("wrong", w);
+  $("#leakTestH").textContent = w ? "Test fold · đã bị nhìn thấy lúc fit" : "Validation / test fold · chỉ transform";
+  $$("#leak .col.test .item").forEach(it => it.textContent = w ? it.dataset.w : it.dataset.r);
+});
+let leakSeed = 11, leakRuns = [];
+function leakDemo(seed) {
+  const rng = mulberry32(seed), n = 60, p = 2000, K = 20;
+  const X = new Float64Array(n * p); for (let i = 0; i < n * p; i++) X[i] = gauss(rng);
+  const y = shuffle(Array.from({ length: n }, (_, i) => i % 2), rng);
+  const fold = new Int8Array(n); [0, 1].forEach(c => { let j = 0; for (let i = 0; i < n; i++) if (y[i] === c) fold[i] = (j++) % 5; });
+  function topk(idx) {
+    const sc = new Float64Array(p);
+    for (let g = 0; g < p; g++) {
+      let s0 = 0, s1 = 0, q0 = 0, q1 = 0, n0 = 0, n1 = 0;
+      for (const i of idx) { const v = X[i * p + g]; if (y[i]) { s1 += v; q1 += v * v; n1++; } else { s0 += v; q0 += v * v; n0++; } }
+      const m0 = s0 / n0, m1 = s1 / n1, v0 = (q0 - n0 * m0 * m0) / (n0 - 1), v1 = (q1 - n1 * m1 * m1) / (n1 - 1);
+      sc[g] = Math.abs(m1 - m0) / Math.sqrt(v0 / n0 + v1 / n1);
+    }
+    return Array.from(sc.keys()).sort((a, b) => sc[b] - sc[a]).slice(0, K);
+  }
+  function acc(genesFor) {
+    let ok = 0;
+    for (let f = 0; f < 5; f++) {
+      const tr = [], te = []; for (let i = 0; i < n; i++) (fold[i] === f ? te : tr).push(i);
+      const genes = genesFor(tr);
+      const cen = [new Float64Array(K), new Float64Array(K)], cnt = [0, 0];
+      tr.forEach(i => { cnt[y[i]]++; genes.forEach((g, k) => cen[y[i]][k] += X[i * p + g]); });
+      [0, 1].forEach(c => cen[c].forEach((v, k) => cen[c][k] = v / cnt[c]));
+      te.forEach(i => { let d0 = 0, d1 = 0; genes.forEach((g, k) => { const v = X[i * p + g]; d0 += (v - cen[0][k]) ** 2; d1 += (v - cen[1][k]) ** 2; }); if ((d1 < d0 ? 1 : 0) === y[i]) ok++; });
+    }
+    return ok / n;
+  }
+  const all = Array.from({ length: n }, (_, i) => i), gAll = topk(all);
+  return { wrong: acc(() => gAll), right: acc(tr => topk(tr)) };
+}
+function runLeak() {
+  const r = leakDemo(leakSeed++); leakRuns.push(r);
+  $("#accW").style.width = r.wrong * 100 + "%"; $("#accWv").textContent = Math.round(r.wrong * 100) + "%";
+  $("#accR").style.width = r.right * 100 + "%"; $("#accRv").textContent = Math.round(r.right * 100) + "%";
+  const mw = leakRuns.reduce((a, b) => a + b.wrong, 0) / leakRuns.length, mr = leakRuns.reduce((a, b) => a + b.right, 0) / leakRuns.length;
+  $("#leakAvg").textContent = `Trung bình ${leakRuns.length} lần: ${Math.round(mw * 100)}% vs ${Math.round(mr * 100)}% · vạch chấm = 50%`;
+}
+$("#leakRun").onclick = runLeak;
+setTimeout(runLeak, 50);
+
+/* ---------- slide 14: TSS vis ---------- */
+(() => {
+  const rng = mulberry32(3), cols = ["--c-lms", "--c-ddlps", "--c-ups", "--c-mfs"];
+  $("#tssVis").innerHTML = [0, 1, 2, 3, 4].map(h => `<div class="hosp${h === 4 ? " test" : ""}">${Array.from({ length: 8 }, () => `<i style="--c:var(${cols[Math.floor(rng() * cols.length)]})"></i>`).join("")}</div>`).join("") + `<span class="small muted">5 nơi lấy mẫu · viền hồng: outer test</span>`;
+})();
+
+/* ---------- slide 15: mock data ---------- */
+const TAB_A = { P02: [0.772, 0.015], P03: [0.780, 0.004], P04: [0.786, 0.001], P05: [0.781, 0.006], P06: [0.800, 0.007], P07: [0.807, 0.005], P08: [0.798, 0.008], P09: [0.802, 0.007], P10: [0.791, 0.004], P11: [0.760, 0.004], P12: [0.737, 0.007], P13: [0.711, 0.002] };
+const ROLE_COL = { floor: "--r-floor", ref: "--r-ref", abl: "--r-abl", cand: "--r-cand", neg: "--r-neg" };
+function drawTabA() {
+  const svg = $("#tabA"); svg.innerHTML = "";
+  const ids = Object.keys(TAB_A), x0 = 64, W = 470, lo = 0.70, hi = 0.82, X = v => x0 + (v - lo) / (hi - lo) * W, rowH = 28;
+  const gg = el("g", { class: "grid" }, svg);
+  [0.70, 0.73, 0.76, 0.79, 0.82].forEach(t => { el("line", { x1: X(t), x2: X(t), y1: 6, y2: 8 + rowH * ids.length }, gg); el("text", { x: X(t), y: 24 + rowH * ids.length, "text-anchor": "middle" }, svg, fmt(t, 2)); });
+  el("line", { x1: X(0.803), x2: X(0.803), y1: 2, y2: 8 + rowH * ids.length, stroke: "var(--eosin)", "stroke-width": 2, "stroke-dasharray": "5 3" }, svg);
+  el("text", { x: X(0.803) - 6, y: 362, "text-anchor": "end", fill: "var(--eosin)", "font-weight": 600 }, svg, "META-SELECT 0,803");
+  ids.forEach((id, i) => {
+    const [m, sd] = TAB_A[id], y = 18 + i * rowH, col = `var(${ROLE_COL[P[id].role]})`;
+    el("text", { x: x0 - 10, y: y + 4, "text-anchor": "end", class: "ink" }, svg, id);
+    el("line", { x1: X(m - sd), x2: X(m + sd), y1: y, y2: y, stroke: col, "stroke-width": 3 }, svg);
+    el("circle", { cx: X(m), cy: y, r: id === "P07" ? 7 : 5.5, fill: col, stroke: id === "P07" ? "var(--ink)" : "none", "stroke-width": 2 }, svg);
+    el("text", { x: X(m + sd) + 8, y: y + 4 }, svg, fmt(m));
+  });
+}
+const FOLDS = [["P07", 0.790, 0.777], ["P06", 0.811, 0.806], ["P07", 0.798, 0.841], ["P09", 0.806, 0.754], ["P07", 0.815, 0.789], ["P08", 0.801, 0.781], ["P07", 0.809, 0.785], ["P06", 0.797, 0.800], ["P09", 0.812, 0.760], ["P07", 0.804, 0.823], ["P04", 0.794, 0.789], ["P06", 0.808, 0.795], ["P09", 0.800, 0.766], ["P07", 0.817, 0.861], ["P08", 0.805, 0.789]];
+const FOLD_COL = { P07: "--eosin", P06: "--hema", P09: "--r-cand", P08: "--r-abl", P04: "--r-ref" };
+(() => {
+  let h = `<span></span>` + [1, 2, 3, 4, 5].map(f => `<span class="h">F${f}</span>`).join("");
+  for (let r = 0; r < 3; r++) { h += `<span class="h">R${r + 1}</span>`; for (let f = 0; f < 5; f++) { const [p, inn, out] = FOLDS[r * 5 + f]; h += `<span class="c" style="--pc:var(${FOLD_COL[p]})" title="R${r + 1}·F${f + 1}: ${p}, inner ${fmt(inn)}, outer ${fmt(out)}">${p}<small>in ${fmt(inn)} · out ${fmt(out)}</small></span>`; } }
+  $("#foldStrip").innerHTML = h;
+  const cnt = {}; FOLDS.forEach(f => cnt[f[0]] = (cnt[f[0]] || 0) + 1);
+  $("#foldFreq").innerHTML = Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(([p, c]) => `<span style="--pc:var(${FOLD_COL[p]})">${p} × ${c}</span>`).join("") + `<span style="--pc:var(--line)">R1/R2/R3: 0,802 · 0,799 · 0,809</span>`;
+})();
+
+const TAB_B = {
+  P02: [0.755, 0.767, 0.793, 0.722, 0.758, 0.756, 0.749, 0.754, 0.712, 0.778, 0.799, 0.797, 0.750, 0.817, 0.737],
+  P03: [0.756, 0.797, 0.801, 0.741, 0.765, 0.787, 0.756, 0.797, 0.740, 0.790, 0.782, 0.757, 0.739, 0.804, 0.753],
+  P04: [0.753, 0.779, 0.822, 0.737, 0.789, 0.793, 0.744, 0.802, 0.741, 0.810, 0.789, 0.782, 0.741, 0.824, 0.748],
+  P05: [0.756, 0.784, 0.800, 0.725, 0.764, 0.790, 0.759, 0.795, 0.747, 0.788, 0.785, 0.772, 0.730, 0.821, 0.767],
+  P06: [0.757, 0.806, 0.818, 0.752, 0.781, 0.797, 0.777, 0.800, 0.778, 0.828, 0.809, 0.795, 0.764, 0.831, 0.775],
+  P07: [0.777, 0.811, 0.841, 0.747, 0.789, 0.815, 0.785, 0.829, 0.763, 0.823, 0.808, 0.790, 0.760, 0.861, 0.771],
+  P08: [0.768, 0.803, 0.841, 0.747, 0.812, 0.781, 0.769, 0.793, 0.758, 0.799, 0.806, 0.800, 0.722, 0.848, 0.789],
+  P09: [0.776, 0.801, 0.827, 0.754, 0.801, 0.790, 0.771, 0.804, 0.760, 0.810, 0.803, 0.810, 0.766, 0.860, 0.761],
+  P10: [0.777, 0.812, 0.813, 0.720, 0.768, 0.799, 0.766, 0.812, 0.751, 0.787, 0.798, 0.788, 0.740, 0.840, 0.759],
+  P11: [0.753, 0.735, 0.797, 0.708, 0.777, 0.764, 0.731, 0.765, 0.698, 0.777, 0.768, 0.759, 0.711, 0.803, 0.719],
+  P12: [0.753, 0.744, 0.757, 0.674, 0.742, 0.712, 0.710, 0.739, 0.689, 0.755, 0.741, 0.728, 0.691, 0.791, 0.698],
+  P13: [0.705, 0.725, 0.744, 0.634, 0.712, 0.696, 0.688, 0.732, 0.675, 0.714, 0.729, 0.697, 0.682, 0.748, 0.649],
+};
+/* Student t distribution */
+function lnGamma(z) {
+  const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lnGamma(1 - z);
+  z -= 1; let x = c[0]; for (let i = 1; i < 9; i++) x += c[i] / (z + i); const t = z + 7.5;
+  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+}
+function betacf(a, b, x) {
+  const FP = 1e-300; let qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < FP) d = FP; d = 1 / d; let h = d;
+  for (let m = 1; m <= 300; m++) {
+    const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; const del = d * c; h *= del;
+    if (Math.abs(del - 1) < 3e-14) break;
+  }
+  return h;
+}
+function ibeta(a, b, x) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x)); return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b; }
+function tcdf(t, df) { const p = 0.5 * ibeta(df / 2, 0.5, df / (df + t * t)); return t > 0 ? 1 - p : p; }
+function tpdf(t, df) { return Math.exp(lnGamma((df + 1) / 2) - lnGamma(df / 2)) / Math.sqrt(df * Math.PI) * Math.pow(1 + t * t / df, -(df + 1) / 2); }
+function bayesCT(d, rope) {
+  const n = d.length, mean = d.reduce((a, b) => a + b, 0) / n, sd = Math.sqrt(d.reduce((a, b) => a + (b - mean) ** 2, 0) / (n - 1));
+  const scale = Math.max(1e-9, Math.sqrt(1 / n + 0.25) * sd), df = n - 1;
+  const pL = tcdf((-rope - mean) / scale, df), pR = 1 - tcdf((rope - mean) / scale, df);
+  return { mean, sd, scale, df, pL, pR, pE: Math.max(0, 1 - pL - pR) };
+}
+window.__p3 = { bayesCT, TAB_B };
+const PAIRS = [["P02", "P03"], ["P03", "P04"], ["P04", "P05"], ["P05", "P06"], ["P06", "P07"], ["P06", "P08"], ["P06", "P09"], ["P09", "P10"], ["P06", "P11"], ["P06", "P12"], ["P09", "P13"]];
+let pairI = 3, rope = 0.01;
+$("#pairBtns").innerHTML = PAIRS.map(([a, b], i) => `<button type="button" data-v="${i}" aria-pressed="${i === pairI}">${a} → ${b}</button>`).join("");
+segInit($("#pairBtns"), v => { pairI = +v; drawTT(); });
+segInit($("#ropeSeg"), v => { rope = +v; drawTT(); drawEq(); });
+function drawTT() {
+  const [a, b] = PAIRS[pairI], d = TAB_B[b].map((v, j) => v - TAB_B[a][j]), r = bayesCT(d, rope);
+  const svg = $("#ttSvg"); svg.innerHTML = "";
+  const lo = Math.min(-0.03, -2 * rope, r.mean - 4.5 * r.scale, ...d) - 0.004, hi = Math.max(0.03, 2 * rope, r.mean + 4.5 * r.scale, ...d) + 0.004;
+  const x0 = 20, W = 600, base = 170, X = v => x0 + (v - lo) / (hi - lo) * W;
+  const pts = []; const steps = 240; let pmax = 0;
+  for (let k = 0; k <= steps; k++) { const v = lo + (hi - lo) * k / steps, pd = tpdf((v - r.mean) / r.scale, r.df) / r.scale; pts.push([v, pd]); pmax = Math.max(pmax, pd); }
+  const Y = pd => base - pd / pmax * 140;
+  function region(a1, b1, col) {
+    const seg = pts.filter(([v]) => v >= a1 && v <= b1); if (seg.length < 2) return;
+    const dd = `M${X(seg[0][0])},${base} ` + seg.map(([v, pd]) => `L${X(v)},${Y(pd)}`).join(" ") + ` L${X(seg[seg.length - 1][0])},${base} Z`;
+    el("path", { d: dd, fill: col, opacity: 0.35 }, svg);
+  }
+  region(lo, -rope, "var(--bad)"); region(-rope, rope, "var(--muted)"); region(rope, hi, "var(--good)");
+  el("rect", { x: X(-rope), y: 8, width: X(rope) - X(-rope), height: base - 8, fill: "var(--sunk)", opacity: 0.5 }, svg);
+  el("path", { d: pts.map(([v, pd], k) => `${k ? "L" : "M"}${X(v)},${Y(pd)}`).join(" "), fill: "none", stroke: "var(--ink)", "stroke-width": 2 }, svg);
+  el("line", { x1: x0, x2: x0 + W, y1: base, y2: base, stroke: "var(--muted)" }, svg);
+  [-rope, 0, rope].forEach(t => { el("line", { x1: X(t), x2: X(t), y1: base, y2: base + 5, stroke: "var(--muted)" }, svg); el("text", { x: X(t), y: base + 18, "text-anchor": "middle" }, svg, (t > 0 ? "+" : "") + fmt(t, 2)); });
+  el("text", { x: X(0), y: 22, "text-anchor": "middle", class: "ink" }, svg, "ROPE ±" + fmt(rope, 2));
+  d.forEach(v => el("line", { x1: X(v), x2: X(v), y1: base + 24, y2: base + 36, stroke: "var(--hema)", "stroke-width": 2 }, svg));
+  el("text", { x: x0, y: base + 52 }, svg, `15 hiệu theo fold d = ${b} − ${a} (vạch xanh) · đường cong: hậu nghiệm của chênh lệch trung bình`);
+  const pr = [["pl", r.pL, `${b} kém hơn`], ["pr", r.pE, "Tương đương"], ["pg", r.pR, `${b} tốt hơn`]];
+  const hit = pr.findIndex(x => x[1] >= 0.95);
+  $("#ttProbs").innerHTML = pr.map(([c, v, l], i) => `<div class="${c}${i === hit ? " hit" : ""}"><b>${fmt(v, 2)}</b><small>${l}</small></div>`).join("");
+  let concl;
+  if (hit === 2) concl = `${b} tốt hơn ${a}.`; else if (hit === 0) concl = `${a} tốt hơn ${b}.`; else if (hit === 1) concl = `${a} và ${b} tương đương thực tế.`;
+  else { const lean = pr.reduce((m, x, i) => x[1] > pr[m][1] ? i : m, 0); concl = `Chưa kết luận được, nghiêng về: ${pr[lean][2]}.`; }
+  $("#ttConcl").textContent = concl;
+  $("#ttStats").textContent = `Mean d = ${(r.mean >= 0 ? "+" : "") + fmt(r.mean)} · SD = ${fmt(r.sd, 4)} · scale = SD × √(1/15 + 0,25) = ${fmt(r.scale, 4)} · ngưỡng kết luận 0,95 (giả định).`;
+}
+const SIMPLE = ["P11", "P03", "P02", "P05", "P04", "P06", "P08", "P09", "P07", "P10", "P13", "P12"];
+function drawEq() {
+  const T = "P07", xs = ["P02", "P03", "P04", "P05", "P06", "P08", "P09", "P10", "P11", "P12", "P13"];
+  const res = xs.map(x => { const d = TAB_B[T].map((v, j) => v - TAB_B[x][j]); return [x, bayesCT(d, rope).pR]; });
+  const group = new Set([T, ...res.filter(r => r[1] < 0.95).map(r => r[0])]);
+  const pick = SIMPLE.find(p => group.has(p));
+  $("#eqRows").innerHTML = res.map(([x, p]) => `<div class="eqr ${p < 0.95 ? "in" : "out"}${x === pick ? " pick" : ""}"><span>${x}</span><span class="t"><i style="width:${p * 100}%"></i></span><span>${fmt(p, 3)}</span><span class="st">${p < 0.95 ? (x === pick ? "được chọn" : "trong nhóm") : "loại"}</span></div>`).join("");
+  $("#eqPick").innerHTML = `ROPE ±${fmt(rope, 2)}: nhóm tương đương ${[...group].sort().join(", ")} → mang <b class="hl">${pick} ${P[pick].name}</b> sang app.`;
+}
+const CM = [[96, 2, 4, 1, 0, 1], [1, 51, 4, 1, 0, 0], [5, 3, 34, 7, 0, 0], [1, 1, 8, 15, 0, 0], [0, 0, 0, 0, 9, 1], [1, 0, 1, 1, 0, 6]];
+(() => {
+  const names = CLASSES.map(c => c[0]);
+  let h = `<thead><tr><th>Thật \\ Đoán</th>${names.map(n => `<th>${n}</th>`).join("")}</tr></thead><tbody>`;
+  CM.forEach((row, i) => {
+    const tot = row.reduce((a, b) => a + b, 0);
+    h += `<tr><th style="text-align:left">${names[i]}</th>` + row.map((v, j) => {
+      const share = v / tot, bd = (i === 2 && j === 3) || (i === 3 && j === 2);
+      const bg = v === 0 ? "transparent" : i === j ? `color-mix(in srgb, var(--hema) ${Math.round(20 + share * 70)}%, transparent)` : `color-mix(in srgb, var(--eosin) ${Math.round(12 + share * 160)}%, transparent)`;
+      return `<td class="${v === 0 ? "z" : ""}${bd ? " bd" : ""}" style="background:${bg}" title="${names[i]} → ${names[j]}: ${v}">${v}</td>`;
+    }).join("") + `</tr>`;
+  });
+  $("#cm").innerHTML = h + "</tbody>";
+  $("#rcRows").innerHTML = CM.map((row, i) => {
+    const n = row.reduce((a, b) => a + b, 0), k = row[i], [lo, hi] = wilson(k, n);
+    return `<div class="rc-row${names[i] === "MPNST" ? " rare" : ""}" style="--c:var(${CLASSES[i][2]})"><span>${names[i]}</span><span class="t"><span class="ci" style="left:${lo * 100}%;width:${(hi - lo) * 100}%"></span><span class="pt" style="left:${k / n * 100}%"></span></span><span>${k}/${n} · ${fmt(lo, 2)}–${fmt(hi, 2)}</span></div>`;
+  }).join("");
+})();
+
+/* ---------- slide 16: reuse flow ---------- */
+let rTimer = null;
+$("#rPlay").onclick = () => {
+  const flow = $("#rFlow"), st = $$(".rstep", flow);
+  if (rTimer) { clearInterval(rTimer); rTimer = null; }
+  flow.classList.add("playing"); st.forEach(s => s.classList.remove("lit"));
+  let i = 0; st[0].classList.add("lit");
+  rTimer = setInterval(() => { i++; if (i >= st.length) { clearInterval(rTimer); rTimer = null; setTimeout(() => flow.classList.remove("playing"), 900); return; } st[i].classList.add("lit"); }, 650);
+};
+
+/* ---------- slide 17: decisions (per-viewer) ---------- */
+$$("#decList input").forEach(cb => {
+  if (store("p3-" + cb.id) === "1") cb.checked = true;
+  cb.addEventListener("change", () => store("p3-" + cb.id, cb.checked ? "1" : "0"));
+});
+
+function redrawAll() { drawTabA(); drawTT(); drawEq(); }
+drawTabA(); drawTT(); drawEq();
+})();
+</script>
+</body>
+</html>
