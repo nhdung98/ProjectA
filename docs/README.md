@@ -1,7 +1,9 @@
-# Current experiment
+# Experiment documentation
 
-Start with the [member commands and setup](../README.md), then read the [PCA-order protocol](pca_order_experiment.md).
+For new Protocol 2.0 execution, start with the [standardized workflow](protocol2_workflow.md) and [root setup guide](../README.md).
 
-Each member runs one command and submits one completed CSV. The protocol includes the leader's collection command and validation limits.
+The [original Protocol 2.0 design](../archive/week01/docs/experiment_protocol.md) and [nine-file submission requirements](../archive/week01/docs/submission_requirements.md) remain the scientific specification. The new interface automates that design without changing cohort, grid, seeds, or saved folds.
 
-Last week's guides, templates and submission register are in [the week 1 archive](../archive/week01/README.md). They apply to the earlier multi-file SVM workflow.
+The [PCA-order instructions](pca_order_experiment.md) describe a separate retained experiment. Do not mix its CSV-only submissions with Protocol 2.0 runs. Historical submissions remain in the week-one archive.
+
+Official Windows operators: [PowerShell setup, recovery and exports](protocol2_windows.md).

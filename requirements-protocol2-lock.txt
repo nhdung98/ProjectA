@@ -1,0 +1,6 @@
+# Protocol 2.0 direct scientific pins remain in the existing requirements file.
+-r requirements-experiments.txt
+# Transitive runtime versions observed in the isolated macOS validation environment.
+python-dateutil==3.0.0
+six==1.17.0
+tzdata==2026.5

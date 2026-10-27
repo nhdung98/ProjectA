@@ -9,3 +9,7 @@ results/splits/*.json -text
 *.py text eol=lf
 configs/*.json text eol=lf
 requirements-experiments.txt text eol=lf
+# Additional provenance-hashed configuration and dependency files.
+configs/*.yaml text eol=lf
+requirements.txt text eol=lf
+requirements-protocol2-lock.txt text eol=lf

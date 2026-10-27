@@ -1,58 +1,60 @@
-# TCGA SARC machine learning
+# TCGA-SARC reproducible SVM experiments
 
-Predict six sarcoma subtypes from gene expression: 254 patients and 20,531 gene records. This week's experiment compares **scaling before PCA** with **scaling after PCA**.
+COS40005 Project A: classify six sarcoma subtypes using 254 patients and 20,531 source gene records.
 
-## Member commands
+Use **`python -m src.experiments.workflow`** for new Protocol 2.0 experiments. It wraps the existing scientific pipeline and nested search, retains the nine required artifacts, independently validates predictions, and builds consolidated evidence. Scientific settings remain in [configs/svm.json](configs/svm.json).
 
-After setup, run your assigned command from the repository root:
+Official training will run on a separate native Windows PC. Use the [Windows PowerShell operator guide](docs/protocol2_windows.md); do not transfer the macOS `.venv`. The commands below are for macOS development.
 
-| Member | Command | Completed result |
-| --- | --- | --- |
-| 1 | `python -m src.experiments.pca_order run --member 1` | `results/pca_order/member1_results.csv` |
-| 2 | `python -m src.experiments.pca_order run --member 2` | `results/pca_order/member2_results.csv` |
-| 3 | `python -m src.experiments.pca_order run --member 3` | `results/pca_order/member3_results.csv` |
-| 4 | `python -m src.experiments.pca_order run --member 4` | `results/pca_order/member4_results.csv` |
+## Setup on macOS
 
-Each member submits **one CSV**, containing 4,572 held-out predictions with settings and run evidence. No ZIP/RAR, separate metadata or manually calculated metrics. Interrupted runs stay marked `.partial.csv`; existing files block reruns rather than being overwritten.
+Use Python 3.12 in an isolated environment. Installation is explicit; the runner never installs or upgrades packages.
 
-Read the [PCA-order instructions](docs/pca_order_experiment.md) for assignments, interruption handling and the leader's collection command.
-
-## One-time setup
-
-Use Python 3.12 and a Git clone, checked out at the exact reviewed commit distributed by the leader. This branch must be committed and published before official runs; a ZIP download does not include the required commit identity.
-
-```powershell
-git clone https://github.com/nhdung98/ProjectA.git
-cd ProjectA
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-experiments.txt
-python -m src.data.prepare
-python -m src.experiments.pca_order check
+```sh
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-protocol2-lock.txt
+.venv/bin/python -m src.experiments.workflow prepare-data
+.venv/bin/python -m src.experiments.workflow preflight
+.venv/bin/python -m src.experiments.workflow smoke
 ```
 
-The original inputs are included in `data/raw/`. Preparation creates `data/processed/` locally. All members use the same frozen outer and inner folds in `results/splits/`. Scalers, feature filtering and PCA are fitted inside training folds, including inner GridSearchCV folds.
+Preparation is explicit, refuses overwrites, and publishes CRLF TSVs only after verifying the existing frozen dataset hash. Neither preparation nor preflight creates or changes split assignments or manifests. Run/resume never prepare data.
 
-## Where things live
+## Official execution after review
+
+Review and commit the implementation first; official execution requires a clean checkout. This development branch remains uncommitted pending approval. Once approved, the operator runs:
+
+```sh
+.venv/bin/python -m src.experiments.workflow run --all --batch results/protocol2/vy-official-01
+```
+
+This starts the full 24-configuration batch. Do not run it to test installation. Successful completion automatically validates runs, generates reports, and writes aggregate-only `evidence_bundle.zip`.
+
+Monitor from another terminal:
+
+```sh
+.venv/bin/python -m src.experiments.workflow status --batch results/protocol2/vy-official-01
+```
+
+Read the [workflow guide](docs/protocol2_workflow.md) for individual configurations, preprocessing branches, interruption/resume, private team export, and validation limits.
+
+## Repository map
 
 | Location | Purpose |
 | --- | --- |
-| [docs/](docs/README.md) | Current experiment instructions |
-| `configs/pca_order.json` | Current assignments and search settings |
-| [src/experiments/](src/experiments/README.md) | Runners and shared training code |
-| `src/data/` and `data/` | Data preparation and source inputs |
-| `results/splits/` | Frozen patient assignments and manifests |
-| `results/pca_order/` | Generated member CSVs and leader comparisons; ignored by Git |
-| [reports/](reports/README.md) | Findings and supporting research evidence |
-| [archive/week01/](archive/week01/README.md) | Last week's instructions and original member submissions |
-| `tests/` | Pipeline, split, validation and output checks |
+| `src/data/` | Source auditing and preparation |
+| `src/experiments/` | Shared scientific code and workflow orchestration |
+| `configs/svm.json` | Unchanged Protocol 2.0 cohort, grid, and seeds |
+| `results/splits/` | Frozen outer/inner assignments and manifests |
+| `results/protocol2/` | New official batches; ignored by Git |
+| `results/protocol2-smoke/` | Diagnostic runs, excluded from official reports |
+| `results/protocol2-development/` | Local implementation verification evidence |
+| `tests/` | Synthetic execution, leakage, integrity, restart, and report tests |
+| `archive/week01/` | Historical submissions and original Protocol 2.0 instructions |
+| `reports/` | Historical research findings and evidence snapshots |
 
-## Previous experiments
+The retained [PCA-order workflow](docs/pca_order_experiment.md) is a separate experiment round. Its CSV-only results are not inputs here. Legacy SVM commands remain available. New workflow validation deliberately excludes historical folders; preserve their original commits and provenance separately.
 
-Last week's SVM code remains runnable through `python -m src.experiments.svm`. Its [rerun guide](archive/week01/README.md) explains how to reproduce the original release or run the retained commands. Old submissions remain historical evidence; they are not inputs to this week's collector.
+Run `.venv/bin/python -m unittest discover -s tests -v` for automated checks. Tests use artificial datasets and temporary folders; they do not launch the complete TCGA batch. [The EDA notebook](notebooks/01_data_exploration.ipynb) requires optional notebook dependencies.
 
-## Development and data exploration
-
-Run the checks with `python -m unittest discover -s tests -v`. For guided exploration, install `requirements-notebooks.txt` and open [the notebook](notebooks/01_data_exploration.ipynb).
-
-[Data sources](DATA_SOURCES.md) and [the supplied dataset notice](DATA_LICENSE.txt) document the inputs. Repeated gene records remain separate features; clinical columns are not model inputs. `configs/data.yaml` uses JSON syntax, which is valid YAML. The requirements files pin direct dependencies, not a complete environment lock.
+Read [data provenance](DATA_SOURCES.md) and the [supplied data notice](DATA_LICENSE.txt). Clinical columns and identifiers are excluded from predictors. Repeated gene records remain separate features. The lock pins versions, not platform-specific wheel hashes; Python build, installed packages, numerical libraries, platform and code hashes are recorded per batch.

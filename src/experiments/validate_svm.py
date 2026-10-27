@@ -16,7 +16,7 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def audit_run(folder, settings, data, splits):
+def audit_run(folder, settings, data, splits, *, finalizing=False):
     """Check identities, fold assignments, completion, and independently counted scores."""
     folder = Path(folder)
     manifest = json.loads((folder / "run_manifest.json").read_text(encoding="utf-8"))
@@ -24,7 +24,7 @@ def audit_run(folder, settings, data, splits):
     metrics = json.loads((folder / "metrics.json").read_text(encoding="utf-8"))
     predictions = pd.read_csv(folder / "predictions.csv")
     details = json.loads((folder / "feature_details.json").read_text(encoding="utf-8"))
-    require(manifest["status"] == "complete" and not manifest["smoke"], "Only complete full runs can pass validation")
+    require(manifest["status"] == ("finalizing" if finalizing else "complete") and not manifest["smoke"], "Only complete full runs can pass validation")
     require(config["shared"] == settings and not config["smoke"], "Run settings differ from the reviewed configuration")
     configuration = config["configuration"]
     choices = settings["configurations"]

@@ -9,7 +9,7 @@ import pandas as pd
 from .audit import load_config, audit
 import argparse
 
-def prepare(config):
+def prepare(config, *, lineterminator=None):
     OUT = config['processed_dir']
     EXPRESSION = config['expression_file']
     CLINICAL = config['clinical_file']
@@ -56,7 +56,7 @@ def prepare(config):
                'gene_feature_map.tsv': gene_map, 'excluded_subtypes.tsv': excluded,
                'unmatched_clinical.tsv': unmatched, 'repeated_patient_samples.tsv': repeated}
     for filename, frame in outputs.items():
-        frame.to_csv(OUT / filename, sep='\t', index=False, na_rep='NA')
+        frame.to_csv(OUT / filename, sep='\t', index=False, na_rep='NA', lineterminator=lineterminator)
     # Check saved training matrix preserves IDs, feature order, and every expression value.
     saved = pd.read_csv(OUT / 'sarc_merged_six_subtypes.tsv', sep='\t')
     assert saved.columns.tolist() == project.columns.tolist()
