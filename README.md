@@ -1,14 +1,44 @@
 # TCGA-SARC reproducible SVM experiments
 
-COS40005 Project A: classify six sarcoma subtypes using 254 patients and 20,531 source gene records.
+COS40005 Computing Technology Project A investigates classification of six sarcoma subtypes using 254 patients and 20,531 source gene records. Protocol 2.0 compares 24 SVM configurations: MinMax or Standard scaling, ANOVA gene selection or PCA, 50/100/150 genes or components, and Linear or RBF kernels.
 
-Use **`python -m src.experiments.workflow`** for new Protocol 2.0 experiments. It wraps the existing scientific pipeline and nested search, retains the nine required artifacts, independently validates predictions, and builds consolidated evidence. Scientific settings remain in [configs/svm.json](configs/svm.json).
+## Results and project status
 
-Official training will run on a separate native Windows PC. Use the [Windows PowerShell operator guide](docs/protocol2_windows.md); do not transfer the macOS `.venv`. The commands below are for macOS development.
+Official training is complete on Windows for batch `windows-official-01`: 24 configurations and 360 outer-fold fits, with passed automated validation. Evaluation uses repeated nested cross-validation: five outer folds, three repeats and four inner folds. These are research results, not a clinically validated diagnostic system.
 
-## Setup on macOS
+| Reference | Role |
+| --- | --- |
+| `87f3e6ce1bb3e7fa53e513a22b480abb63998882` | Frozen training release |
+| `67ad3e764dadf13827421ab2d6f78f85809b42b3` on `Vy/protocol2-results` | Official aggregate results and evidence ZIP |
+| `39c4eff7fe7bba9c4f1607013e87998a35661d59` | Initial dashboard source commit |
+| `Vy/protocol2-dashboard` | Reporting source, documentation and reviewed Notebook 02 outputs |
 
-Use Python 3.12 in an isolated environment. Installation is explicit; the runner never installs or upgrades packages.
+Start with [Notebook 02](notebooks/02_protocol2_results_dashboard.ipynb) for saved aggregate tables and figures viewable on GitHub. The standalone HTML is the preferred interactive presentation: it provides a configuration explorer and PNG downloads without Jupyter. Obtain the reviewed `report.html` and `report_provenance.json` from the team's approved distribution location, or generate them using the [dashboard guide](docs/protocol2_dashboard.md). No hosted report or release download is assumed to exist yet.
+
+Reporting tests pass on macOS; the user has manually verified the HTML selector and figure downloads there. Windows **reporting** reproduction and independent scientific peer review remain pending. The [Model Selection Report](reports/protocol2_model_selection.md) proposes a provisional baseline and comparators for Protocol 3.0; no new protocol or implementation is approved by that recommendation.
+
+## Workflow and repository map
+
+Windows training → validated aggregate evidence → read-only reporting → Jupyter analysis and a separately exported HTML report. The reporting layer does not retrain models or regenerate predictions. Notebook Run All displays analysis; HTML export is opt-in. Results can be retrieved directly from the results commit without merging branches.
+
+| Location | Purpose |
+| --- | --- |
+| `src/data/` | Source auditing and canonical data preparation |
+| `src/experiments/` | Shared scientific pipeline, nested search and workflow orchestration |
+| `configs/svm.json`, `results/splits/` | Protocol 2.0 settings and frozen outer/inner assignments |
+| `src/reporting/` | Aggregate validation, figures and standalone HTML |
+| `notebooks/01_data_exploration.ipynb` | Initial exploration; local execution outputs require separate privacy review |
+| `notebooks/02_protocol2_results_dashboard.ipynb` | Official aggregate analysis with reviewed saved outputs |
+| `results/protocol2/windows-official-01/` | Published aggregates on the results branch; not necessarily checked out here |
+| `results/dashboards/` | Local generated HTML, provenance and PNGs; excluded from source commits |
+| `tests/` | Workflow and reporting tests; authentic reporting checks require the official ZIP |
+| `archive/week01/`, `reports/` | Historical submissions, validation records and scientific reports |
+
+The training CLI is `python -m src.experiments.workflow`. It preserves nine required run artifacts, validates predictions independently and builds consolidated evidence. Read the [workflow guide](docs/protocol2_workflow.md) for run/resume, validation and private exports, or the [Windows operator guide](docs/protocol2_windows.md). Do not rerun the completed official batch merely to view results.
+
+## Development setup
+
+Use Python 3.12 in an isolated environment. Installation is explicit; the runner never installs or upgrades packages. For training-workflow development on macOS, follow these commands in an appropriate development checkout, not the reporting environment:
 
 ```sh
 python3.12 -m venv .venv
@@ -18,43 +48,10 @@ python3.12 -m venv .venv
 .venv/bin/python -m src.experiments.workflow smoke
 ```
 
-Preparation is explicit, refuses overwrites, and publishes CRLF TSVs only after verifying the existing frozen dataset hash. Neither preparation nor preflight creates or changes split assignments or manifests. Run/resume never prepare data.
+Preparation refuses overwrites and publishes CRLF TSVs only after verifying the frozen dataset hash. Preparation/preflight do not change split assignments; run/resume do not prepare data. Official execution requires a reviewed, committed, clean training checkout. Do not transfer a macOS virtual environment to Windows.
 
-## Official execution after review
+For reporting, use the separate environment and exact commands in the [dashboard guide](docs/protocol2_dashboard.md). Training-workflow tests use `.venv/bin/python -m unittest discover -s tests -v`; reporting-only tests should use the dedicated reporting environment and official-ZIP variable documented there. The EDA notebook has separate optional notebook dependencies.
 
-Review and commit the implementation first; official execution requires a clean checkout. This development branch remains uncommitted pending approval. Once approved, the operator runs:
+The retained [PCA-order workflow](docs/pca_order_experiment.md) is a separate experiment round, not evidence of an approved future protocol. Its CSV-only results are not official dashboard inputs. Legacy SVM commands remain available; historical folders retain their original provenance and are excluded from new-workflow validation.
 
-```sh
-.venv/bin/python -m src.experiments.workflow run --all --batch results/protocol2/vy-official-01
-```
-
-This starts the full 24-configuration batch. Do not run it to test installation. Successful completion automatically validates runs, generates reports, and writes aggregate-only `evidence_bundle.zip`.
-
-Monitor from another terminal:
-
-```sh
-.venv/bin/python -m src.experiments.workflow status --batch results/protocol2/vy-official-01
-```
-
-Read the [workflow guide](docs/protocol2_workflow.md) for individual configurations, preprocessing branches, interruption/resume, private team export, and validation limits.
-
-## Repository map
-
-| Location | Purpose |
-| --- | --- |
-| `src/data/` | Source auditing and preparation |
-| `src/experiments/` | Shared scientific code and workflow orchestration |
-| `configs/svm.json` | Unchanged Protocol 2.0 cohort, grid, and seeds |
-| `results/splits/` | Frozen outer/inner assignments and manifests |
-| `results/protocol2/` | New official batches; ignored by Git |
-| `results/protocol2-smoke/` | Diagnostic runs, excluded from official reports |
-| `results/protocol2-development/` | Local implementation verification evidence |
-| `tests/` | Synthetic execution, leakage, integrity, restart, and report tests |
-| `archive/week01/` | Historical submissions and original Protocol 2.0 instructions |
-| `reports/` | Historical research findings and evidence snapshots |
-
-The retained [PCA-order workflow](docs/pca_order_experiment.md) is a separate experiment round. Its CSV-only results are not inputs here. Legacy SVM commands remain available. New workflow validation deliberately excludes historical folders; preserve their original commits and provenance separately.
-
-Run `.venv/bin/python -m unittest discover -s tests -v` for automated checks. Tests use artificial datasets and temporary folders; they do not launch the complete TCGA batch. [The EDA notebook](notebooks/01_data_exploration.ipynb) requires optional notebook dependencies.
-
-Read [data provenance](DATA_SOURCES.md) and the [supplied data notice](DATA_LICENSE.txt). Clinical columns and identifiers are excluded from predictors. Repeated gene records remain separate features. The lock pins versions, not platform-specific wheel hashes; Python build, installed packages, numerical libraries, platform and code hashes are recorded per batch.
+Read [data provenance](DATA_SOURCES.md) and the [supplied data notice](DATA_LICENSE.txt). Clinical columns and identifiers are excluded from predictors; repeated gene records remain separate features. Training locks pin versions rather than platform-specific wheel hashes; each batch records its environment and code provenance. Keep patient-level data and private run evidence out of externally shared reporting artifacts.

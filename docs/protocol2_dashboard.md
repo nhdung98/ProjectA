@@ -1,94 +1,135 @@
-# Protocol 2.0 aggregate results dashboard
+# Protocol 2.0 reporting guide
 
-## Redesigned official report
+## 1. Purpose and official evidence
 
-Current presentation: `results/dashboards/windows-official-01-redesign-01/report.html`. The previous official report and its 53 PNGs remain untouched. The redesigned report has six initially visible figures: pipeline heatmap, all-configuration ranking, subtype overview, and the selected configuration's subtype, confusion and stability charts. Runtime is collapsed by default; validation and fixed-comparison stability are supplementary. All 24 configurations remain available through one selector; numerical-table buttons select the same three-chart explorer. Download links for all figures are in Supplementary Evidence.
+This layer reads validated Windows aggregates; it does not train models, read expression data or regenerate predictions. The HTML is a reviewed team deliverable, not merely a development preview.
 
-The export contains 78 PNGs (six global figures plus three per configuration), although only six appear in the primary narrative. This deliberately separates exhaustive downloadable exports from the reading experience. All 78 are embedded in the standalone HTML, which is 24,032,998 bytes in this build. No CDN or network assets are used. Pipeline order/colours are consistent; raw confusion scales are 0–312 and normalized scales 0–100%. Mean ± sample SD endpoints are preserved, including values beyond 0–1. Every PNG includes batch/training/results provenance.
+| Reference | Value |
+| --- | --- |
+| Batch | `windows-official-01` |
+| Training release | `87f3e6ce1bb3e7fa53e513a22b480abb63998882` |
+| Results commit | `67ad3e764dadf13827421ab2d6f78f85809b42b3` |
+| Initial dashboard commit | `39c4eff7fe7bba9c4f1607013e87998a35661d59` |
+| Results / reporting branches | `Vy/protocol2-results` / `Vy/protocol2-dashboard` |
+| ZIP path at results commit | `results/protocol2/windows-official-01/evidence_bundle.zip` |
+| Expected ZIP SHA-256 | `a0a7311bb31f3aa6c11be9fbaa751fe82eb8ad9b3d59781a117fa6e998644b7c` |
 
-The notebook now follows overview → pipeline comparison → ranking → subtype overview → configuration explorer → optional supporting analysis. Its last cell exports only if `RUN_EXPORT=True` or `PROTOCOL2_EXPORT=1`. Default execution analyzes in memory without writing report outputs. The executed analysis-only copy is `results/dashboards/windows-official-01-redesign-notebook-01/official_results.ipynb`. This official notebook verifies the fixed results commit and refuses synthetic or partial inputs. Use the explicit SOURCE/results parameters and final export switch when changing notebook inputs.
+Use a separate reporting checkout/environment; keep the frozen Windows training checkout unchanged. No results-branch merge is required.
 
-To regenerate, use the official CLI command below with a **new output directory**, for example `results/dashboards/windows-official-01-redesign-02`. Set `PROTOCOL2_OFFICIAL_ZIP` and run `python -B -m unittest discover -s tests -p 'test_dashboard*.py' -v` for all 16 generic and official tests. Browser interaction and download actions still need a real-browser manual check: the available browser tool blocks local file URLs. HTML structure, shared-selector panel contents and figure download mappings were checked, but this is not claimed as browser execution.
+## 2. Architecture and entry points
 
-This separate reporting layer does not import the training workflow, fit models, read expression data or patient predictions, or change input evidence. Keep the Windows training checkout at `87f3e6ce1bb3e7fa53e513a22b480abb63998882`. Develop and install this dashboard in a separate reporting checkout/environment. No training-release files need to change.
+| File | Responsibility |
+| --- | --- |
+| `src/reporting/dashboard_inputs.py` | Exact schemas, checksums, validation attestations and aggregate arithmetic |
+| `src/reporting/protocol2_dashboard.py` | Figures, Git-blob provenance verification and export CLI |
+| `src/reporting/dashboard_layout.py` | Offline HTML layout, shared selector and downloads |
+| `notebooks/02_protocol2_results_dashboard.ipynb` | Read-only analysis; separate optional export cell |
+| `requirements-dashboard.txt` | Pinned direct plotting/notebook dependencies |
+| `tests/test_dashboard*.py` | General safeguards and official-evidence checks |
 
-## Open the report
+Inputs are `summary.csv`, `comparison.csv`, `reports/repeat_scores.csv`, `reports/subtype_analysis.csv`, `reports/confusion_matrices.csv`, `validation_summary.json` and `experiment_manifest.json`. Prefer the original verified external ZIP, which includes these files and export-specific checksums.
 
-Double-click `report.html` in Edge, Chrome, Firefox or Safari. It works offline: charts and configuration-selection JavaScript are embedded. Select any validated configuration to inspect its confusion matrix and six subtype F1 scores. Share the HTML alone, or the separate `figures/` PNGs (300 dpi). Keep `report_provenance.json` alongside the report for provenance review.
+## 3. Official Jupyter Notebook
 
-The official report is `results/dashboards/windows-official-01-67ad3e7-final/report.html`. Its inputs are verified against results commit `67ad3e764dadf13827421ab2d6f78f85809b42b3`, batch `windows-official-01`, trained at `87f3e6ce1bb3e7fa53e513a22b480abb63998882`.
+Open [Notebook 02](../notebooks/02_protocol2_results_dashboard.ipynb) on GitHub to inspect its reviewed saved aggregate outputs without executing it. GitHub renders static figures/tables, not the standalone HTML's interactive controls.
 
-The separate development preview remains `results/dashboards/synthetic-demo-final/report.html`. Every development chart is marked **SYNTHETIC DEMONSTRATION — NOT RESEARCH RESULTS**. It must not appear in research results as experimental evidence.
+For execution, open the same file in VS Code/Jupyter with the reporting Python environment. The requirements install a kernel and execution libraries, not a JupyterLab server. Select the environment directly in VS Code, or register it for an existing Jupyter frontend with `python -m ipykernel install --user --name protocol2-dashboard --display-name 'Protocol 2.0 Dashboard'` using the reporting executable.
 
-## Windows installation and generation
+Run cells in order. The default `SOURCE` is `results/dashboard-inputs/67ad3e7/evidence_bundle.zip` below the repository root; the full results SHA and Git path are verified against the local Git blob. `PROTOCOL2_BATCH` can override that path. Edit `SOURCE`, `RESULTS_COMMIT` and `RESULTS_GIT_PATH` together for other official evidence.
 
-Run PowerShell in the root of the **separate dashboard checkout**, containing `src/reporting/`. Python 3.12 must already be installed. These commands use an explicit environment executable, so activation and execution-policy changes are unnecessary.
+The narrative is overview → pipelines/ranking → subtype overview → configuration details → optional supporting analysis. Changing `CONFIGURATION` updates all three detail figures. `SHOW_SUPPLEMENT` enables additional tables and charts.
+
+**Run All does not automatically export or publish HTML.** Leave `PROTOCOL2_EXPORT` unset or `0` for ordinary analysis. Enable `RUN_EXPORT=True` in the final cell, or set `PROTOCOL2_EXPORT=1`, only for explicit export. `PROTOCOL2_REPORT_OUTPUT` selects a new output directory. Existing directories are never overwritten.
+
+## 4. macOS reproduction
+
+Run from the reporting checkout root with Python 3.12 installed. Use the reporting environment, not the frozen training `.venv`:
+
+```sh
+python3.12 -m venv results/dashboard-development/.venv
+PYTHON="$PWD/results/dashboard-development/.venv/bin/python"
+"$PYTHON" -m pip install -r requirements-dashboard.txt
+"$PYTHON" -m pip check
+export MPLCONFIGDIR="$PWD/results/dashboard-development/mpl-cache"
+git fetch origin refs/heads/Vy/protocol2-results:refs/remotes/origin/Vy/protocol2-results
+```
+
+Copy using binary I/O with exclusive creation. If already present, skip the copy and verify its checksum instead; never overwrite the evidence:
+
+```sh
+"$PYTHON" -c "import pathlib,subprocess; p=pathlib.Path('results/dashboard-inputs/67ad3e7/evidence_bundle.zip'); p.parent.mkdir(parents=True,exist_ok=True); data=subprocess.check_output(['git','show','67ad3e764dadf13827421ab2d6f78f85809b42b3:results/protocol2/windows-official-01/evidence_bundle.zip']); p.open('xb').write(data)"
+export PROTOCOL2_OFFICIAL_ZIP="$PWD/results/dashboard-inputs/67ad3e7/evidence_bundle.zip"
+"$PYTHON" -c "import os,pathlib,hashlib; h=hashlib.sha256(pathlib.Path(os.environ['PROTOCOL2_OFFICIAL_ZIP']).read_bytes()).hexdigest(); print(h); assert h=='a0a7311bb31f3aa6c11be9fbaa751fe82eb8ad9b3d59781a117fa6e998644b7c'"
+"$PYTHON" -B -m unittest discover -s tests -p 'test_dashboard*.py' -v
+```
+
+Stop if any checksum/test fails. Generate only after successful verification:
+
+```sh
+REPORT="results/dashboards/windows-official-01-$(date +%Y%m%d-%H%M%S)"
+"$PYTHON" -m src.reporting.protocol2_dashboard \
+  --input "$PROTOCOL2_OFFICIAL_ZIP" --output "$REPORT" \
+  --results-commit 67ad3e764dadf13827421ab2d6f78f85809b42b3 \
+  --results-git-path results/protocol2/windows-official-01/evidence_bundle.zip \
+  --configuration SVM-MM-ANOVA-50-LINEAR --configuration SVM-MM-PCA-50-LINEAR \
+  --configuration SVM-STD-ANOVA-50-LINEAR --configuration SVM-STD-PCA-50-LINEAR
+open "$REPORT/report.html"
+```
+
+The four `--configuration` arguments choose the supplementary fixed stability comparison; they do not exclude any configuration from the main ranking or selector. The default CLI selection, if omitted, is the first four validated IDs. The main explorer starts with the workflow reference, explicitly not an unbiased winner claim.
+
+## 5. Windows reproduction
+
+Use a separate reporting checkout; do not reuse the training environment:
 
 ```powershell
+git clone --branch Vy/protocol2-dashboard --single-branch https://github.com/nhdung98/ProjectA.git ProjectA-dashboard
+cd ProjectA-dashboard
 py -3.12 -m venv results\dashboard-development\.venv
 $python = Join-Path $PWD 'results\dashboard-development\.venv\Scripts\python.exe'
 & $python -m pip install -r requirements-dashboard.txt
 & $python -m pip check
 $env:MPLCONFIGDIR = Join-Path $PWD 'results\dashboard-development\mpl-cache'
-& $python -B -m unittest discover -s tests -p test_dashboard.py -v
-& $python -m src.reporting.protocol2_dashboard --help
-```
-
-After the Windows batch has finished and the original workflow has successfully validated/exported it, copy its **external aggregate evidence ZIP** to a separate input directory. Alternatively, provide the original batch directory; only the seven allowlisted aggregate inputs are read. Do not copy expression data for reporting. Replace the example input path below with the actual exported file. Use a new output directory each time.
-
-```powershell
-$batch = 'C:\Protocol2Evidence\completed-batch\evidence_bundle.zip'
-$report = Join-Path $PWD ('results\dashboards\official-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
-& $python -m src.reporting.protocol2_dashboard --input $batch --output $report
-if ($LASTEXITCODE -ne 0) { throw 'Dashboard generation refused; inspect the validation error.' }
-Invoke-Item (Join-Path $report 'report.html')
-```
-
-The CLI accepts `--input`, `--output`, `--allow-partial`, `--allow-synthetic`, repeatable `--configuration`, and paired `--results-commit`/`--results-git-path`. The latter verify the input ZIP bytes against that exact local Git blob and display the resolved 40-character results commit separately from the training commit. For example, append `--configuration SVM-STD-ANOVA-150-LINEAR --configuration SVM-MM-PCA-50-RBF` to choose repeat-stability lines. This does not limit the ranking or configuration selector. The default CLI stability selection is the first four validated configurations in fixed configuration order, not the highest scores. The official notebook selects one fixed 50-linear configuration per pipeline.
-
-## Reproduce the published official dashboard
-
-In the reporting checkout, after environment setup above, fetch without switching or merging. Copy the ZIP through Python binary I/O (PowerShell text redirection can corrupt ZIP bytes). The copy refuses to overwrite an existing evidence file; if already present, skip only that copy command and let report generation verify it against Git.
-
-```powershell
 git fetch origin refs/heads/Vy/protocol2-results:refs/remotes/origin/Vy/protocol2-results
-git rev-parse 67ad3e7
+```
+
+Copy through Python, not PowerShell text redirection. Skip this exclusive-copy command only if the destination already exists; verify it below:
+
+```powershell
 & $python -c "import pathlib,subprocess; p=pathlib.Path('results/dashboard-inputs/67ad3e7/evidence_bundle.zip'); p.parent.mkdir(parents=True,exist_ok=True); data=subprocess.check_output(['git','show','67ad3e764dadf13827421ab2d6f78f85809b42b3:results/protocol2/windows-official-01/evidence_bundle.zip']); p.open('xb').write(data)"
 $env:PROTOCOL2_OFFICIAL_ZIP = 'results/dashboard-inputs/67ad3e7/evidence_bundle.zip'
+$hash = (Get-FileHash $env:PROTOCOL2_OFFICIAL_ZIP -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($hash -ne 'a0a7311bb31f3aa6c11be9fbaa751fe82eb8ad9b3d59781a117fa6e998644b7c') { throw 'Evidence checksum mismatch' }
 & $python -B -m unittest discover -s tests -p 'test_dashboard*.py' -v
-if ($LASTEXITCODE -ne 0) { throw 'Dashboard tests failed.' }
+if ($LASTEXITCODE -ne 0) { throw 'Dashboard tests failed' }
 $report = Join-Path $PWD ('results/dashboards/windows-official-01-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 & $python -m src.reporting.protocol2_dashboard --input $env:PROTOCOL2_OFFICIAL_ZIP --output $report --results-commit 67ad3e764dadf13827421ab2d6f78f85809b42b3 --results-git-path results/protocol2/windows-official-01/evidence_bundle.zip --configuration SVM-MM-ANOVA-50-LINEAR --configuration SVM-MM-PCA-50-LINEAR --configuration SVM-STD-ANOVA-50-LINEAR --configuration SVM-STD-PCA-50-LINEAR
-if ($LASTEXITCODE -ne 0) { throw 'Official dashboard generation refused.' }
+if ($LASTEXITCODE -ne 0) { throw 'Dashboard generation failed' }
 Invoke-Item (Join-Path $report 'report.html')
 ```
 
-Expected with the redesigned generator: 24 validated configurations, six per pipeline, 78 PNGs, both full commit SHAs and `windows-official-01` visible in HTML. No synthetic or partial flags are used. Tests referencing authentic evidence skip unless `PROTOCOL2_OFFICIAL_ZIP` is set.
+Run the notebook with export disabled and manually check the Windows browser selector/downloads. Windows reporting remains unverified until those steps pass on Windows. Always stop and resolve installation/fetch errors before proceeding.
 
-Without `--allow-partial`, anything short of a fully validated 24-configuration batch is refused. With that flag, the report is visibly **INCOMPLETE** and includes all 24 status entries; only individually validated, consistent rows are plotted. Missing required aggregate files may leave only the status overview. A hash mismatch or unknown schema is always refused, even in partial mode. This tool does not reconstruct missing report inputs or repair failed runs. Do not use `--allow-synthetic` on an official reporting invocation.
+## 6. Outputs, tests and provenance
 
-## Jupyter notebook
+A complete report contains `report.html`, `report_provenance.json` and 78 PNGs at 300 dpi. Six images appear in the primary reading flow; runtime is optional. The validation-coverage chart remains in Supplementary Evidence. All 24 configuration detail panels and figure downloads are accessible offline.
 
-Open `notebooks/02_protocol2_results_dashboard.ipynb` using an existing Jupyter frontend or VS Code with notebook support. The requirements install the kernel and execution libraries, not a JupyterLab server. For VS Code, select the reporting environment above directly. For an existing Jupyter frontend, register the kernel once:
+The reviewed macOS presentation is locally available at `results/dashboards/windows-official-01-redesign-01/report.html` when that generated directory is present; it is not tracked or guaranteed in a fresh clone. Each regeneration uses a new directory.
 
-```powershell
-& $python -m ipykernel install --user --name protocol2-dashboard --display-name 'Protocol 2.0 Dashboard'
-```
+The 16 automated tests cover schemas, hashes, missing/invalid evidence, source mutation, figure values and scales, repeat SD, selector structure and provenance. Set `PROTOCOL2_OFFICIAL_ZIP` explicitly: without it the four official tests skip. Confirm **16 passed and zero skipped**, rather than accepting a partial test run.
 
-Select **Protocol 2.0 Dashboard** and run cells in order. The notebook defaults to the official ZIP copied above and verifies its fixed results commit/path. Edit `SOURCE`, `RESULTS_COMMIT` and `RESULTS_GIT_PATH` together for another official batch. `PROTOCOL2_BATCH` can override the source path. The final export cell defaults to disabled; enable `RUN_EXPORT` or set `PROTOCOL2_EXPORT=1`, with a fresh `PROTOCOL2_REPORT_OUTPUT` directory if desired. Analysis and plotting do not export files. Change `CONFIGURATION` once to update all three notebook detail views. Keep executed notebooks out of Git.
+Before publication, macOS checks passed against official evidence; the user separately confirmed configuration switching, PNG downloads and presentation review. Automated HTML tests inspect structure rather than executing browser JavaScript. Independent scientific peer review remains pending.
 
-## Input and interpretation contract
+The loader verifies export-specific ZIP hashes, original validation attestations and aggregate arithmetic. `--results-commit` and `--results-git-path` verify the ZIP against the exact Git blob. Provenance records input and reporting-module hashes, source/results commits and plotting-library versions. Checksums detect corruption, not forgery; these checks do not repeat the private patient-level audit.
 
-The loader expects the exact frozen workflow column schemas in `summary.csv`, `comparison.csv`, `reports/repeat_scores.csv`, `reports/subtype_analysis.csv`, `reports/confusion_matrices.csv`, plus `validation_summary.json` and `experiment_manifest.json`. It verifies directory hashes or ZIP export-specific entry hashes, run audit identities/attestations, commit consistency, cohort/class ordering, repeat coverage, confusion denominators, and arithmetic consistency of existing metrics. It never reads or recomputes predictions. Old submissions and smoke outputs are not automatically converted into official results.
+Direct dependencies are pinned; transitive dependencies, fonts and OS differences may change rendered image bytes. Record the reporting commit when distributing a regenerated artifact. Partial reporting requires `--allow-partial` and is labelled INCOMPLETE; it is not an acceptable complete official publication. Never use `--allow-synthetic` for the official report.
 
-Macro-F1 is the equally weighted six-class F1 averaged across three complete repeats. Each repeat contains 254 held-out predictions across its outer folds. Error bars are sample SD (`ddof=1`) of the three repeat scores; they are not confidence intervals. Confusion charts pool 762 prediction events from the same 254 patients, with row totals 312, 171, 147, 75, 30 and 27 in explicit order LMS, DDLPS, UPS, MFS, SS, MPNST. Per-class F1 averages repeat scores, not the pooled confusion matrix. Runtime is the recorded sum of completed outer-fold durations, converted from seconds to minutes; it excludes failed attempts and reporting overhead and depends on the machine.
+## 7. Interpretation, privacy and publication
 
-Ranking is descriptive/exploratory, not evidence of statistical superiority. Selecting the winner using these outer-CV scores introduces winner-selection bias. Repeats and overlapping training folds are not independent test samples. Small SS/MPNST supports warrant care. Original audit attestations plus aggregate consistency checks are not a new patient-level audit; checksums detect corruption, not forgery. Human peer review is not inferred.
+Macro-F1 is the mean of six class F1 scores within each repeat, then averaged across three complete repeats. Sample SD uses `ddof=1`; it is not a confidence interval. Repeats share patients and overlapping training sets. Pooled confusion matrices count 762 prediction events from 254 patients, not 762 independent patients. Per-class F1 averages repeat scores, not the pooled matrix's F1.
 
-## Privacy, reproducibility and integration
+SS has 10 patients and MPNST nine. Mean±SD may extend outside 0–1 without implying an observed F1 outside that range. Ranking 24 candidates is exploratory; selecting the largest score introduces winner-selection bias. No significance or clinical-readiness claim follows. See the [Model Selection Report](../reports/protocol2_model_selection.md) for provisional Protocol 3.0 planning.
 
-Exports include configuration IDs, safe batch label, source commit, aggregate charts, input/reporter hashes, plotting-library versions and UTC generation time. They omit raw manifests, run IDs, absolute input/environment paths, patient identifiers and expression data. HTML requires no network assets. Inputs are checked again before HTML publication. Output directories may not overlap evidence; existing outputs are never overwritten. If interrupted, an output may contain partial PNGs: use a fresh directory, not that unfinished report.
+Only Notebook 02's reviewed aggregate outputs may be committed for GitHub preview. Review text, tables, PNGs, HTML, metadata and traces before each publication. Notebook 01 retains its Git version; preserve its local outputs without staging them. Never stage `.DS_Store`, patient records, expression data, private predictions, ZIP copies, generated HTML/PNG collections, synthetic outputs, environments, caches or backups.
 
-Within this repository all reports must be under `results/dashboards/` or `results/dashboard-development/`, both covered by the existing results ignore rule. Do not stage generated HTML/PNGs, synthetic fixtures, executed notebooks, caches, logs or the reporting `.venv`. Direct plotting/notebook dependencies are pinned separately; transitive packages, OS/fonts and rendering bytes are not locked across platforms. Metric checks are strict, but byte-identical Windows/macOS images are not promised. Review and test on real Windows before calling this Windows-verified.
-
-After the official Windows batch completes: retain its frozen release SHA, validate/export with that release, copy the aggregate snapshot to the reporting checkout, generate without development flags, verify the displayed source commit matches the frozen release, and review all 24 statuses before sharing. A future reviewed dashboard commit can be maintained separately; installing it is not a reason to update the training checkout.
+Distribute reviewed `report.html` and `report_provenance.json` together through a private GitHub release tied to the reporting commit, or an approved access-controlled team folder. Record artifact checksums and the results SHA; verify access for supervisors/clients without making the repository public. This is a recommendation, not an existing hosted artifact. No HTML upload is part of the documentation task. The 78 embedded PNGs are downloadable from the report and need not be committed separately.
