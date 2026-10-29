@@ -125,7 +125,7 @@ Không cần copy file sang thư mục member. Để nộp qua Git, mỗi member
 
 ```powershell
 git switch -c results/member1-roundA
-git add -f results/p3/submissions/*.zip results/p3/logs/*.log
+git add results/p3/submissions/*.zip results/p3/logs/*.log
 git commit -m "Submit member 1 round A results and logs"
 git push -u origin results/member1-roundA
 ```
