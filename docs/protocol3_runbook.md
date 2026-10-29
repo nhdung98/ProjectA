@@ -1,6 +1,6 @@
 # Hướng dẫn chạy Protocol 3.0
 
-Mọi lệnh chạy từ thư mục gốc của repo, trên branch `protocol3`. Lệnh giống nhau trên PowerShell và macOS; chỉ bước kích hoạt môi trường khác nhau. Thiết kế nằm ở [proposal](protocol_3.0_proposal.md) và [nested CV diagram](nested_cv_diagram.md).
+Mọi lệnh chạy từ thư mục gốc của repo, từ bản code chung `finalized-protocol3` theo commit leader chỉ định. Thành viên nộp ZIP/LOG trên branch kết quả riêng; chỉ leader quyết định merge. Lệnh giống nhau trên PowerShell và macOS; chỉ bước kích hoạt môi trường khác nhau. Thiết kế nằm ở [proposal](protocol_3.0_proposal.md) và [nested CV diagram](nested_cv_diagram.md).
 
 ## Ai chạy gì
 
@@ -19,7 +19,7 @@ Dùng Python 3.12 và một bản Git clone (bản tải ZIP không có commit n
 
 ```powershell
 git fetch origin
-git checkout protocol3
+git switch finalized-protocol3
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1          # macOS: source .venv/bin/activate
 python -m pip install -r requirements-protocol3.txt
@@ -47,11 +47,13 @@ python -m src.p3 run --round A --member N --jobs 4
 
 Chạy repeat 1 (5 outer fold). Vòng A **không dự đoán outer test**, nên không ai thấy được điểm outer. Kết quả nằm ở `experiments/p3.0/roundA/memberN/<pipeline>/`. Lệnh từ chối chạy khi code, config hoặc split có thay đổi chưa commit.
 
-Nộp: tạo branch `roundA-memberN` từ `protocol3`, commit thư mục `experiments/p3.0/roundA/memberN/`, mở PR vào `protocol3`. Không sửa file trong thư mục kết quả: `screen` và `analyze` kiểm checksum từng file.
+Nộp ZIP/LOG tự động theo mục **Một lệnh chạy, hai file để gửi leader** bên dưới, trên branch `results/memberN-roundA`. Không sửa file bên trong ZIP, không cần commit thư mục kết quả trung gian.
 
 Khi cần chạy lại một pipeline sau khi sửa: `python -m src.p3 run --round A --member N --pipeline P07 --replace`.
 
 ## 4. Screening và đóng băng (Dung, người giữ repo)
+
+Sau khi review branch nộp bài, leader giải nén ZIP được chọn của mỗi member vào `experiments/p3.0/roundA/memberN/`. ZIP có các thư mục pipeline ở cấp đầu; không ghép nhiều lần chạy bằng cách ghi đè lẫn nhau. Chỉ dùng bộ bằng chứng phù hợp, đầy đủ cho báo cáo screening.
 
 ```powershell
 python -m src.p3 screen experiments/p3.0/roundA/member1 experiments/p3.0/roundA/member2 experiments/p3.0/roundA/member3 experiments/p3.0/roundA/member4
@@ -69,14 +71,17 @@ git push origin p3.0-frozen
 ## 5. Vòng B: chính thức (3 repeat)
 
 ```powershell
-git pull
+git switch finalized-protocol3
+git pull --ff-only origin finalized-protocol3
 git fetch --tags
 python -m src.p3 run --round B --member N --jobs 4
 ```
 
-Lệnh chỉ chạy khi code, config và split giống hệt tag `p3.0-frozen`, và cây làm việc sạch. Kết quả: `experiments/p3.0/roundB/memberN/<pipeline>/` gồm dự đoán outer, điểm inner của mọi ứng viên, g*, gene giữ lại theo fold, warning, runtime, manifest và checksum. Nộp qua PR như vòng A (branch `roundB-memberN`).
+Lệnh chỉ chạy khi code, config và split giống hệt tag `p3.0-frozen`, và cây làm việc sạch. Kết quả: `experiments/p3.0/roundB/memberN/<pipeline>/` gồm dự đoán outer, điểm inner của mọi ứng viên, g*, gene giữ lại theo fold, warning, runtime, manifest và checksum. ZIP/LOG được tạo tự động; nộp như vòng A nhưng dùng branch `results/memberN-roundB`.
 
 ## 6. Phân tích (Dung)
+
+Leader review rồi giải nén ZIP vòng B được chọn vào `experiments/p3.0/roundB/memberN/` cho mỗi member trước khi chạy analyze. Không dùng gói failed làm kết quả hoàn chỉnh.
 
 ```powershell
 python -m src.p3 analyze experiments/p3.0/roundB/member1 experiments/p3.0/roundB/member2 experiments/p3.0/roundB/member3 experiments/p3.0/roundB/member4

@@ -6,7 +6,7 @@ Predict six sarcoma subtypes from gene expression: 254 patients and 20,531 gene 
 
 Read the [Protocol 3.0 proposal](docs/protocol_3.0_proposal.md) first, then the [nested CV diagram](docs/nested_cv_diagram.md) and the [example of the expected results](docs/mock_results_example.md). All numbers in the example are simulated.
 
-Each member runs their batch with `python -m src.p3`; the analyst collects the four result folders with one command. The [run guide](docs/protocol3_runbook.md) lists every step, from setup to the final model for the app.
+Members run from `finalized-protocol3` at the leader's assigned revision. One `python -m src.p3 run` command automatically creates a result ZIP and a terminal LOG in per-member folders. Members push only those files on `results/memberN-roundA` (or `roundB`); the leader reviews and decides whether to merge. No manual result aggregation or copying is required. The [run guide](docs/protocol3_runbook.md) is the authoritative setup and submission guide.
 
 ## One-time setup
 
@@ -15,6 +15,7 @@ Use Python 3.12 and a Git clone, checked out at the exact reviewed commit distri
 ```powershell
 git clone https://github.com/nhdung98/ProjectA.git
 cd ProjectA
+git switch finalized-protocol3
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements-protocol3.txt
@@ -31,7 +32,9 @@ The original inputs are included in `data/raw/`. Preparation creates `data/proce
 | [docs/](docs/README.md) | Protocol 3.0, architecture notes and research |
 | `src/p3/` | Protocol 3.0 runner, analysis and final model |
 | [src/experiments/](src/experiments/README.md) | Protocol 2.0 runner and the shared data, split and metric code |
-| `experiments/p3.0/` | Submitted protocol 3.0 results |
+| `experiments/p3.0/` | Local intermediate runs and leader-extracted evidence |
+| `results/p3/submissions/memberN/` | Automatically packaged member result ZIPs |
+| `results/p3/logs/memberN/` | Automatically captured member terminal LOGs |
 | `src/data/` and `data/` | Data preparation and source inputs |
 | `results/splits/` | Frozen patient assignments and manifests |
 | [reports/](reports/README.md) | Findings and supporting research evidence |
