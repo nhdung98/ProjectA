@@ -5,7 +5,8 @@ import numpy as np
 import pandas as pd
 
 from src.experiments.common import ROOT, write_json
-from .inputs import split_settings
+from .inputs import split_settings, load_inputs
+from .validation import validate_evidence
 from .pipelines import pipeline_spec
 from .results import fmt, load_runs, runtime, table, warning_counts
 from .screen import boundary_hits, reference_difference
@@ -29,6 +30,8 @@ def check_runs(config, runs, labels, n_samples):
             raise ValueError(f"{name} is not a complete official round B run")
         if predictions is None:
             raise ValueError(f"{name} has no outer predictions")
+        if set(predictions['repeat']) != {1, 2, 3}:
+            raise ValueError(f'{name} predictions must cover exactly three repeats')
         for repeat, group in predictions.groupby("repeat"):
             if group["Sample ID"].duplicated().any():
                 raise ValueError(f"{name} predicts a sample twice in repeat {repeat}")
@@ -112,6 +115,7 @@ def analyze(config, folders, out):
     rules = config["analysis"]
     runs = load_runs(folders, "B")
     check_runs(config, runs, labels, split_settings(config)["expected_samples"])
+    validate_evidence(config, runs, load_inputs(config))
     order = [spec["id"] for spec in config["pipelines"]]
     repeats = {p: per_repeat(runs[p]["predictions"], labels) for p in order}
     folds = {p: per_fold(runs[p]["predictions"], labels) for p in order}

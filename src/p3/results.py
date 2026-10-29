@@ -32,6 +32,11 @@ def load_runs(folders, round_name):
             raise ValueError(f"{folder} is from round {manifest.get('round')}, not round {round_name}")
         if name in runs:
             raise ValueError(f"{name} appears twice: {runs[name]['folder']} and {folder}")
+        required = {'search_results.csv', 'feature_details.json', 'warnings.csv'}
+        if round_name == 'B':
+            required.add('predictions.csv')
+        if set(manifest.get('outputs', {})) != required:
+            raise ValueError(f'{folder} has an incomplete or unexpected output inventory')
         for filename, expected in manifest["outputs"].items():
             if sha256(folder / filename) != expected:
                 raise ValueError(f"{folder / filename} changed after the run")

@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -12,6 +13,8 @@ from src.experiments.validation import fold_indices, generate_splits
 from src.p3 import analyze as analysis
 from src.p3.engine import run_pipeline, write_outputs
 from src.p3.inputs import split_settings
+from src.p3.inputs import code_hashes
+from src.experiments.common import ROOT, sha256
 from src.p3.pipelines import build_pipeline, candidates, fits_per_repeat, load_config, parameters, pipeline_spec
 from src.p3.results import load_runs
 from src.p3.screen import boundary_hits, screen
@@ -36,7 +39,7 @@ def fake_run(folder, spec, round_name, data, outer, labels, rng, inner_shift=0.0
     grid = candidates(spec)
     search, details, predictions, folds = [], [], [], []
     repeats = [1] if round_name == "A" else [1, 2, 3]
-    for repeat, fold, _, test in fold_indices(outer, data):
+    for repeat, fold, train, test in fold_indices(outer, data):
         if repeat not in repeats:
             continue
         means = rng.uniform(0.6, 0.8, len(grid)) + inner_shift
@@ -49,6 +52,7 @@ def fake_run(folder, spec, round_name, data, outer, labels, rng, inner_shift=0.0
         folds.append(dict(repeat=repeat, fold=fold, status="complete", best_candidate=best, best_params=grid[best],
                           best_inner=float(means[best]), fits=4 * len(grid) + 1, inner_fit_seconds=4.0 * len(grid),
                           refit_seconds=1.0, wall_seconds=4.0 * len(grid) + 1, warnings=0))
+        folds[-1].update(train_samples=len(train), test_samples=len(test))
         rows = data.iloc[test]
         guesses = np.where(rng.uniform(size=len(test)) < 0.8, rows["subtype"], rng.choice(labels, len(test)))
         predictions += [dict(pipeline=spec["id"], repeat=repeat, fold=fold, **{"Sample ID": s, "Patient ID": p},
@@ -57,6 +61,9 @@ def fake_run(folder, spec, round_name, data, outer, labels, rng, inner_shift=0.0
     manifest = dict(round=round_name, member=1, development=False, git_commit="abc", config_sha256="cfg",
                     machine=dict(system="Test", machine="x", cpu_count=1), pipeline=spec["id"], status="complete",
                     folds=folds)
+    manifest.update(member=next(int(i) for i, m in CONFIG['members'].items() if spec['id'] in m['pipelines']),
+                    git_dirty_code=False, config_sha256=sha256(ROOT / 'configs/protocol3.json'),
+                    code_sha256=code_hashes(), packages=CONFIG['packages'], spec=spec, candidates=grid)
     write_outputs(folder / spec["id"], manifest, search, details, predictions if round_name == "B" else None, [])
 
 
@@ -242,7 +249,9 @@ class AnalysisChecks(unittest.TestCase):
                 fake_run(root / "roundB", spec, "B", data, outer, labels, rng, 0.1 if spec["id"] == "P07" else 0.0)
             screen(CONFIG, [root / "roundA"], root / "screening")
             self.assertIn("Báo cáo screening", (root / "screening/screening.md").read_text(encoding="utf-8"))
-            analysis.analyze(CONFIG, [root / "roundB"], root / "analysis")
+            with patch.object(analysis, 'load_inputs', return_value=dict(
+                    data=data, outer=outer, labels=labels, settings=split_settings(CONFIG))):
+                analysis.analyze(CONFIG, [root / "roundB"], root / "analysis")
             summary = json.loads((root / "analysis/summary.json").read_text(encoding="utf-8"))
             # P07's inner scores are shifted up, so META-SELECT picks it in every fold.
             self.assertEqual(summary["meta_select"]["frequency"], {"P07": 15})
