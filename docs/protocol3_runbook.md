@@ -121,6 +121,17 @@ Thay số member theo phân công. Chương trình tự tạo:
 
 Terminal in đường dẫn hai file. Chỉ gửi hai file đó; không tự tính điểm, ghép bảng hoặc nén thư mục. ZIP là gói bàn giao nguyên trạng, không phải một bảng điểm tổng hợp và không làm lộ outer scores ở vòng A. Leader giải nén vào thư mục riêng rồi dùng lệnh screen/analyze hiện có với thư mục đã giải nén.
 
+Không cần copy file sang thư mục member. Để nộp qua Git, mỗi member tạo branch kết quả riêng (ví dụ member 1, vòng A):
+
+```powershell
+git switch -c results/member1-roundA
+git add -f results/p3/submissions/*.zip results/p3/logs/*.log
+git commit -m "Submit member 1 round A results and logs"
+git push -u origin results/member1-roundA
+```
+
+Thay số member theo phân công. Nếu branch đã có, dùng `git switch` không có `-c`. Hai lệnh add lấy tất cả ZIP/LOG hiện có, gồm cả lần chạy lỗi; không thay đổi code/config. Chương trình không tự push.
+
 Nếu dừng do lỗi, ZIP giữ bằng chứng hiện có và ghi failed; pipeline chưa chạy không có kết quả. Không coi gói failed là kết quả hoàn chỉnh. Lỗi trước khi bắt đầu lệnh run (ví dụ thiếu thư viện lúc import) có log nhưng có thể chưa tạo ZIP. Tắt cưỡng bức tiến trình hoặc mất điện không bảo đảm tạo được ZIP; log đã ghi vẫn được giữ.
 
 - Grid của PAM ghi "không co rút" là `null`, vì scikit-learn 1.7 không nhận `shrink_threshold = 0`.
