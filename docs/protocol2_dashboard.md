@@ -10,11 +10,14 @@ This layer reads validated Windows aggregates; it does not train models, read ex
 | Training release | `87f3e6ce1bb3e7fa53e513a22b480abb63998882` |
 | Results commit | `67ad3e764dadf13827421ab2d6f78f85809b42b3` |
 | Initial dashboard commit | `39c4eff7fe7bba9c4f1607013e87998a35661d59` |
-| Results / reporting branches | `Vy/protocol2-results` / `Vy/protocol2-dashboard` |
+| Results / original reporting branches | `Vy/protocol2-results` / `Vy/protocol2-dashboard` |
+| Integrated release | `Vy/protocol2-complete`, tag `protocol2-v1.0` |
 | ZIP path at results commit | `results/protocol2/windows-official-01/evidence_bundle.zip` |
 | Expected ZIP SHA-256 | `a0a7311bb31f3aa6c11be9fbaa751fe82eb8ad9b3d59781a117fa6e998644b7c` |
 
-Use a separate reporting checkout/environment; keep the frozen Windows training checkout unchanged. No results-branch merge is required.
+Use a separate reporting checkout/environment; keep the frozen Windows training checkout unchanged. The integrated branch includes seven files copied byte-for-byte from the results commit, plus `experiment_manifest.json` and `validation_summary.json` copied unchanged from its ZIP. They are historical evidence, not new validation runs.
+
+Clone normally, without `--single-branch` or `--depth`, to retain the original results commit required by Git-blob verification. The evidence is already included; no manual ZIP retrieval or branch merge is needed. Existing restricted clones must fetch `origin/Vy/protocol2-results` before verification.
 
 ## 2. Architecture and entry points
 
@@ -35,7 +38,7 @@ Open [Notebook 02](../notebooks/02_protocol2_results_dashboard.ipynb) on GitHub 
 
 For execution, open the same file in VS Code/Jupyter with the reporting Python environment. The requirements install a kernel and execution libraries, not a JupyterLab server. Select the environment directly in VS Code, or register it for an existing Jupyter frontend with `python -m ipykernel install --user --name protocol2-dashboard --display-name 'Protocol 2.0 Dashboard'` using the reporting executable.
 
-Run cells in order. The default `SOURCE` is `results/dashboard-inputs/67ad3e7/evidence_bundle.zip` below the repository root; the full results SHA and Git path are verified against the local Git blob. `PROTOCOL2_BATCH` can override that path. Edit `SOURCE`, `RESULTS_COMMIT` and `RESULTS_GIT_PATH` together for other official evidence.
+Run cells in order. The default `SOURCE` is `results/protocol2/windows-official-01/evidence_bundle.zip` below the repository root; the full results SHA and Git path are verified against the local Git blob. `PROTOCOL2_BATCH` can override that path. Edit `SOURCE`, `RESULTS_COMMIT` and `RESULTS_GIT_PATH` together for other official evidence.
 
 The narrative is overview → pipelines/ranking → subtype overview → configuration details → optional supporting analysis. Changing `CONFIGURATION` updates all three detail figures. `SHOW_SUPPLEMENT` enables additional tables and charts.
 
@@ -43,22 +46,22 @@ The narrative is overview → pipelines/ranking → subtype overview → configu
 
 ## 4. macOS reproduction
 
-Run from the reporting checkout root with Python 3.12 installed. Use the reporting environment, not the frozen training `.venv`:
+Clone the integrated branch and run from its root with Python 3.12 installed. Use the reporting environment, not the frozen training `.venv`:
 
 ```sh
+git clone --branch Vy/protocol2-complete https://github.com/nhdung98/ProjectA.git ProjectA-complete
+cd ProjectA-complete
 python3.12 -m venv results/dashboard-development/.venv
 PYTHON="$PWD/results/dashboard-development/.venv/bin/python"
 "$PYTHON" -m pip install -r requirements-dashboard.txt
 "$PYTHON" -m pip check
 export MPLCONFIGDIR="$PWD/results/dashboard-development/mpl-cache"
-git fetch origin refs/heads/Vy/protocol2-results:refs/remotes/origin/Vy/protocol2-results
 ```
 
-Copy using binary I/O with exclusive creation. If already present, skip the copy and verify its checksum instead; never overwrite the evidence:
+Verify the included original ZIP before testing; never overwrite it:
 
 ```sh
-"$PYTHON" -c "import pathlib,subprocess; p=pathlib.Path('results/dashboard-inputs/67ad3e7/evidence_bundle.zip'); p.parent.mkdir(parents=True,exist_ok=True); data=subprocess.check_output(['git','show','67ad3e764dadf13827421ab2d6f78f85809b42b3:results/protocol2/windows-official-01/evidence_bundle.zip']); p.open('xb').write(data)"
-export PROTOCOL2_OFFICIAL_ZIP="$PWD/results/dashboard-inputs/67ad3e7/evidence_bundle.zip"
+export PROTOCOL2_OFFICIAL_ZIP="$PWD/results/protocol2/windows-official-01/evidence_bundle.zip"
 "$PYTHON" -c "import os,pathlib,hashlib; h=hashlib.sha256(pathlib.Path(os.environ['PROTOCOL2_OFFICIAL_ZIP']).read_bytes()).hexdigest(); print(h); assert h=='a0a7311bb31f3aa6c11be9fbaa751fe82eb8ad9b3d59781a117fa6e998644b7c'"
 "$PYTHON" -B -m unittest discover -s tests -p 'test_dashboard*.py' -v
 ```
@@ -83,21 +86,19 @@ The four `--configuration` arguments choose the supplementary fixed stability co
 Use a separate reporting checkout; do not reuse the training environment:
 
 ```powershell
-git clone --branch Vy/protocol2-dashboard --single-branch https://github.com/nhdung98/ProjectA.git ProjectA-dashboard
-cd ProjectA-dashboard
+git clone --branch Vy/protocol2-complete https://github.com/nhdung98/ProjectA.git ProjectA-complete
+cd ProjectA-complete
 py -3.12 -m venv results\dashboard-development\.venv
 $python = Join-Path $PWD 'results\dashboard-development\.venv\Scripts\python.exe'
 & $python -m pip install -r requirements-dashboard.txt
 & $python -m pip check
 $env:MPLCONFIGDIR = Join-Path $PWD 'results\dashboard-development\mpl-cache'
-git fetch origin refs/heads/Vy/protocol2-results:refs/remotes/origin/Vy/protocol2-results
 ```
 
-Copy through Python, not PowerShell text redirection. Skip this exclusive-copy command only if the destination already exists; verify it below:
+Verify the included ZIP and run all reporting checks before export:
 
 ```powershell
-& $python -c "import pathlib,subprocess; p=pathlib.Path('results/dashboard-inputs/67ad3e7/evidence_bundle.zip'); p.parent.mkdir(parents=True,exist_ok=True); data=subprocess.check_output(['git','show','67ad3e764dadf13827421ab2d6f78f85809b42b3:results/protocol2/windows-official-01/evidence_bundle.zip']); p.open('xb').write(data)"
-$env:PROTOCOL2_OFFICIAL_ZIP = 'results/dashboard-inputs/67ad3e7/evidence_bundle.zip'
+$env:PROTOCOL2_OFFICIAL_ZIP = 'results/protocol2/windows-official-01/evidence_bundle.zip'
 $hash = (Get-FileHash $env:PROTOCOL2_OFFICIAL_ZIP -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($hash -ne 'a0a7311bb31f3aa6c11be9fbaa751fe82eb8ad9b3d59781a117fa6e998644b7c') { throw 'Evidence checksum mismatch' }
 & $python -B -m unittest discover -s tests -p 'test_dashboard*.py' -v
@@ -130,6 +131,6 @@ Macro-F1 is the mean of six class F1 scores within each repeat, then averaged ac
 
 SS has 10 patients and MPNST nine. Mean±SD may extend outside 0–1 without implying an observed F1 outside that range. Ranking 24 candidates is exploratory; selecting the largest score introduces winner-selection bias. No significance or clinical-readiness claim follows. See the [Model Selection Report](../reports/protocol2_model_selection.md) for provisional Protocol 3.0 planning.
 
-Only Notebook 02's reviewed aggregate outputs may be committed for GitHub preview. Review text, tables, PNGs, HTML, metadata and traces before each publication. Notebook 01 retains its Git version; preserve its local outputs without staging them. Never stage `.DS_Store`, patient records, expression data, private predictions, ZIP copies, generated HTML/PNG collections, synthetic outputs, environments, caches or backups.
+Only Notebook 02's reviewed aggregate outputs may be committed for GitHub preview. Review text, tables, PNGs, HTML, metadata and traces before each publication. Notebook 01 retains its Git version; preserve its local outputs without staging them. The integrated release tracks only the reviewed official aggregate evidence and original ZIP under `results/protocol2/windows-official-01/`. Never stage `.DS_Store`, patient records, expression data, private predictions, additional ZIP copies, generated HTML/PNG collections, synthetic outputs, environments, caches or backups.
 
 Distribute reviewed `report.html` and `report_provenance.json` together through a private GitHub release tied to the reporting commit, or an approved access-controlled team folder. Record artifact checksums and the results SHA; verify access for supervisors/clients without making the repository public. This is a recommendation, not an existing hosted artifact. No HTML upload is part of the documentation task. The 78 embedded PNGs are downloadable from the report and need not be committed separately.

@@ -11,7 +11,8 @@ Official training is complete on Windows for batch `windows-official-01`: 24 con
 | `87f3e6ce1bb3e7fa53e513a22b480abb63998882` | Frozen training release |
 | `67ad3e764dadf13827421ab2d6f78f85809b42b3` on `Vy/protocol2-results` | Official aggregate results and evidence ZIP |
 | `39c4eff7fe7bba9c4f1607013e87998a35661d59` | Initial dashboard source commit |
-| `Vy/protocol2-dashboard` | Reporting source, documentation and reviewed Notebook 02 outputs |
+| `Vy/protocol2-dashboard` | Original reporting source and reviewed Notebook 02 outputs |
+| `Vy/protocol2-complete` / `protocol2-v1.0` | Integrated Protocol 2.0 baseline: source, official aggregates and reporting |
 
 Start with [Notebook 02](notebooks/02_protocol2_results_dashboard.ipynb) for saved aggregate tables and figures viewable on GitHub. The standalone HTML is the preferred interactive presentation: it provides a configuration explorer and PNG downloads without Jupyter. Obtain the reviewed `report.html` and `report_provenance.json` from the team's approved distribution location, or generate them using the [dashboard guide](docs/protocol2_dashboard.md). No hosted report or release download is assumed to exist yet.
 
@@ -19,7 +20,7 @@ Reporting tests pass on macOS; the user has manually verified the HTML selector 
 
 ## Workflow and repository map
 
-Windows training → validated aggregate evidence → read-only reporting → Jupyter analysis and a separately exported HTML report. The reporting layer does not retrain models or regenerate predictions. Notebook Run All displays analysis; HTML export is opt-in. Results can be retrieved directly from the results commit without merging branches.
+Windows training → validated aggregate evidence → read-only reporting → Jupyter analysis and a separately exported HTML report. The reporting layer does not retrain models or regenerate predictions. Notebook Run All displays analysis; HTML export is opt-in. This integrated branch includes the original official ZIP and aggregate tables in [results/protocol2/windows-official-01/](results/protocol2/windows-official-01/). Notebook 02 uses that ZIP directly; no manual evidence copy or branch merge is needed. Clone normally (not shallow or single-branch) so the exact original results commit remains available for provenance verification.
 
 | Location | Purpose |
 | --- | --- |
@@ -29,7 +30,7 @@ Windows training → validated aggregate evidence → read-only reporting → Ju
 | `src/reporting/` | Aggregate validation, figures and standalone HTML |
 | `notebooks/01_data_exploration.ipynb` | Initial exploration; local execution outputs require separate privacy review |
 | `notebooks/02_protocol2_results_dashboard.ipynb` | Official aggregate analysis with reviewed saved outputs |
-| `results/protocol2/windows-official-01/` | Published aggregates on the results branch; not necessarily checked out here |
+| `results/protocol2/windows-official-01/` | Included official aggregate CSVs, original ZIP and unchanged validation metadata |
 | `results/dashboards/` | Local generated HTML, provenance and PNGs; excluded from source commits |
 | `tests/` | Workflow and reporting tests; authentic reporting checks require the official ZIP |
 | `archive/week01/`, `reports/` | Historical submissions, validation records and scientific reports |
@@ -55,3 +56,5 @@ For reporting, use the separate environment and exact commands in the [dashboard
 The retained [PCA-order workflow](docs/pca_order_experiment.md) is a separate experiment round, not evidence of an approved future protocol. Its CSV-only results are not official dashboard inputs. Legacy SVM commands remain available; historical folders retain their original provenance and are excluded from new-workflow validation.
 
 Read [data provenance](DATA_SOURCES.md) and the [supplied data notice](DATA_LICENSE.txt). Clinical columns and identifiers are excluded from predictors; repeated gene records remain separate features. Training locks pin versions rather than platform-specific wheel hashes; each batch records its environment and code provenance. Keep patient-level data and private run evidence out of externally shared reporting artifacts.
+
+Use the tagged Protocol 2.0 integration as the fixed reference for future research. After supervisor approval, start subsequent development on a separate branch from `protocol2-v1.0`; preserve this release and its evidence unchanged. Protocol 3.0 implementation has not begun here.

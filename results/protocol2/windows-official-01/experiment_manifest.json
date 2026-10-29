@@ -1,0 +1,390 @@
+{
+  "workflow_version": 2,
+  "protocol_version": "2.0",
+  "batch_id": "windows-official-01",
+  "created_utc": "2026-10-27T17:31:13.388599+00:00",
+  "updated_utc": "2026-10-27T19:23:22.016627+00:00",
+  "status": "complete",
+  "mode": "official",
+  "evidence_origin": "new_experiment",
+  "provenance": {
+    "git_commit": "87f3e6ce1bb3e7fa53e513a22b480abb63998882",
+    "git_dirty": false,
+    "packages": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scikit-learn": "1.7.2",
+      "scipy": "1.16.2",
+      "joblib": "1.5.2",
+      "threadpoolctl": "3.6.0"
+    },
+    "source_sha256": {
+      "data/raw/sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+      "data/raw/data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee"
+    },
+    "dataset_sha256": "e468ea37ed3863cb6c0c46bbe05fda398bae30b627586ff3ed94f2cea0e2476d",
+    "split_sha256": "92b76d61fafa59cc8cc934a7e0d2b1cb8f9514ecb53d67253a35dc79bc6d09f7",
+    "inner_split_sha256": "b0c5e9dfaa4da769b83219c2140e7e140d9c42e2e7b184ad76a5e2174c998f08",
+    "code_sha256": {
+      "configs/data.yaml": "c2ae4a0fc867cdaaafc10c0458abec7f7ed138481e9f16aaf0e38a74fb03543a",
+      "configs/svm.json": "5e19f8a3bf6fe68892b315997535087cf44b685b5ab2adf4ab2485ecbffcc7d8",
+      "requirements-experiments.txt": "39abdcf722ecb4a69f3826ad46400a3c09a55c2f01af97d0b9c7abdd6c874e1d",
+      "requirements-protocol2-lock.txt": "de93f82e2d38f60e7939dcd2fed926d7478aef1427e0653f8a2fca229200cd77",
+      "requirements.txt": "f36cb59b3a3402cf36f4481c9f15fb2fd98e9961bf4b23cf18473155f5f02de9",
+      "src/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/data/audit.py": "47a2ae9d1bc691095f5e6b22a555677d24f61a68a72ecae158b45bf660236342",
+      "src/data/prepare.py": "c6e33b9a696c9d8f43fd5ee8da5d3b5553d3c7c7ca258e67503299e5d17dfd70",
+      "src/experiments/__init__.py": "bfb6210997b47b084f58c5c3a85aa1b9024d8ff7ac24e3de40fa71024cefdeb2",
+      "src/experiments/common.py": "12a64ae49d2a5d42b163feac63f61fedbb2859def9fc94431f4ab04989b1422a",
+      "src/experiments/compare_svm.py": "9969c1fdec5969ab67c6059158f7b5da144a9490cd687e211560891731b31ebb",
+      "src/experiments/metrics.py": "26498ba574b508f2921baef78dfac29bb036c5b15833220371126f56dc425c87",
+      "src/experiments/pca_order.py": "a9656741a3addbb1f51b0187a959281b509fd4cfb766f003c39f2337999e0ae2",
+      "src/experiments/pca_order_csv.py": "2ea881282a2ff92e5fc1b4c5c97ed71f7b64ee61c4047d0c609a2ad995f9c4f1",
+      "src/experiments/pipeline.py": "15b81195018dbd69f11706909bac9fbaa15baea0f3c7398d746a061b9169dee4",
+      "src/experiments/svm.py": "ac3d4e6a4a8858156e353bfd4b2e30f890c6d13ba341f8da70278c86ae316f8a",
+      "src/experiments/validate_svm.py": "90097ed6b8e165e25f1f0a4bb5e4a7a5e99091a11424a6f3ba2ae18239c4879c",
+      "src/experiments/validation.py": "55bc6e217706cf10d6b9a8d7e555f4b7745f38e12eb63ec43468c05b89ecd4cf",
+      "src/experiments/workflow.py": "63b88e4edc04c6068f7b2d3479200e49bf9cf72be8403c1d648597d4d9efd21a",
+      "src/experiments/workflow_checks.py": "c762a064831cca7bf4cac0bfe02db47644e669c1d9e53f63589e258f7d7ebcee",
+      "src/experiments/workflow_report.py": "261b5251ac8f5f1422d0429cee0e459d4d6903cd6dbbcf3b7d6add4284a53129",
+      "src/experiments/workflow_run.py": "b907933a76501c9e57591ef8defa8e7f8f7320b4225590dfa87aa2caa0320855"
+    },
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "operating_system": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64",
+    "environment_packages": {
+      "joblib": "1.5.2",
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "pip": "25.0.1",
+      "python-dateutil": "3.0.0",
+      "scikit-learn": "1.7.2",
+      "scipy": "1.16.2",
+      "six": "1.17.0",
+      "threadpoolctl": "3.6.0",
+      "tzdata": "2026.5"
+    },
+    "numeric_libraries": [
+      {
+        "internal_api": "openblas",
+        "version": "0.3.30",
+        "architecture": "Haswell",
+        "threading_layer": "pthreads"
+      },
+      {
+        "internal_api": "openmp",
+        "version": null
+      },
+      {
+        "internal_api": "openblas",
+        "version": "0.3.29.dev",
+        "architecture": "Haswell",
+        "threading_layer": "pthreads"
+      }
+    ],
+    "workflow_version": 2
+  },
+  "configurations": [
+    "SVM-MM-ANOVA-50-LINEAR",
+    "SVM-MM-ANOVA-50-RBF",
+    "SVM-MM-ANOVA-100-LINEAR",
+    "SVM-MM-ANOVA-100-RBF",
+    "SVM-MM-ANOVA-150-LINEAR",
+    "SVM-MM-ANOVA-150-RBF",
+    "SVM-STD-ANOVA-50-LINEAR",
+    "SVM-STD-ANOVA-50-RBF",
+    "SVM-STD-ANOVA-100-LINEAR",
+    "SVM-STD-ANOVA-100-RBF",
+    "SVM-STD-ANOVA-150-LINEAR",
+    "SVM-STD-ANOVA-150-RBF",
+    "SVM-MM-PCA-50-LINEAR",
+    "SVM-MM-PCA-50-RBF",
+    "SVM-MM-PCA-100-LINEAR",
+    "SVM-MM-PCA-100-RBF",
+    "SVM-MM-PCA-150-LINEAR",
+    "SVM-MM-PCA-150-RBF",
+    "SVM-STD-PCA-50-LINEAR",
+    "SVM-STD-PCA-50-RBF",
+    "SVM-STD-PCA-100-LINEAR",
+    "SVM-STD-PCA-100-RBF",
+    "SVM-STD-PCA-150-LINEAR",
+    "SVM-STD-PCA-150-RBF"
+  ],
+  "peer_review": "pending",
+  "settings": {
+    "protocol_version": "2.0",
+    "dataset": "data/processed/sarc_merged_six_subtypes.tsv",
+    "expected_samples": 254,
+    "expected_features": 20531,
+    "labels": [
+      "LMS",
+      "DDLPS",
+      "UPS",
+      "MFS",
+      "SS",
+      "MPNST"
+    ],
+    "class_counts": {
+      "LMS": 104,
+      "DDLPS": 57,
+      "UPS": 49,
+      "MFS": 25,
+      "SS": 10,
+      "MPNST": 9
+    },
+    "source_sha256": {
+      "data/raw/sarc_tcga_clinical_data.tsv": "ef96a946f513bad5fac4fcdb8663586286db20b8cd04f5be5bc598c6e348d6b5",
+      "data/raw/data_mrna_seq_v2_rsem.txt": "e364fba8c62b01e40b17fc7cdf95e4e7487654f1aeeb81a0c055897aa8adceee"
+    },
+    "validation": {
+      "n_splits": 5,
+      "n_repeats": 3,
+      "random_state": 42
+    },
+    "preprocessing": {
+      "log": "log2(x+1)",
+      "variance_threshold": 0.0
+    },
+    "model": {
+      "class_weight": null,
+      "probability": false,
+      "tol": 0.001,
+      "max_iter": -1,
+      "cache_size": 200
+    },
+    "pca": {
+      "svd_solver": "randomized",
+      "random_state": 42,
+      "whiten": false,
+      "iterated_power": 7,
+      "n_oversamples": 10,
+      "power_iteration_normalizer": "QR"
+    },
+    "blas_threads": 1,
+    "packages": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scikit-learn": "1.7.2",
+      "scipy": "1.16.2",
+      "joblib": "1.5.2",
+      "threadpoolctl": "3.6.0"
+    },
+    "configurations": [
+      {
+        "id": "SVM-MM-ANOVA-50-LINEAR",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-ANOVA-50-RBF",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-ANOVA-100-LINEAR",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-ANOVA-100-RBF",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-ANOVA-150-LINEAR",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-ANOVA-150-RBF",
+        "owner": "Member 1",
+        "scaler": "minmax",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-ANOVA-50-LINEAR",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-ANOVA-50-RBF",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-ANOVA-100-LINEAR",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-ANOVA-100-RBF",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-ANOVA-150-LINEAR",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-ANOVA-150-RBF",
+        "owner": "Member 2",
+        "scaler": "standard",
+        "reduction": "anova",
+        "k": 150,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-PCA-50-LINEAR",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-PCA-50-RBF",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-PCA-100-LINEAR",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-PCA-100-RBF",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-MM-PCA-150-LINEAR",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-MM-PCA-150-RBF",
+        "owner": "Member 3",
+        "scaler": "minmax",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-PCA-50-LINEAR",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-PCA-50-RBF",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 50,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-PCA-100-LINEAR",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-PCA-100-RBF",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 100,
+        "kernel": "rbf"
+      },
+      {
+        "id": "SVM-STD-PCA-150-LINEAR",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "linear"
+      },
+      {
+        "id": "SVM-STD-PCA-150-RBF",
+        "owner": "Member 4",
+        "scaler": "standard",
+        "reduction": "pca",
+        "k": 150,
+        "kernel": "rbf"
+      }
+    ],
+    "round": "svm",
+    "inner_validation": {
+      "n_splits": 4,
+      "shuffle": true,
+      "random_state": 42
+    },
+    "search": {
+      "C": [
+        0.01,
+        0.1,
+        1,
+        10,
+        100
+      ],
+      "gamma": [
+        "scale",
+        0.001,
+        0.01,
+        0.1
+      ],
+      "scoring": "f1_macro",
+      "tie_break": "first candidate in declared grid order"
+    }
+  }
+}
