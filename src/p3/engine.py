@@ -120,6 +120,8 @@ def run_pipeline(spec, config, inputs, folds, destination, *, predict_outer, man
             seconds = np.zeros_like(scores)
             for (c, i, _, _), (score, elapsed, messages) in zip(tasks, results):
                 scores[c, i], seconds[c, i] = score, elapsed
+                for message in messages:
+                    print(f"WARNING {spec['id']} R{repeat} F{fold} candidate={c} inner={i + 1}: {message}", flush=True)
                 warning_rows += [dict(repeat=repeat, fold=fold, stage="inner", candidate=c, inner_fold=i + 1, message=m)
                                  for m in messages]
             best, means = select(scores)
@@ -129,6 +131,8 @@ def run_pipeline(spec, config, inputs, folds, destination, *, predict_outer, man
                 row.update(mean_inner=means[c], selected=c == best, fit_seconds=seconds[c].sum())
                 search.append(row)
             model, _, refit_seconds, messages = fit_once(spec, config, grid[best], x, target, np.arange(len(train)))
+            for message in messages:
+                print(f"WARNING {spec['id']} R{repeat} F{fold} refit: {message}", flush=True)
             warning_rows += [dict(repeat=repeat, fold=fold, stage="refit", candidate=best, inner_fold=0, message=m)
                              for m in messages]
             details.append(dict(repeat=repeat, fold=fold, **feature_details(model, features)))

@@ -155,7 +155,5 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except (ValueError, FileNotFoundError) as error:
-        raise SystemExit(f"Protocol 3.0 stopped: {error}") from error
+    from .logging import logged_main
+    logged_main(main, ROOT / 'results/p3/logs')
