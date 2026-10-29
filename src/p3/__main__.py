@@ -1,6 +1,7 @@
 """Start logging before loading scientific dependencies."""
 from pathlib import Path
-from .logging import logged_main
+import sys
+from .logging import logged_main, member_log_folder
 
 
 def main():
@@ -9,4 +10,5 @@ def main():
 
 
 if __name__ == "__main__":
-    logged_main(main, Path(__file__).resolve().parents[2] / 'results/p3/logs')
+    folder = Path(__file__).resolve().parents[2] / 'results/p3/logs'
+    logged_main(main, member_log_folder(folder, sys.argv[1:]))

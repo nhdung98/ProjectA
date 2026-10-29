@@ -15,9 +15,15 @@ results/p3/*
 !results/p3/submissions/
 results/p3/submissions/*
 !results/p3/submissions/*.zip
+!results/p3/submissions/member[1-4]/
+results/p3/submissions/member[1-4]/*
+!results/p3/submissions/member[1-4]/*.zip
 !results/p3/logs/
 results/p3/logs/*
 !results/p3/logs/*.log
+!results/p3/logs/member[1-4]/
+results/p3/logs/member[1-4]/*
+!results/p3/logs/member[1-4]/*.log
 !results/splits/
 results/splits/*
 !results/splits/outer.csv

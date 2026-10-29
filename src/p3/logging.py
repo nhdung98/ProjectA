@@ -6,6 +6,19 @@ import traceback
 import uuid
 
 
+def member_log_folder(folder, arguments):
+    """Resolve member folders before importing ML dependencies or parsing the full CLI."""
+    for index, argument in enumerate(arguments):
+        value = None
+        if argument == '--member' and index + 1 < len(arguments):
+            value = arguments[index + 1]
+        elif argument.startswith('--member='):
+            value = argument.partition('=')[2]
+        if value in {'1', '2', '3', '4'}:
+            return folder / f'member{value}'
+    return folder
+
+
 class Tee:
     def __init__(self, terminal, log):
         self.terminal, self.log = terminal, log

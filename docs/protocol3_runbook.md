@@ -116,21 +116,23 @@ python -m src.p3 run --round A --member 2
 
 Thay số member theo phân công. Chương trình tự tạo:
 
-- Một file log tại `results/p3/logs/`: tiến độ, warning và traceback lỗi; log bắt đầu trước khi import thư viện ML.
-- Một file ZIP tại `results/p3/submissions/`: toàn bộ bằng chứng kết quả của các pipeline được bắt đầu trong lần chạy, cùng `submission_summary.json` ghi complete/failed.
+- Một file log tại `results/p3/logs/member2/`: tiến độ, warning và traceback lỗi; log bắt đầu trước khi import thư viện ML.
+- Một file ZIP tại `results/p3/submissions/member2/`: toàn bộ bằng chứng kết quả của các pipeline được bắt đầu trong lần chạy, cùng `submission_summary.json` ghi complete/failed.
+
+Thư mục member được tạo tự động từ `--member`; member 1/3/4 có thư mục riêng tương ứng. Mỗi lần chạy có tên file riêng, không ghi đè lần trước.
 
 Terminal in đường dẫn hai file. Chỉ gửi hai file đó; không tự tính điểm, ghép bảng hoặc nén thư mục. ZIP là gói bàn giao nguyên trạng, không phải một bảng điểm tổng hợp và không làm lộ outer scores ở vòng A. Leader giải nén vào thư mục riêng rồi dùng lệnh screen/analyze hiện có với thư mục đã giải nén.
 
-Không cần copy file sang thư mục member. Để nộp qua Git, mỗi member tạo branch kết quả riêng (ví dụ member 1, vòng A):
+Không cần copy file hoặc tạo branch riêng. Khi đang ở `finalized-protocol3`, member 2 nộp qua Git:
 
 ```powershell
-git switch -c results/member1-roundA
-git add results/p3/submissions/*.zip results/p3/logs/*.log
-git commit -m "Submit member 1 round A results and logs"
-git push -u origin results/member1-roundA
+git add results/p3/submissions/member2/ results/p3/logs/member2/
+git commit -m "Submit member 2 round A results and logs"
+git pull --rebase origin finalized-protocol3
+git push origin finalized-protocol3
 ```
 
-Thay số member theo phân công. Nếu branch đã có, dùng `git switch` không có `-c`. Hai lệnh add lấy tất cả ZIP/LOG hiện có, gồm cả lần chạy lỗi; không thay đổi code/config. Chương trình không tự push.
+Thay số member theo phân công. Lệnh add lấy tất cả ZIP/LOG trong thư mục của mình, gồm cả lần chạy lỗi; không thay đổi code/config. Chương trình không tự push. Nếu người khác vừa push và Git từ chối, chạy lại pull --rebase rồi push; không force push.
 
 Nếu dừng do lỗi, ZIP giữ bằng chứng hiện có và ghi failed; pipeline chưa chạy không có kết quả. Không coi gói failed là kết quả hoàn chỉnh. Lỗi trước khi bắt đầu lệnh run (ví dụ thiếu thư viện lúc import) có log nhưng có thể chưa tạo ZIP. Tắt cưỡng bức tiến trình hoặc mất điện không bảo đảm tạo được ZIP; log đã ghi vẫn được giữ.
 

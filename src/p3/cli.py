@@ -143,7 +143,8 @@ def main():
     elif args.command == "run":
         from .submission import member_submission
         requested = member_pipelines(config, args.member, args.pipeline)
-        with member_submission(ROOT / 'results/p3/submissions', args.round, args.member, requested) as outputs:
+        with member_submission(ROOT / 'results/p3/submissions' / f'member{args.member}',
+                               args.round, args.member, requested) as outputs:
             run(config, args.round, args.member, args.pipeline, args.jobs, args.replace, args.development,
                 submission_outputs=outputs)
     elif args.command == "screen":
