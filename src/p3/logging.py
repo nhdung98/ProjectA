@@ -34,7 +34,8 @@ def logged_main(main, folder):
             try:
                 main()
             except BaseException as error:
-                traceback.print_exc()
+                if not isinstance(error, SystemExit) or error.code not in (None, 0):
+                    traceback.print_exc()
                 print(f'Log saved: {path.resolve()}', flush=True)
                 if isinstance(error, SystemExit):
                     raise

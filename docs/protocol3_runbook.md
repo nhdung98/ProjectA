@@ -106,6 +106,23 @@ Lấy pipeline được chọn ở Câu 3 từ `summary.json` (hoặc `--pipelin
 
 ## Ghi chú kỹ thuật
 
+### Một lệnh chạy, hai file để gửi leader
+
+Sau khi cài môi trường và chuẩn bị dữ liệu lần đầu, mỗi member chạy lệnh như cũ:
+
+```powershell
+python -m src.p3 run --round A --member 2
+```
+
+Thay số member theo phân công. Chương trình tự tạo:
+
+- Một file log tại `results/p3/logs/`: tiến độ, warning và traceback lỗi; log bắt đầu trước khi import thư viện ML.
+- Một file ZIP tại `results/p3/submissions/`: toàn bộ bằng chứng kết quả của các pipeline được bắt đầu trong lần chạy, cùng `submission_summary.json` ghi complete/failed.
+
+Terminal in đường dẫn hai file. Chỉ gửi hai file đó; không tự tính điểm, ghép bảng hoặc nén thư mục. ZIP là gói bàn giao nguyên trạng, không phải một bảng điểm tổng hợp và không làm lộ outer scores ở vòng A. Leader giải nén vào thư mục riêng rồi dùng lệnh screen/analyze hiện có với thư mục đã giải nén.
+
+Nếu dừng do lỗi, ZIP giữ bằng chứng hiện có và ghi failed; pipeline chưa chạy không có kết quả. Không coi gói failed là kết quả hoàn chỉnh. Lỗi trước khi bắt đầu lệnh run (ví dụ thiếu thư viện lúc import) có log nhưng có thể chưa tạo ZIP. Tắt cưỡng bức tiến trình hoặc mất điện không bảo đảm tạo được ZIP; log đã ghi vẫn được giữ.
+
 - Grid của PAM ghi "không co rút" là `null`, vì scikit-learn 1.7 không nhận `shrink_threshold = 0`.
 - Warning không làm dừng run; mọi warning được ghi vào `warnings.csv` và hiện trong báo cáo để review.
 - `python -m src.data.prepare` ghi file theo kiểu xuống dòng CRLF trên mọi hệ điều hành, để checksum dataset giống nhau trên Windows và macOS.
