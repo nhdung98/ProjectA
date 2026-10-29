@@ -123,16 +123,18 @@ Thư mục member được tạo tự động từ `--member`; member 1/3/4 có 
 
 Terminal in đường dẫn hai file. Chỉ gửi hai file đó; không tự tính điểm, ghép bảng hoặc nén thư mục. ZIP là gói bàn giao nguyên trạng, không phải một bảng điểm tổng hợp và không làm lộ outer scores ở vòng A. Leader giải nén vào thư mục riêng rồi dùng lệnh screen/analyze hiện có với thư mục đã giải nén.
 
-Không cần copy file hoặc tạo branch riêng. Khi đang ở `finalized-protocol3`, member 2 nộp qua Git:
+Không cần copy file. Bắt đầu chạy từ bản code chung `finalized-protocol3` theo commit leader chỉ định. Sau khi chạy xong, member 2 tạo branch kết quả riêng để nộp:
 
 ```powershell
+git switch -c results/member2-roundA
 git add results/p3/submissions/member2/ results/p3/logs/member2/
 git commit -m "Submit member 2 round A results and logs"
-git pull --rebase origin finalized-protocol3
-git push origin finalized-protocol3
+git push -u origin results/member2-roundA
 ```
 
-Thay số member theo phân công. Lệnh add lấy tất cả ZIP/LOG trong thư mục của mình, gồm cả lần chạy lỗi; không thay đổi code/config. Chương trình không tự push. Nếu người khác vừa push và Git từ chối, chạy lại pull --rebase rồi push; không force push.
+Thay số member và round theo phân công. Nếu branch kết quả đã được tạo, dùng `git switch results/member2-roundA` không có `-c`. Lệnh add lấy tất cả ZIP/LOG trong thư mục của mình, gồm cả lần chạy lỗi; không thay đổi code/config. Chương trình không tự push.
+
+Gửi leader tên branch sau khi push. Thành viên không push trực tiếp lên `finalized-protocol3` hoặc `main`, không force push và không tự merge. Leader kiểm tra kết quả rồi quyết định có merge branch nộp bài hay không. Branch riêng cho mỗi member giúp các lần nộp không tranh cùng lịch sử branch code chung. Các thư mục LOG/ZIP tự động giữ nguyên.
 
 Nếu dừng do lỗi, ZIP giữ bằng chứng hiện có và ghi failed; pipeline chưa chạy không có kết quả. Không coi gói failed là kết quả hoàn chỉnh. Lỗi trước khi bắt đầu lệnh run (ví dụ thiếu thư viện lúc import) có log nhưng có thể chưa tạo ZIP. Tắt cưỡng bức tiến trình hoặc mất điện không bảo đảm tạo được ZIP; log đã ghi vẫn được giữ.
 
