@@ -1,9 +1,13 @@
 """Single-CSV PCA-order runner and independent prediction-based collection."""
 import argparse
+from contextlib import contextmanager
+import tempfile
 from datetime import datetime, timezone
 import hashlib
 import json
 import os
+import platform
+from importlib.metadata import version
 from pathlib import Path
 import subprocess
 import time
@@ -39,7 +43,7 @@ def git(*args):
 
 
 def provenance(s, packages):
-    paths = ['configs/pca_order.json', 'configs/data.yaml', 'requirements.txt', 'requirements-experiments.txt']
+    paths = ['configs/pca_order.json', 'configs/data.yaml', 'requirements.txt', 'requirements-experiments.txt', 'requirements-protocol2-lock.txt']
     paths += ['src/experiments/' + n for n in ['__init__.py', 'pca_order.py', 'pca_order_csv.py', 'pipeline.py', 'svm.py', 'common.py', 'metrics.py', 'validation.py']]
     code = ''.join(p + ':' + hashlib.sha256((ROOT / p).read_bytes().replace(b'\r\n', b'\n')).hexdigest() for p in paths)
     return dict(protocol=s['round'], git_commit=git('rev-parse', 'HEAD'), code_sha256=hashlib.sha256(code.encode()).hexdigest(),
@@ -62,18 +66,60 @@ def payload_hash(table):
     return hashlib.sha256(table.drop(columns='payload_sha256').to_csv(index=False, lineterminator='\n').encode('utf-8')).hexdigest()
 
 
+def atomic_write(path, payload):
+    """Unique same-directory temporary; a crash leaves the last committed CSV intact."""
+    fd, temporary = tempfile.mkstemp(prefix=path.name + '.', suffix='.tmp', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+
+
 def checkpoint(path, records, state):
-    """Text-preserving checksum and atomic checkpoint in one CSV."""
     table = pd.DataFrame([{k: scalar(row[k]) for k in COLUMNS[:-1]} for row in records], columns=COLUMNS[:-1])
     table['run_state'] = state
     table['payload_sha256'] = ''
     table['payload_sha256'] = payload_hash(table)
-    temporary = path.with_suffix('.tmp')
-    try:
-        table.to_csv(temporary, index=False, lineterminator='\n')
-        temporary.replace(path)
-    finally:
-        temporary.unlink(missing_ok=True)
+    atomic_write(path, table.to_csv(index=False, lineterminator='\n').encode('utf-8'))
+
+
+@contextmanager
+def member_lock(final):
+    """OS-held lock, released on process exit. Keep the lock inode; never unlink it."""
+    path = final.with_suffix('.lock')
+    with path.open('a+b') as stream:
+        if stream.seek(0, os.SEEK_END) == 0:
+            stream.write(b'0'); stream.flush()
+        stream.seek(0)
+        try:
+            if os.name == 'nt':
+                import msvcrt
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            raise ValueError('Another process holds this member lock; do not remove the lock file') from error
+        try:
+            yield
+        finally:
+            stream.seek(0)
+            if os.name == 'nt':
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+
+
+def activity(path, event, common, completed):
+    record = dict(event=event, utc=datetime.now(timezone.utc).isoformat(),
+                  run_id=common['run_id'], completed_evaluations=len(completed))
+    with path.open('a', encoding='utf-8') as stream:
+        stream.write(json.dumps(record, sort_keys=True) + '\n')
+        stream.flush(); os.fsync(stream.fileno())
 
 
 def metrics_tables(table, configs, s, data):
@@ -98,12 +144,14 @@ def metrics_tables(table, configs, s, data):
             'team_confusions.csv': pd.DataFrame(confusions, columns=['configuration', 'repeat', 'true_subtype', 'predicted_subtype', 'count'])}
 
 
-def validate(path, s, data, outer, proof, member, partial=False):
+def validate(path, s, data, outer, proof, member, partial=False, checkpoint_mode=False):
     path = Path(path)
     require(partial or path.name == f'member{member}_results.csv', 'Use completed memberN_results.csv; partial or renamed files are not accepted')
     table = read_csv(path)
     require(list(table.columns) == COLUMNS, 'Unexpected CSV columns')
-    require(len(table) > 0 and set(table.run_state) == {'complete'}, 'Result is incomplete')
+    require(not table.empty, 'Empty checkpoint has no verifiable record checksum; preserve the bundle and request a reviewed fresh run')
+    states = set(table.run_state)
+    require(len(table) > 0 and (states in ({'partial'}, {'complete'}) if checkpoint_mode else states == {'complete'}), 'Result is incomplete or has mixed states')
     require(set(table.payload_sha256) == {payload_hash(table)}, 'CSV checksum mismatch')
     for key in IDENTITY:
         require(key in proof and set(table[key]) == {str(proof[key])}, f'Mismatched {key}; use the same release, data and environment')
@@ -111,7 +159,8 @@ def validate(path, s, data, outer, proof, member, partial=False):
         require(table[key].nunique() == 1 and table[key].iloc[0] != '', f'Missing or mixed {key}')
     require(set(table.member) == {str(member)}, 'Wrong member assignment')
     configs = [c for c in s['configurations'] if c['member'] == member]
-    require(set(table.configuration) == {c['id'] for c in configs}, 'Unexpected or missing configurations')
+    planned = {c['id'] for c in configs}
+    require(set(table.configuration).issubset(planned) if checkpoint_mode else set(table.configuration) == planned, 'Unexpected or missing configurations')
     parsed = table.copy()
     integers = ['repeat', 'fold', 'member', 'components', 'train_samples', 'test_samples', 'retained_genes']
     for key in list(dict.fromkeys(integers + [c for c in EVIDENCE if c != 'gamma'])):
@@ -122,12 +171,21 @@ def validate(path, s, data, outer, proof, member, partial=False):
             parsed[key] = parsed[key].astype(int)
     keys = ['repeat', 'fold', 'Sample ID', 'Patient ID', 'true_subtype']
     reference = outer.rename(columns={'subtype': 'true_subtype'})[keys].sort_values(['repeat', 'Sample ID']).reset_index(drop=True)
+    completed = set()
+    allowed_folds = set(zip(outer['repeat'], outer['fold']))
     for config in configs:
         block = parsed[parsed.configuration == config['id']]
+        if checkpoint_mode and block.empty:
+            continue
+        pairs = set(zip(block['repeat'], block['fold']))
+        require(pairs.issubset(allowed_folds), 'Unexpected repeat/fold')
+        expected_rows = reference
+        if checkpoint_mode:
+            expected_rows = reference.loc[[pair in pairs for pair in zip(reference['repeat'], reference['fold'])]].reset_index(drop=True)
         for key, expected in [('scaler', config['scaler']), ('kernel', config['kernel']), ('components', config['k']), ('order', config['order'])]:
             require(set(block[key]) == {expected}, f'Wrong configuration field: {key}')
         actual = block[keys].sort_values(['repeat', 'Sample ID']).reset_index(drop=True)
-        pd.testing.assert_frame_equal(actual, reference, check_dtype=False)
+        pd.testing.assert_frame_equal(actual, expected_rows, check_dtype=False)
         require(set(block.predicted_subtype).issubset(s['labels']), 'Unknown predicted label')
         require(block.best_inner_macro_f1.between(0, 1).all(), 'Invalid inner score')
         require((block.runtime_seconds >= 0).all(), 'Invalid runtime')
@@ -140,6 +198,9 @@ def validate(path, s, data, outer, proof, member, partial=False):
             require((float(row.C), str(row.gamma)) in allowed, 'Selected C/gamma outside the agreed grid')
             count = len(outer[(outer['repeat'] == repeat) & (outer['fold'] == fold)])
             require(row.test_samples == count and row.train_samples == len(data) - count, 'Wrong train/test counts')
+            completed.add((config['id'], int(repeat), int(fold)))
+    if checkpoint_mode:
+        return table, completed
     return table, metrics_tables(table, configs, s, data)
 
 
@@ -154,51 +215,90 @@ def publish(partial, final):
     partial.unlink()
 
 
-def run(member, s, data, features, values, outer, inner, proof):
+def evaluate_fold(config, s, data, features, values, train, test, cv, started):
+    """Unchanged scientific computation; called only for an uncommitted outer fold."""
+    with threadpool_limits(limits=s['blas_threads']), warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter('always')
+        search = fit_search(config, s, values[train], data.iloc[train].subtype, cv)
+        labels = search.predict(values[test])
+    require(not caught, 'Training/prediction warning: ' + '; '.join(str(w.message) for w in caught))
+    pipeline = search.best_estimator_
+    evidence = dict(C=search.best_params_['model__C'], gamma=search.best_params_.get('model__gamma', 'NA'),
+                    best_inner_macro_f1=search.best_score_, train_samples=len(train), test_samples=len(test),
+                    retained_genes=int(pipeline.named_steps['variance'].get_support().sum()),
+                    runtime_seconds=time.perf_counter() - started,
+                    pca_explained_variance=float(pipeline.named_steps['reduction'].explained_variance_ratio_.sum()))
+    return labels, evidence
+
+
+def run(member, s, data, features, values, outer, inner, proof, *, resume=False, evaluate=None):
     final, partial = result_paths(member)
     final.parent.mkdir(parents=True, exist_ok=True)
-    require(not final.exists(), f'Result exists: {final}. It will not be overwritten.')
-    try:
-        with partial.open('x', encoding='utf-8') as stream:
-            pd.DataFrame(columns=COLUMNS).to_csv(stream, index=False, lineterminator='\n')
-    except FileExistsError as error:
-        raise ValueError(f'Partial run exists: {partial}. Preserve or explicitly move it before retrying; no automatic resume.') from error
-    records = []
-    common = dict(proof, member=member, run_id=uuid.uuid4().hex, started_utc=datetime.now(timezone.utc).isoformat(), run_state='partial')
-    print(f'Running member {member}; final result: {final}', flush=True)
-    try:
-        for config in [c for c in s['configurations'] if c['member'] == member]:
-            for repeat, fold, train, test in fold_indices(outer, data):
-                started = time.perf_counter()
-                cv = inner_indices(data.iloc[train][['Sample ID', 'Patient ID', 'subtype']], inner, repeat, fold)
-                with threadpool_limits(limits=s['blas_threads']), warnings.catch_warnings(record=True) as caught:
-                    warnings.simplefilter('always')
-                    search = fit_search(config, s, values[train], data.iloc[train].subtype, cv)
-                    labels = search.predict(values[test])
-                require(not caught, 'Training/prediction warning: ' + '; '.join(str(w.message) for w in caught))
-                pipeline = search.best_estimator_
-                evidence = dict(C=search.best_params_['model__C'], gamma=search.best_params_.get('model__gamma', 'NA'),
-                                best_inner_macro_f1=search.best_score_, train_samples=len(train), test_samples=len(test),
-                                retained_genes=int(pipeline.named_steps['variance'].get_support().sum()),
-                                runtime_seconds=time.perf_counter() - started,
-                                pca_explained_variance=float(pipeline.named_steps['reduction'].explained_variance_ratio_.sum()))
-                for index, label in zip(test, labels):
-                    row = data.iloc[index]
-                    records.append(dict(common, **evidence, configuration=config['id'], scaler=config['scaler'], kernel=config['kernel'],
-                                        components=config['k'], order=config['order'], repeat=repeat, fold=fold,
-                                        **{'Sample ID': row['Sample ID'], 'Patient ID': row['Patient ID'], 'true_subtype': row.subtype, 'predicted_subtype': label}))
-                checkpoint(partial, records, 'partial')
-                print(f'{config["id"]}: repeat {repeat}/3, fold {fold}/5 complete', flush=True)
-        checkpoint(partial, records, 'complete')
-        validate(partial, s, data, outer, proof, member, partial=True)
-        publish(partial, final)
-        print(f'COMPLETE: {final}. Submit this one CSV; no additional files needed.', flush=True)
-        return final
-    except BaseException:
-        if partial.exists() and records:
+    context_path = final.with_suffix('.context.json')
+    log_path = final.with_suffix('.activity.jsonl')
+    evaluate = evaluate or evaluate_fold
+    execution = dict(python=platform.python_version(), system=platform.system(), machine=platform.machine(),
+                     dependencies={name: version(name) for name in ('numpy', 'pandas', 'scikit-learn', 'scipy', 'joblib', 'threadpoolctl', 'python-dateutil', 'six', 'tzdata')})
+    expected_context = dict(schema_version=1, member=member, settings=s, proof=proof, execution=execution)
+    with member_lock(final):
+        require(not final.exists(), f'Result exists: {final}. It will not be overwritten.')
+        if resume:
+            require(partial.exists() and context_path.exists(), 'Resume requires the original partial CSV and context; legacy/incomplete bundles require review')
+            context = json.loads(context_path.read_text(encoding='utf-8'))
+            require({k: context.get(k) for k in expected_context} == expected_context, 'Checkpoint context differs: release/configuration/data/splits/environment')
+            common = context.get('common', {})
+            require(set(common) == set(proof) | {'member', 'run_id', 'started_utc', 'run_state'}, 'Invalid checkpoint run identity')
+            require(all(common.get(k) == v for k, v in proof.items()) and common['member'] == member
+                    and common['run_state'] == 'partial' and bool(common['run_id']) and bool(common['started_utc']), 'Invalid checkpoint provenance')
+            table, completed = validate(partial, s, data, outer, proof, member, partial=True, checkpoint_mode=True)
+            if len(table):
+                for key in ('run_id', 'started_utc'):
+                    require(set(table[key]) == {common[key]}, 'Checkpoint/context run identity mismatch')
+            records = table.drop(columns='payload_sha256').to_dict('records')
+            activity(log_path, 'resume', common, completed)
+        else:
+            require(not partial.exists() and not context_path.exists() and not log_path.exists(), 'Partial run or context exists; use --resume or preserve the entire bundle before an approved fresh run')
+            common = dict(proof, member=member, run_id=uuid.uuid4().hex,
+                          started_utc=datetime.now(timezone.utc).isoformat(), run_state='partial')
+            # Immutable identity first. A crash before the initial CSV fails closed on resume.
+            with context_path.open('x', encoding='utf-8') as stream:
+                json.dump(dict(expected_context, common=common), stream, indent=2, allow_nan=False)
+                stream.flush(); os.fsync(stream.fileno())
+            records, completed = [], set()
             checkpoint(partial, records, 'partial')
-        print(f'INCOMPLETE: checkpoint retained at {partial}. Do not submit it.', flush=True)
-        raise
+            activity(log_path, 'start', common, completed)
+        print(f'Member {member}: {len(completed)} verified evaluations retained', flush=True)
+        try:
+            for config in [c for c in s['configurations'] if c['member'] == member]:
+                for repeat, fold, train, test in fold_indices(outer, data):
+                    key = (config['id'], repeat, fold)
+                    if key in completed:
+                        continue
+                    started = time.perf_counter()
+                    cv = inner_indices(data.iloc[train][['Sample ID', 'Patient ID', 'subtype']], inner, repeat, fold)
+                    labels, evidence = evaluate(config, s, data, features, values, train, test, cv, started)
+                    require(len(labels) == len(test), 'Prediction count differs from outer test size')
+                    block = []
+                    for index, label in zip(test, labels):
+                        row = data.iloc[index]
+                        block.append(dict(common, **evidence, configuration=config['id'], scaler=config['scaler'], kernel=config['kernel'],
+                                          components=config['k'], order=config['order'], repeat=repeat, fold=fold,
+                                          **{'Sample ID': row['Sample ID'], 'Patient ID': row['Patient ID'], 'true_subtype': row.subtype, 'predicted_subtype': label}))
+                    # Commit complete folds only; never save records from an interrupted evaluation.
+                    checkpoint(partial, records + block, 'partial')
+                    records.extend(block)
+                    completed.add(key)
+                    print(f'{config["id"]}: repeat {repeat}, fold {fold} committed', flush=True)
+            checkpoint(partial, records, 'complete')
+            validate(partial, s, data, outer, proof, member, partial=True)
+            activity(log_path, 'validated_for_publication', common, completed)
+            publish(partial, final)
+            print(f'COMPLETE: {final}. Keep context/activity private alongside the CSV.', flush=True)
+            return final
+        except BaseException:
+            # Never rewrite durable checkpoint from stale/incomplete in-memory state.
+            print(f'INCOMPLETE: preserve {partial} and its context/activity. Use explicit --resume after review.', flush=True)
+            raise
 
 
 def collect(files, destination, s, data, outer, proof):
@@ -238,6 +338,9 @@ def main():
     sub.add_parser('check')
     command = sub.add_parser('run')
     command.add_argument('--member', type=int, choices=range(1, 5), required=True)
+    command.add_argument('--resume', action='store_true', help='Validate and reuse completed outer evaluations; never resume an inner fit')
+    command = sub.add_parser('validate')
+    command.add_argument('--member', type=int, choices=range(1, 5), required=True)
     command = sub.add_parser('collect')
     command.add_argument('files', nargs=4)
     command.add_argument('--output', required=True)
@@ -250,9 +353,12 @@ def main():
     outer = shared_splits(data, s)
     inner = shared_inner(data[['Sample ID', 'Patient ID', 'subtype']], outer, s)
     proof = provenance(s, packages)
+    require(not git('status', '--porcelain'), 'Official operations require a clean committed checkout of the shared release')
     if args.command == 'run':
-        require(not git('status', '--porcelain'), 'Official runs require a clean committed checkout of the shared release')
-        run(args.member, s, data, features, values, outer, inner, proof)
+        run(args.member, s, data, features, values, outer, inner, proof, resume=args.resume)
+    elif args.command == 'validate':
+        validate(result_paths(args.member)[0], s, data, outer, proof, args.member)
+        print('Completed member CSV passed validation. No models trained.')
     elif args.command == 'collect':
         collect(args.files, args.output, s, data, outer, proof)
     else:

@@ -114,7 +114,7 @@ class PCAOrderTests(unittest.TestCase):
             before = final.read_bytes()
             with self.assertRaisesRegex(ValueError, 'will not be overwritten'):
                 experiment.run(1, s, self.data, features, self.data[features].to_numpy(), self.outer, inner, self.proof)
-        self.assertEqual(list(final.parent.iterdir()), [final])
+        self.assertEqual(set(final.parent.iterdir()), {final, final.with_suffix('.context.json'), final.with_suffix('.activity.jsonl'), final.with_suffix('.lock')})
         self.assertEqual(len(experiment.read_csv(final)), 360)
         self.assertEqual(final.read_bytes(), before)
         experiment.validate(final, s, self.data, self.outer, self.proof, 1)
@@ -127,8 +127,8 @@ class PCAOrderTests(unittest.TestCase):
                 experiment.run(1, self.s, self.data, features, self.data[features].to_numpy(), self.outer, inner, self.proof)
             final, partial = experiment.result_paths(1)
             self.assertFalse(final.exists()); self.assertTrue(partial.exists())
-            self.assertEqual(list(partial.parent.iterdir()), [partial])
-            with self.assertRaisesRegex(ValueError, 'Partial run exists'):
+            self.assertEqual(set(partial.parent.iterdir()), {partial, final.with_suffix('.context.json'), final.with_suffix('.activity.jsonl'), final.with_suffix('.lock')})
+            with self.assertRaisesRegex(ValueError, 'Partial run or context exists'):
                 experiment.run(1, self.s, self.data, features, self.data[features].to_numpy(), self.outer, inner, self.proof)
 
 
