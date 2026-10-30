@@ -1,21 +1,12 @@
 # TCGA SARC machine learning
 
-Predict six sarcoma subtypes from gene expression: 254 patients and 20,531 gene records. This week's experiment compares **scaling before PCA** with **scaling after PCA**.
+Predict six sarcoma subtypes from gene expression: 254 patients and 20,531 gene records. The current round is **Protocol 3.0**: 13 pipelines benchmarked under one nested CV, with pipeline selection inside inner CV (META-SELECT).
 
-## Member commands
+## Current round
 
-After setup, run your assigned command from the repository root:
+Read the [Protocol 3.0 proposal](docs/protocol_3.0_proposal.md) first, then the [nested CV diagram](docs/nested_cv_diagram.md) and the [example of the expected results](docs/mock_results_example.md). All numbers in the example are simulated.
 
-| Member | Command | Completed result |
-| --- | --- | --- |
-| 1 | `python -m src.experiments.pca_order run --member 1` | `results/pca_order/member1_results.csv` |
-| 2 | `python -m src.experiments.pca_order run --member 2` | `results/pca_order/member2_results.csv` |
-| 3 | `python -m src.experiments.pca_order run --member 3` | `results/pca_order/member3_results.csv` |
-| 4 | `python -m src.experiments.pca_order run --member 4` | `results/pca_order/member4_results.csv` |
-
-Each member submits **one CSV**, containing 4,572 held-out predictions with settings and run evidence. No ZIP/RAR, separate metadata or manually calculated metrics. Interrupted runs stay marked `.partial.csv`; existing files block reruns rather than being overwritten.
-
-Read the [PCA-order instructions](docs/pca_order_experiment.md) for assignments, interruption handling and the leader's collection command.
+Members run from `finalized-protocol3` at the leader's assigned revision. One `python -m src.p3 run` command automatically creates a result ZIP and a terminal LOG in per-member folders. Members push only those files on `results/memberN-roundA` (or `roundB`); the leader reviews and decides whether to merge. No manual result aggregation or copying is required. The [run guide](docs/protocol3_runbook.md) is the authoritative setup and submission guide.
 
 ## One-time setup
 
@@ -24,11 +15,12 @@ Use Python 3.12 and a Git clone, checked out at the exact reviewed commit distri
 ```powershell
 git clone https://github.com/nhdung98/ProjectA.git
 cd ProjectA
+git switch finalized-protocol3
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-experiments.txt
+python -m pip install -r requirements-protocol3.txt
 python -m src.data.prepare
-python -m src.experiments.pca_order check
+python -m src.p3 check
 ```
 
 The original inputs are included in `data/raw/`. Preparation creates `data/processed/` locally. All members use the same frozen outer and inner folds in `results/splits/`. Scalers, feature filtering and PCA are fitted inside training folds, including inner GridSearchCV folds.
@@ -37,19 +29,22 @@ The original inputs are included in `data/raw/`. Preparation creates `data/proce
 
 | Location | Purpose |
 | --- | --- |
-| [docs/](docs/README.md) | Current experiment instructions |
-| `configs/pca_order.json` | Current assignments and search settings |
-| [src/experiments/](src/experiments/README.md) | Runners and shared training code |
+| [docs/](docs/README.md) | Protocol 3.0, architecture notes and research |
+| `src/p3/` | Protocol 3.0 runner, analysis and final model |
+| [src/experiments/](src/experiments/README.md) | Protocol 2.0 runner and the shared data, split and metric code |
+| `experiments/p3.0/` | Local intermediate runs and leader-extracted evidence |
+| `results/p3/submissions/memberN/` | Automatically packaged member result ZIPs |
+| `results/p3/logs/memberN/` | Automatically captured member terminal LOGs |
 | `src/data/` and `data/` | Data preparation and source inputs |
 | `results/splits/` | Frozen patient assignments and manifests |
-| `results/pca_order/` | Generated member CSVs and leader comparisons; ignored by Git |
 | [reports/](reports/README.md) | Findings and supporting research evidence |
-| [archive/week01/](archive/week01/README.md) | Last week's instructions and original member submissions |
+| [archive/week01/](archive/week01/README.md) | SVM round (protocol 2.0): instructions and original member submissions |
+| [archive/week02/](archive/week02/README.md) | PCA-order round: instructions and the commit that holds its runner |
 | `tests/` | Pipeline, split, validation and output checks |
 
 ## Previous experiments
 
-Last week's SVM code remains runnable through `python -m src.experiments.svm`. Its [rerun guide](archive/week01/README.md) explains how to reproduce the original release or run the retained commands. Old submissions remain historical evidence; they are not inputs to this week's collector.
+The SVM code from protocol 2.0 remains runnable through `python -m src.experiments.svm`. Its [rerun guide](archive/week01/README.md) explains how to reproduce the original release or run the retained commands. Old submissions remain historical evidence; they are not inputs to the Protocol 3.0 analysis.
 
 ## Development and data exploration
 
