@@ -1,0 +1,16 @@
+Log file: F:\Code\ProjectA\results\p3\logs\member2\20261030-091348-2d4ea053.log
+Arguments: ['run', '--round', 'A', '--member', '2', '--pipeline', 'P06', '--pipeline', 'P08', '--jobs', '4', '--replace']
+P06 repeat=1 fold=1: complete in 10 s, best inner 0.737, 0 warnings
+P06 repeat=1 fold=2: complete in 8 s, best inner 0.749, 0 warnings
+P06 repeat=1 fold=3: complete in 8 s, best inner 0.683, 0 warnings
+P06 repeat=1 fold=4: complete in 8 s, best inner 0.730, 0 warnings
+P06 repeat=1 fold=5: complete in 8 s, best inner 0.720, 0 warnings
+Saved experiments\p3.0\roundA\member2\P06
+P08 repeat=1 fold=1: complete in 21 s, best inner 0.737, 0 warnings
+P08 repeat=1 fold=2: complete in 20 s, best inner 0.750, 0 warnings
+P08 repeat=1 fold=3: complete in 17 s, best inner 0.699, 0 warnings
+P08 repeat=1 fold=4: complete in 18 s, best inner 0.709, 0 warnings
+P08 repeat=1 fold=5: complete in 17 s, best inner 0.706, 0 warnings
+Saved experiments\p3.0\roundA\member2\P08
+SUBMISSION RESULTS (complete): F:\Code\ProjectA\results\p3\submissions\member2\roundA-member2-20261030T021358Z-86600804.zip
+Completed. Log saved: F:\Code\ProjectA\results\p3\logs\member2\20261030-091348-2d4ea053.log
