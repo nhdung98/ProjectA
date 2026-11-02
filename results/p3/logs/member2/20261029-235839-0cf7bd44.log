@@ -1,0 +1,10 @@
+Log file: D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\logs\member2\20261029-235839-0cf7bd44.log
+Arguments: ['run', '--round', 'A', '--member', '2', '--pipeline', 'P07', '--jobs', '8']
+P07 repeat=1 fold=1: complete in 1218 s, best inner 0.752, 0 warnings
+P07 repeat=1 fold=2: complete in 1477 s, best inner 0.740, 0 warnings
+P07 repeat=1 fold=3: complete in 1176 s, best inner 0.733, 0 warnings
+P07 repeat=1 fold=4: complete in 1239 s, best inner 0.764, 0 warnings
+P07 repeat=1 fold=5: complete in 1314 s, best inner 0.733, 0 warnings
+Saved experiments\p3.0\roundA\member2\P07
+SUBMISSION RESULTS (complete): D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\submissions\member2\roundA-member2-20261029T165848Z-cb52b1bc.zip
+Completed. Log saved: D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\logs\member2\20261029-235839-0cf7bd44.log
