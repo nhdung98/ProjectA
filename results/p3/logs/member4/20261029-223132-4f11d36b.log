@@ -1,0 +1,22 @@
+Log file: C:\Users\Adam2\ProjectA-P3\results\p3\logs\member4\20261029-223132-4f11d36b.log
+Arguments: ['run', '--round', 'A', '--member', '4']
+P11 repeat=1 fold=1: complete in 5 s, best inner 0.633, 0 warnings
+P11 repeat=1 fold=2: complete in 5 s, best inner 0.634, 0 warnings
+P11 repeat=1 fold=3: complete in 5 s, best inner 0.628, 0 warnings
+P11 repeat=1 fold=4: complete in 4 s, best inner 0.643, 0 warnings
+P11 repeat=1 fold=5: complete in 5 s, best inner 0.647, 0 warnings
+Saved experiments\p3.0\roundA\member4\P11
+P12 repeat=1 fold=1: complete in 36 s, best inner 0.650, 0 warnings
+P12 repeat=1 fold=2: complete in 36 s, best inner 0.686, 0 warnings
+P12 repeat=1 fold=3: complete in 36 s, best inner 0.604, 0 warnings
+P12 repeat=1 fold=4: complete in 36 s, best inner 0.673, 0 warnings
+P12 repeat=1 fold=5: complete in 36 s, best inner 0.683, 0 warnings
+Saved experiments\p3.0\roundA\member4\P12
+P13 repeat=1 fold=1: complete in 8 s, best inner 0.741, 0 warnings
+P13 repeat=1 fold=2: complete in 6 s, best inner 0.724, 0 warnings
+P13 repeat=1 fold=3: complete in 6 s, best inner 0.681, 0 warnings
+P13 repeat=1 fold=4: complete in 6 s, best inner 0.764, 0 warnings
+P13 repeat=1 fold=5: complete in 6 s, best inner 0.742, 0 warnings
+Saved experiments\p3.0\roundA\member4\P13
+SUBMISSION RESULTS (complete): C:\Users\Adam2\ProjectA-P3\results\p3\submissions\member4\roundA-member4-20261029T153133Z-2f7c9908.zip
+Completed. Log saved: C:\Users\Adam2\ProjectA-P3\results\p3\logs\member4\20261029-223132-4f11d36b.log
