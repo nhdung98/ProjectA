@@ -96,38 +96,43 @@ def screen(config, folders, out):
                                             boundary=hits, missing=missing,
                                             reference_max_difference=None if gap is None or math.isinf(gap) else gap,
                                             config_sha256=configs))
-    lines = ["# Báo cáo screening vòng A", "",
-             "Chỉ chứa thông tin kỹ thuật và điểm inner. Vòng A không dự đoán outer test, nên không có điểm outer nào để xem.", ""]
+    lines = ["# Round A screening report", "",
+             "Technical checks and inner-validation results only. Round A does not predict outer test patients, so this report contains no outer-test performance estimates. Numbers use a decimal comma (0,75 means 0.75).", ""]
     if missing:
-        lines += [f"**Thiếu pipeline:** {', '.join(missing)}.", ""]
+        lines += [f"**Missing pipelines:** {', '.join(missing)}.", ""]
     if len(configs) > 1:
-        lines += [f"**Cảnh báo:** các run dùng {len(configs)} phiên bản config khác nhau ({', '.join(configs)}). "
-                  "Pipeline nào sửa config thì chạy lại vòng A trước khi đóng băng.", ""]
-    lines += ["## 1. Trạng thái và runtime", "",
-              table(["Pipeline", "Member", "Commit", "Dev", "Trạng thái", "Fold", "Fit", "Giây/fit", "Phút"],
-                    [[r["pipeline"], r["member"], r["commit"], "có" if r["development"] else "không", r["status"], r["folds"],
+        lines += [f"**Warning:** runs used {len(configs)} different configurations ({', '.join(configs)}). "
+                  "Rerun affected pipelines with the agreed configuration before freezing.", ""]
+    lines += ["## 1. Completion and runtime", "",
+              "Check that every pipeline finished all five outer-training searches. A fit is one training operation. Seconds/fit uses accumulated inner-fit and refit time; wall minutes is elapsed fold time and can be shorter when fits run in parallel. Setup and final packaging are excluded. Member identifies the assigned batch, not necessarily the person operating the machine. Dev indicates development mode. Different computers and parallel settings prevent a controlled speed comparison.", "",
+              table(["Pipeline", "Member", "Commit", "Dev", "Status", "Folds", "Fits", "Seconds/fit", "Wall minutes"],
+                    [[r["pipeline"], r["member"], r["commit"], "yes" if r["development"] else "no", r["status"], r["folds"],
                       r["fits"], fmt(r["seconds_per_fit"], 2), fmt(r["minutes"], 1)] for r in inventory]),
-              "", "## 2. Warning và hội tụ", "",
-              table(["Pipeline", "Tổng", "Theo loại", "n_iter lúc refit (max/giới hạn)", "Ví dụ"],
-                    [[r["pipeline"], r["total"], r["by_category"], r["refit_max_iter"], r["example"][:120]] for r in warnings_rows]),
-              "", "## 3. Tham số được chọn (g*) và điểm inner", "",
-              table(["Pipeline", "Fold", "g*", "Inner macro-F1"],
+              "", "## 2. Warnings and convergence", "",
+              "Warnings flag conditions that need review, including failure to converge. Refit iterations shows the largest recorded iteration count among outer-training refits versus the allowed limit; it does not summarize every inner fit. N/a means this iteration comparison is not reported for that model. Zero recorded warnings is encouraging but does not prove scientific correctness.", "",
+              table(["Pipeline", "Total", "Warning categories", "Refit iterations (maximum/limit)", "Example"],
+                    [[r["pipeline"], r["total"], r["by_category"], r["refit_max_iter"], r["example"]] for r in warnings_rows]),
+              "", "## 3. Selected parameters and inner-validation scores", "",
+              "Each row describes one outer fold's training data. Inner CV compares parameter combinations; g* is the combination with the highest mean inner macro-F1, using the declared tie rule. R1-F1 means repeat 1, fold 1. These scores were used to choose parameters, so they are not independent test scores or final evidence that one pipeline is better. An empty parameter dictionary means there was nothing to tune.", "",
+              table(["Pipeline", "Fold", "Selected parameters (g*)", "Inner macro-F1"],
                     [[p["pipeline"], f"R{p['repeat']}·F{p['fold']}", p["g_star"],
                       "—" if p["best_inner"] is None else fmt(p["best_inner"])] for p in picks]),
-              "", "## 4. Chạm biên grid (≥ 3/5 fold ở cùng một biên)", ""]
-    lines += [table(["Pipeline", "Tham số", "Biên", "Số fold", "Việc cần làm"],
+              "", "## 4. Search-grid boundaries (same edge selected in at least 3/5 folds)", "",
+              "A grid is the list of parameter values tested. Repeatedly selecting its smallest or largest value may suggest trying beyond that range; it does not prove that a better value exists. Extend once is the protocol's recommendation for a single extension before freezing, followed by rerunning the affected Round A pipeline. A natural limit cannot be extended; short grids are exempt under the declared rule. These are recommendations only: this report changes no settings.", ""]
+    lines += [table(["Pipeline", "Parameter", "Edge", "Folds", "Recommended action"],
                     [[h["pipeline"], h["parameter"], h["edge"], h["folds"], h["action"]] for h in hits])
-              if hits else "Không có pipeline nào chạm biên."]
-    lines += ["", "## 5. Kiểm tra engine bằng P02", ""]
+              if hits else "No grid-boundary flags."]
+    lines += ["", "## 5. Reference reproduction check (P02)", "",
+              "P02 repeats the previous SVM reference configuration. This compares every available candidate's inner-fold score with the archived run and reports the largest absolute difference. A match supports reproducibility of that reference search; it does not validate all other models or estimate performance on new patients.", ""]
     if gap is None:
-        lines.append("Chưa có kết quả P02.")
+        lines.append("P02 results are not available yet.")
     else:
-        lines.append(f"Điểm inner của P02 so với Round 1 lệch tối đa {gap:.2e}: "
-                     + ("**khớp**." if gap < 1e-9 else "**KHÔNG khớp. Dừng lại và tìm lỗi engine trước khi đóng băng.**"))
-    lines += ["", "## 6. Trước khi gắn tag `p3.0-frozen`", "",
-              "- Sửa mọi lỗi và warning ở mục 1–2, hoặc ghi rõ vì sao chấp nhận.",
-              "- Mỗi dòng \"extend once\" ở mục 4: mở rộng grid đúng một bước trong `configs/protocol3.json`, "
-              "chạy lại vòng A cho pipeline đó với `--replace`, rồi chạy lại lệnh này.",
-              "- Không loại pipeline vì điểm thấp. Chỉ được bỏ pipeline không chạy nổi trong ngân sách thời gian.", ""]
+        lines.append(f"Maximum absolute difference from archived Round 1 inner scores: {gap:.2e}: "
+                     + ("**match**." if gap < 1e-9 else "**MISMATCH. Investigate before freezing.**"))
+    lines += ["", "## 6. Before creating the `p3.0-frozen` tag", "",
+              "Freezing locks the code and configuration for official Round B evaluation. Resolve technical issues and the protocol's boundary decisions first. Round A searches are screening evidence; Round B runs all three repeats separately and produces outer-test predictions.", "",
+              "- Resolve errors and review warnings in sections 1-2, documenting any accepted warnings.",
+              "- For each extend-once recommendation in section 4, agree the value, extend the grid once in `configs/protocol3.json`, rerun the affected Round A pipeline with `--replace`, and regenerate this report. Preserve earlier submissions.",
+              "- Do not remove pipelines because their inner scores are low. Exclusion is permitted only for inability to run within the declared time budget.", ""]
     (out / "screening.md").write_text("\n".join(lines), encoding="utf-8")
     print(f"Saved {out / 'screening.md'}")

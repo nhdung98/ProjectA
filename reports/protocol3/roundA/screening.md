@@ -1,29 +1,33 @@
-# Báo cáo screening vòng A
+# Round A screening report
 
-Chỉ chứa thông tin kỹ thuật và điểm inner. Vòng A không dự đoán outer test, nên không có điểm outer nào để xem.
+Technical checks and inner-validation results only. Round A does not predict outer test patients, so this report contains no outer-test performance estimates. Numbers use a decimal comma (0,75 means 0.75).
 
-## 1. Trạng thái và runtime
+## 1. Completion and runtime
 
-| Pipeline | Member | Commit | Dev | Trạng thái | Fold | Fit | Giây/fit | Phút |
+Check that every pipeline finished all five outer-training searches. A fit is one training operation. Seconds/fit uses accumulated inner-fit and refit time; wall minutes is elapsed fold time and can be shorter when fits run in parallel. Setup and final packaging are excluded. Member identifies the assigned batch, not necessarily the person operating the machine. Dev indicates development mode. Different computers and parallel settings prevent a controlled speed comparison.
+
+| Pipeline | Member | Commit | Dev | Status | Folds | Fits | Seconds/fit | Wall minutes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| P01-MF | 1 | bf2c2ba20 | không | complete | 5/5 | 25 | 0,11 | 0,1 |
-| P01-ST | 1 | bf2c2ba20 | không | complete | 5/5 | 25 | 0,10 | 0,1 |
-| P02 | 1 | bf2c2ba20 | không | complete | 5/5 | 105 | 0,32 | 0,6 |
-| P03 | 1 | bf2c2ba20 | không | complete | 5/5 | 105 | 0,31 | 0,6 |
-| P04 | 1 | bf2c2ba20 | không | complete | 5/5 | 405 | 0,31 | 2,2 |
-| P05 | 1 | bf2c2ba20 | không | complete | 5/5 | 105 | 0,38 | 0,7 |
-| P06 | 2 | 26e8d1125 | không | complete | 5/5 | 105 | 1,20 | 0,7 |
-| P07 | 2 | bf2c2ba20 | không | complete | 5/5 | 185 | 223,95 | 107,1 |
-| P08 | 2 | 26e8d1125 | không | complete | 5/5 | 305 | 1,09 | 1,5 |
-| P09 | 3 | bf2c2ba20 | không | complete | 5/5 | 305 | 0,30 | 1,6 |
-| P10 | 3 | bf2c2ba20 | không | complete | 5/5 | 305 | 0,81 | 4,3 |
-| P11 | 4 | bf2c2ba20 | không | complete | 5/5 | 105 | 0,19 | 0,4 |
-| P12 | 4 | bf2c2ba20 | không | complete | 5/5 | 85 | 2,09 | 3,0 |
-| P13 | 4 | bf2c2ba20 | không | complete | 5/5 | 165 | 0,17 | 0,5 |
+| P01-MF | 1 | bf2c2ba20 | no | complete | 5/5 | 25 | 0,11 | 0,1 |
+| P01-ST | 1 | bf2c2ba20 | no | complete | 5/5 | 25 | 0,10 | 0,1 |
+| P02 | 1 | bf2c2ba20 | no | complete | 5/5 | 105 | 0,32 | 0,6 |
+| P03 | 1 | bf2c2ba20 | no | complete | 5/5 | 105 | 0,31 | 0,6 |
+| P04 | 1 | bf2c2ba20 | no | complete | 5/5 | 405 | 0,31 | 2,2 |
+| P05 | 1 | bf2c2ba20 | no | complete | 5/5 | 105 | 0,38 | 0,7 |
+| P06 | 2 | 26e8d1125 | no | complete | 5/5 | 105 | 1,20 | 0,7 |
+| P07 | 2 | bf2c2ba20 | no | complete | 5/5 | 185 | 223,95 | 107,1 |
+| P08 | 2 | 26e8d1125 | no | complete | 5/5 | 305 | 1,09 | 1,5 |
+| P09 | 3 | bf2c2ba20 | no | complete | 5/5 | 305 | 0,30 | 1,6 |
+| P10 | 3 | bf2c2ba20 | no | complete | 5/5 | 305 | 0,81 | 4,3 |
+| P11 | 4 | bf2c2ba20 | no | complete | 5/5 | 105 | 0,19 | 0,4 |
+| P12 | 4 | bf2c2ba20 | no | complete | 5/5 | 85 | 2,09 | 3,0 |
+| P13 | 4 | bf2c2ba20 | no | complete | 5/5 | 165 | 0,17 | 0,5 |
 
-## 2. Warning và hội tụ
+## 2. Warnings and convergence
 
-| Pipeline | Tổng | Theo loại | n_iter lúc refit (max/giới hạn) | Ví dụ |
+Warnings flag conditions that need review, including failure to converge. Refit iterations shows the largest recorded iteration count among outer-training refits versus the allowed limit; it does not summarize every inner fit. N/a means this iteration comparison is not reported for that model. Zero recorded warnings is encouraging but does not prove scientific correctness.
+
+| Pipeline | Total | Warning categories | Refit iterations (maximum/limit) | Example |
 | --- | --- | --- | --- | --- |
 | P01-MF | 0 | none | n/a |  |
 | P01-ST | 0 | none | n/a |  |
@@ -40,9 +44,11 @@ Chỉ chứa thông tin kỹ thuật và điểm inner. Vòng A không dự đo�
 | P12 | 0 | none | n/a |  |
 | P13 | 0 | none | n/a |  |
 
-## 3. Tham số được chọn (g*) và điểm inner
+## 3. Selected parameters and inner-validation scores
 
-| Pipeline | Fold | g* | Inner macro-F1 |
+Each row describes one outer fold's training data. Inner CV compares parameter combinations; g* is the combination with the highest mean inner macro-F1, using the declared tie rule. R1-F1 means repeat 1, fold 1. These scores were used to choose parameters, so they are not independent test scores or final evidence that one pipeline is better. An empty parameter dictionary means there was nothing to tune.
+
+| Pipeline | Fold | Selected parameters (g*) | Inner macro-F1 |
 | --- | --- | --- | --- |
 | P01-MF | R1·F1 | {} | 0,097 |
 | P01-MF | R1·F2 | {} | 0,098 |
@@ -115,9 +121,11 @@ Chỉ chứa thông tin kỹ thuật và điểm inner. Vòng A không dự đo�
 | P13 | R1·F4 | {"model__n_neighbors": 3, "select__k": 100} | 0,764 |
 | P13 | R1·F5 | {"model__n_neighbors": 5, "select__k": 100} | 0,742 |
 
-## 4. Chạm biên grid (≥ 3/5 fold ở cùng một biên)
+## 4. Search-grid boundaries (same edge selected in at least 3/5 folds)
 
-| Pipeline | Tham số | Biên | Số fold | Việc cần làm |
+A grid is the list of parameter values tested. Repeatedly selecting its smallest or largest value may suggest trying beyond that range; it does not prove that a better value exists. Extend once is the protocol's recommendation for a single extension before freezing, followed by rerunning the affected Round A pipeline. A natural limit cannot be extended; short grids are exempt under the declared rule. These are recommendations only: this report changes no settings.
+
+| Pipeline | Parameter | Edge | Folds | Recommended action |
 | --- | --- | --- | --- | --- |
 | P04 | select__k | 150 | 3/5 | extend once: one step past 150; choose the value |
 | P05 | model__C | 0.01 | 5/5 | extend once: add 0.001 |
@@ -129,12 +137,16 @@ Chỉ chứa thông tin kỹ thuật và điểm inner. Vòng A không dự đo�
 | P12 | model__min_samples_leaf | 3 | 5/5 | not applicable: only 2 grid values |
 | P13 | select__k | 100 | 3/5 | not applicable: only 2 grid values |
 
-## 5. Kiểm tra engine bằng P02
+## 5. Reference reproduction check (P02)
 
-Điểm inner của P02 so với Round 1 lệch tối đa 2.22e-16: **khớp**.
+P02 repeats the previous SVM reference configuration. This compares every available candidate's inner-fold score with the archived run and reports the largest absolute difference. A match supports reproducibility of that reference search; it does not validate all other models or estimate performance on new patients.
 
-## 6. Trước khi gắn tag `p3.0-frozen`
+Maximum absolute difference from archived Round 1 inner scores: 2.22e-16: **match**.
 
-- Sửa mọi lỗi và warning ở mục 1–2, hoặc ghi rõ vì sao chấp nhận.
-- Mỗi dòng "extend once" ở mục 4: mở rộng grid đúng một bước trong `configs/protocol3.json`, chạy lại vòng A cho pipeline đó với `--replace`, rồi chạy lại lệnh này.
-- Không loại pipeline vì điểm thấp. Chỉ được bỏ pipeline không chạy nổi trong ngân sách thời gian.
+## 6. Before creating the `p3.0-frozen` tag
+
+Freezing locks the code and configuration for official Round B evaluation. Resolve technical issues and the protocol's boundary decisions first. Round A searches are screening evidence; Round B runs all three repeats separately and produces outer-test predictions.
+
+- Resolve errors and review warnings in sections 1-2, documenting any accepted warnings.
+- For each extend-once recommendation in section 4, agree the value, extend the grid once in `configs/protocol3.json`, rerun the affected Round A pipeline with `--replace`, and regenerate this report. Preserve earlier submissions.
+- Do not remove pipelines because their inner scores are low. Exclusion is permitted only for inability to run within the declared time budget.

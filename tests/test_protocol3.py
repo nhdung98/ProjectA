@@ -248,7 +248,14 @@ class AnalysisChecks(unittest.TestCase):
                 fake_run(root / "roundA", spec, "A", data, outer, labels, rng)
                 fake_run(root / "roundB", spec, "B", data, outer, labels, rng, 0.1 if spec["id"] == "P07" else 0.0)
             screen(CONFIG, [root / "roundA"], root / "screening")
-            self.assertIn("Báo cáo screening", (root / "screening/screening.md").read_text(encoding="utf-8"))
+            screening_text = (root / "screening/screening.md").read_text(encoding="utf-8")
+            self.assertIn("Round A screening report", screening_text)
+            sections = screening_text.split('## ')[1:]
+            self.assertEqual(len(sections), 6)
+            for section in sections:
+                explanation = section.split('\n\n', 2)[1]
+                self.assertGreater(len(explanation), 80)
+                self.assertFalse(explanation.startswith('|'))
             with patch.object(analysis, 'load_inputs', return_value=dict(
                     data=data, outer=outer, labels=labels, settings=split_settings(CONFIG))):
                 analysis.analyze(CONFIG, [root / "roundB"], root / "analysis")
