@@ -1,0 +1,500 @@
+{
+  "pipelines": [
+    {
+      "pipeline": "P01-MF",
+      "stage": "original",
+      "folds": 5,
+      "fits": 25,
+      "warnings": 0,
+      "refit_iterations": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "selected": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "pipeline": "P01-ST",
+      "stage": "original",
+      "folds": 5,
+      "fits": 25,
+      "warnings": 0,
+      "refit_iterations": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "selected": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "pipeline": "P02",
+      "stage": "original",
+      "folds": 5,
+      "fits": 105,
+      "warnings": 0,
+      "refit_iterations": [
+        323,
+        232,
+        213,
+        249,
+        66
+      ],
+      "selected": [
+        {
+          "model__C": 0.1
+        },
+        {
+          "model__C": 0.1
+        },
+        {
+          "model__C": 0.1
+        },
+        {
+          "model__C": 0.1
+        },
+        {
+          "model__C": 0.01
+        }
+      ]
+    },
+    {
+      "pipeline": "P03",
+      "stage": "original",
+      "folds": 5,
+      "fits": 105,
+      "warnings": 0,
+      "refit_iterations": [
+        73,
+        232,
+        70,
+        227,
+        166
+      ],
+      "selected": [
+        {
+          "model__C": 0.01
+        },
+        {
+          "model__C": 1
+        },
+        {
+          "model__C": 0.01
+        },
+        {
+          "model__C": 0.1
+        },
+        {
+          "model__C": 0.1
+        }
+      ]
+    },
+    {
+      "pipeline": "P04",
+      "stage": "expansion-1",
+      "folds": 5,
+      "fits": 505,
+      "warnings": 0,
+      "refit_iterations": [
+        159,
+        232,
+        68,
+        227,
+        148
+      ],
+      "selected": [
+        {
+          "select__k": 500,
+          "model__C": 0.1
+        },
+        {
+          "select__k": 150,
+          "model__C": 1
+        },
+        {
+          "select__k": 100,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 150,
+          "model__C": 0.1
+        },
+        {
+          "select__k": 2000,
+          "model__C": 0.01
+        }
+      ]
+    },
+    {
+      "pipeline": "P05",
+      "stage": "expansion-1",
+      "folds": 5,
+      "fits": 125,
+      "warnings": 0,
+      "refit_iterations": [
+        183,
+        174,
+        177,
+        193,
+        197
+      ],
+      "selected": [
+        {
+          "model__C": 0.01
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.01
+        },
+        {
+          "model__C": 0.01
+        }
+      ]
+    },
+    {
+      "pipeline": "P06",
+      "stage": "expansion-1",
+      "folds": 5,
+      "fits": 125,
+      "warnings": 0,
+      "refit_iterations": [
+        15,
+        181,
+        82,
+        135,
+        143
+      ],
+      "selected": [
+        {
+          "model__C": 10
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.0001
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.001
+        }
+      ]
+    },
+    {
+      "pipeline": "P07",
+      "stage": "original",
+      "folds": 5,
+      "fits": 185,
+      "warnings": 0,
+      "refit_iterations": [
+        1532,
+        3936,
+        677,
+        2080,
+        4375
+      ],
+      "selected": [
+        {
+          "model__l1_ratio": 0.5,
+          "model__C": 0.1
+        },
+        {
+          "model__l1_ratio": 0.1,
+          "model__C": 1
+        },
+        {
+          "model__l1_ratio": 0.1,
+          "model__C": 0.01
+        },
+        {
+          "model__l1_ratio": 0.5,
+          "model__C": 0.1
+        },
+        {
+          "model__l1_ratio": 0.9,
+          "model__C": 1
+        }
+      ]
+    },
+    {
+      "pipeline": "P08",
+      "stage": "original",
+      "folds": 5,
+      "fits": 305,
+      "warnings": 0,
+      "refit_iterations": [
+        157,
+        175,
+        15,
+        106,
+        75
+      ],
+      "selected": [
+        {
+          "model__C": 0.001,
+          "model__alpha": 0.5
+        },
+        {
+          "model__C": 0.001,
+          "model__alpha": 0.5
+        },
+        {
+          "model__C": 10,
+          "model__alpha": 1
+        },
+        {
+          "model__C": 0.1,
+          "model__alpha": 0.5
+        },
+        {
+          "model__C": 0.1,
+          "model__alpha": 1
+        }
+      ]
+    },
+    {
+      "pipeline": "P09",
+      "stage": "expansion-1",
+      "folds": 5,
+      "fits": 405,
+      "warnings": 0,
+      "refit_iterations": [
+        163,
+        183,
+        57,
+        140,
+        120
+      ],
+      "selected": [
+        {
+          "select__k": 2000,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 2000,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 1000,
+          "model__C": 0.001
+        },
+        {
+          "select__k": 1000,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 2000,
+          "model__C": 0.1
+        }
+      ]
+    },
+    {
+      "pipeline": "P10",
+      "stage": "expansion-1",
+      "folds": 5,
+      "fits": 405,
+      "warnings": 0,
+      "refit_iterations": [
+        117,
+        98,
+        41,
+        75,
+        56
+      ],
+      "selected": [
+        {
+          "select__k": 500,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 250,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 250,
+          "model__C": 0.001
+        },
+        {
+          "select__k": 250,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 500,
+          "model__C": 0.001
+        }
+      ]
+    },
+    {
+      "pipeline": "P11",
+      "stage": "original",
+      "folds": 5,
+      "fits": 105,
+      "warnings": 0,
+      "refit_iterations": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "selected": [
+        {
+          "model__shrink_threshold": null
+        },
+        {
+          "model__shrink_threshold": null
+        },
+        {
+          "model__shrink_threshold": null
+        },
+        {
+          "model__shrink_threshold": null
+        },
+        {
+          "model__shrink_threshold": null
+        }
+      ]
+    },
+    {
+      "pipeline": "P12",
+      "stage": "original",
+      "folds": 5,
+      "fits": 85,
+      "warnings": 0,
+      "refit_iterations": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "selected": [
+        {
+          "model__max_features": "sqrt",
+          "model__min_samples_leaf": 3
+        },
+        {
+          "model__max_features": "sqrt",
+          "model__min_samples_leaf": 3
+        },
+        {
+          "model__max_features": "sqrt",
+          "model__min_samples_leaf": 3
+        },
+        {
+          "model__max_features": 0.01,
+          "model__min_samples_leaf": 3
+        },
+        {
+          "model__max_features": "sqrt",
+          "model__min_samples_leaf": 3
+        }
+      ]
+    },
+    {
+      "pipeline": "P13",
+      "stage": "original",
+      "folds": 5,
+      "fits": 165,
+      "warnings": 0,
+      "refit_iterations": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "selected": [
+        {
+          "select__k": 100,
+          "model__n_neighbors": 1
+        },
+        {
+          "select__k": 500,
+          "model__n_neighbors": 3
+        },
+        {
+          "select__k": 500,
+          "model__n_neighbors": 5
+        },
+        {
+          "select__k": 100,
+          "model__n_neighbors": 3
+        },
+        {
+          "select__k": 100,
+          "model__n_neighbors": 5
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "source_zip": "results/p3/submissions/member1/roundA-member1-20261029T142311Z-955b84ce.zip",
+      "log": "results/p3/logs/member1/20261029-212307-69307a5c.log",
+      "log_sha256": "a63e2f5a673e659ee983720c8787c456bf1665e98e47eafe85e0e6ad4f063a7f",
+      "status": "reviewed complete"
+    },
+    {
+      "source_zip": "results/p3/submissions/member1/roundA-member1-20261105T173755Z-f3a0bedd.zip",
+      "log": "results/p3/logs/member1/20261106-003752-c081f405.log",
+      "log_sha256": "96a36356beea140ce0e804634823af3cdd415ccb88231d93569fcd98c39199c3",
+      "status": "reviewed complete"
+    },
+    {
+      "source_zip": "results/p3/submissions/member2/roundA-member2-20261105T173816Z-a8ddc550.zip",
+      "log": "results/p3/logs/member2/20261106-003813-207900cb.log",
+      "log_sha256": "1d6109eb27c8ec018cf6868cabad9151fbb534748c9b7c4145ad05cb01d4bf59",
+      "status": "reviewed complete"
+    },
+    {
+      "source_zip": "results/p3/submissions/member2/roundA-member2-20261029T165848Z-cb52b1bc.zip",
+      "log": "results/p3/logs/member2/20261029-235839-0cf7bd44.log",
+      "log_sha256": "832b1ec39a69a8193e390003ccc67b9af53a387c3b18be23330856cbdbf1456e",
+      "status": "reviewed complete"
+    },
+    {
+      "source_zip": "results/p3/submissions/member2/roundA-member2-20261030T021358Z-86600804.zip",
+      "log": "results/p3/logs/member2/20261030-091348-2d4ea053.log",
+      "log_sha256": "763327b3e8cb51a5049ab65f9d42b467bb4d2db656b43cfa0f87b941b0b20336",
+      "status": "reviewed complete"
+    },
+    {
+      "source_zip": "results/p3/submissions/member3/roundA-member3-20261105T174001Z-3bfd405e.zip",
+      "log": "results/p3/logs/member3/20261106-003958-9f7cb97a.log",
+      "log_sha256": "9f3976836f7695e8d09b104cf032d6993db7cbb5b55601324a5e28569aa0e6c2",
+      "status": "reviewed complete"
+    },
+    {
+      "source_zip": "results/p3/submissions/member4/roundA-member4-20261029T153133Z-2f7c9908.zip",
+      "log": "results/p3/logs/member4/20261029-223132-4f11d36b.log",
+      "log_sha256": "7a5142a209f34fdae86dff2be93f2c628efe11b90df8e48cb5586e8128402747",
+      "status": "reviewed complete"
+    }
+  ],
+  "selected_fits": 2670,
+  "recorded_warnings": 0,
+  "note": "Consistency checks on saved evidence, not independent reproduction of training."
+}
