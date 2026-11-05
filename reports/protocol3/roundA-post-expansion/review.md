@@ -1,7 +1,7 @@
 # Post-expansion Round A review
 
-Task 4 is complete: corresponding execution logs and selected ZIP evidence were
-reviewed, and the combined English screening report was regenerated. No training,
+Corresponding execution logs and selected ZIP evidence were reviewed, and the
+combined English screening report was regenerated. No training,
 second extension, frozen tag or Round B execution was performed in this review.
 
 ## Selected evidence
@@ -57,4 +57,4 @@ python scripts/review_round_a_expansion.py
 ```
 
 Read screening.md for the full tables and validation_review.json for the machine-
-readable pipeline and log review. No freeze tag has been created by this task.
+readable pipeline and log review. No freeze tag has been created as part of this review.
