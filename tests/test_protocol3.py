@@ -22,8 +22,8 @@ from src.p3.stats import conclusion, correlated_ttest, wilson
 from src.p3.transforms import ExpressionFilter, PriorShift
 
 CONFIG = load_config()
-GRID_SIZES = {"P01-MF": 1, "P01-ST": 1, "P02": 5, "P03": 5, "P04": 20, "P05": 5, "P06": 5, "P07": 9, "P08": 15,
-              "P09": 15, "P10": 15, "P11": 5, "P12": 4, "P13": 8}
+GRID_SIZES = {"P01-MF": 1, "P01-ST": 1, "P02": 5, "P03": 5, "P04": 25, "P05": 6, "P06": 6, "P07": 9, "P08": 15,
+              "P09": 20, "P10": 20, "P11": 5, "P12": 4, "P13": 8}
 
 
 def cohort():
@@ -70,8 +70,8 @@ def fake_run(folder, spec, round_name, data, outer, labels, rng, inner_shift=0.0
 class ConfigChecks(unittest.TestCase):
     def test_grid_sizes_and_fit_counts_follow_the_proposal(self):
         self.assertEqual({spec["id"]: len(candidates(spec)) for spec in CONFIG["pipelines"]}, GRID_SIZES)
-        # 2,305 fits per repeat in the proposal, plus 25 for running both dummy variants.
-        self.assertEqual(sum(fits_per_repeat(spec) for spec in CONFIG["pipelines"]), 2305 + 25)
+        # Original 2,330 fits plus 340 fits from the single approved expansion.
+        self.assertEqual(sum(fits_per_repeat(spec) for spec in CONFIG["pipelines"]), 2670)
         assigned = sum((member["pipelines"] for member in CONFIG["members"].values()), [])
         self.assertEqual(sorted(assigned), sorted(GRID_SIZES))
         self.assertEqual(len(CONFIG["ablations"]), 11)
@@ -201,11 +201,11 @@ class StatisticsChecks(unittest.TestCase):
 
 class AnalysisChecks(unittest.TestCase):
     def test_boundary_rule_ignores_short_grids_and_natural_limits(self):
-        picks = {(1, f): {"select__k": 2000, "model__C": 0.001} for f in range(1, 4)}
+        picks = {(1, f): {"select__k": 4000, "model__C": 0.001} for f in range(1, 4)}
         picks.update({(1, f): {"select__k": 500, "model__C": 1} for f in (4, 5)})
         hits = boundary_hits(CONFIG, pipeline_spec(CONFIG, "P09"), picks)
-        self.assertEqual([(h["parameter"], h["edge"]) for h in hits], [("select__k", 2000), ("model__C", 0.001)])
-        self.assertEqual(hits[0]["action"], "extend once: add 4000")
+        self.assertEqual([(h["parameter"], h["edge"]) for h in hits], [("select__k", 4000), ("model__C", 0.001)])
+        self.assertEqual(hits[0]["action"], "extend once: add 8000")
         knn = {(1, f): {"select__k": 100, "model__n_neighbors": 1} for f in range(1, 6)}
         actions = [h["action"] for h in boundary_hits(CONFIG, pipeline_spec(CONFIG, "P13"), knn)]
         self.assertEqual(actions, ["not applicable: only 2 grid values", "natural limit: nothing to extend"])
