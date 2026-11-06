@@ -1,0 +1,7 @@
+Log file: C:\Users\Adam2\Downloads\ProjectA-P3\results\p3\logs\member4\20261107-001344-cd0568a6.log
+Arguments: ['check', '--member', '4']
+Checking raw files, prepared expression values and shared splits...
+Verified 254 patients, 20531 genes, 762 outer and 3048 inner assignments.
+Python 3.12.10, commit 02f49276987a63d9f26df0f83f41375d961861c8, code committed
+Member 4 (Lê Đức Hoàng Vy, W4d baselines): P11 105, P12 85, P13 165 fits per repeat; round A 355, round B 1065
+Completed. Log saved: C:\Users\Adam2\Downloads\ProjectA-P3\results\p3\logs\member4\20261107-001344-cd0568a6.log
