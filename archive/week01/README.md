@@ -1,6 +1,6 @@
 # Week 1: original SVM experiments
 
-This archive separates last week's material from the current PCA-order workflow. `docs/` holds its protocol, assignments, submission templates and register. `submissions/` preserves the original member files, including logs, predictions and review evidence. Moving a submission does not change its review or acceptance status.
+This archive separates the protocol 2.0 SVM round from later rounds. `docs/` holds its protocol, assignments, submission templates and register. `submissions/` preserves the original member files, including logs, predictions and review evidence. Moving a submission does not change its review or acceptance status.
 
 ## Rerun later
 

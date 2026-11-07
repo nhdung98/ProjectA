@@ -9,3 +9,4 @@ results/splits/*.json -text
 *.py text eol=lf
 configs/*.json text eol=lf
 requirements-experiments.txt text eol=lf
+requirements-protocol3.txt text eol=lf

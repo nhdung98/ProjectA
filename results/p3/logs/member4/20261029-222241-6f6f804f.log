@@ -1,0 +1,17 @@
+Log file: C:\Users\Adam2\ProjectA-P3\results\p3\logs\member4\20261029-222241-6f6f804f.log
+Arguments: ['check', '--member', '4']
+Checking raw files, prepared expression values and shared splits...
+Traceback (most recent call last):
+  File "C:\Users\Adam2\ProjectA-P3\src\p3\logging.py", line 48, in logged_main
+    main()
+  File "C:\Users\Adam2\ProjectA-P3\src\p3\__main__.py", line 9, in main
+    command()
+  File "C:\Users\Adam2\ProjectA-P3\src\p3\cli.py", line 140, in main
+    check(config, args.member)
+  File "C:\Users\Adam2\ProjectA-P3\src\p3\cli.py", line 44, in check
+    inputs = load_inputs(config)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adam2\ProjectA-P3\src\p3\inputs.py", line 38, in load_inputs
+    raise ValueError(f"{settings['dataset']} is missing. Run: python -m src.data.prepare")
+ValueError: data/processed/sarc_merged_six_subtypes.tsv is missing. Run: python -m src.data.prepare
+Log saved: C:\Users\Adam2\ProjectA-P3\results\p3\logs\member4\20261029-222241-6f6f804f.log
