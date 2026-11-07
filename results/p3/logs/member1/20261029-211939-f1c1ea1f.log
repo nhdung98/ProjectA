@@ -1,0 +1,16 @@
+Log file: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261029-211939-f1c1ea1f.log
+Arguments: ['smoke', '--member', '1', '--jobs', '4']
+P01-MF repeat=1 fold=1: complete in 6 s, best inner 0.097, 0 warnings
+  P01-MF: 5 fits, 6 s for one outer fold; estimated round A 0.5 min, round B 1.5 min with --jobs 4
+P01-ST repeat=1 fold=1: complete in 1 s, best inner 0.153, 0 warnings
+  P01-ST: 5 fits, 1 s for one outer fold; estimated round A 0.1 min, round B 0.2 min with --jobs 4
+P02 repeat=1 fold=1: complete in 4 s, best inner 0.741, 0 warnings
+  P02: 21 fits, 4 s for one outer fold; estimated round A 0.3 min, round B 1.0 min with --jobs 4
+  P02 inner scores vs Round 1: max difference 1.11e-16 (match)
+P03 repeat=1 fold=1: complete in 4 s, best inner 0.743, 0 warnings
+  P03: 21 fits, 4 s for one outer fold; estimated round A 0.3 min, round B 1.0 min with --jobs 4
+P04 repeat=1 fold=1: complete in 12 s, best inner 0.780, 0 warnings
+  P04: 81 fits, 12 s for one outer fold; estimated round A 1.0 min, round B 3.0 min with --jobs 4
+P05 repeat=1 fold=1: complete in 4 s, best inner 0.722, 0 warnings
+  P05: 21 fits, 4 s for one outer fold; estimated round A 0.3 min, round B 1.0 min with --jobs 4
+Completed. Log saved: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261029-211939-f1c1ea1f.log
