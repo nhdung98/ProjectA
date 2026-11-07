@@ -1,0 +1,20 @@
+Log file: D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\logs\member3\20261106-235245-fd2d583e.log
+Arguments: ['run', '--round', 'B', '--member', '3', '--pipeline', 'P10', '--jobs', '2']
+P10 repeat=1 fold=1: complete in 53 s, best inner 0.797, 0 warnings
+P10 repeat=1 fold=2: complete in 51 s, best inner 0.777, 0 warnings
+P10 repeat=1 fold=3: complete in 50 s, best inner 0.742, 0 warnings
+P10 repeat=1 fold=4: complete in 52 s, best inner 0.781, 0 warnings
+P10 repeat=1 fold=5: complete in 37 s, best inner 0.760, 0 warnings
+P10 repeat=2 fold=1: complete in 47 s, best inner 0.772, 0 warnings
+P10 repeat=2 fold=2: complete in 49 s, best inner 0.828, 0 warnings
+P10 repeat=2 fold=3: complete in 48 s, best inner 0.767, 0 warnings
+P10 repeat=2 fold=4: complete in 49 s, best inner 0.772, 0 warnings
+P10 repeat=2 fold=5: complete in 52 s, best inner 0.772, 0 warnings
+P10 repeat=3 fold=1: complete in 49 s, best inner 0.771, 0 warnings
+P10 repeat=3 fold=2: complete in 50 s, best inner 0.748, 0 warnings
+P10 repeat=3 fold=3: complete in 50 s, best inner 0.738, 0 warnings
+P10 repeat=3 fold=4: complete in 42 s, best inner 0.799, 0 warnings
+P10 repeat=3 fold=5: complete in 50 s, best inner 0.741, 0 warnings
+Saved experiments\p3.0\roundB\member3\P10
+SUBMISSION RESULTS (complete): D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\submissions\member3\roundB-member3-20261106T165249Z-1829555e.zip
+Completed. Log saved: D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\logs\member3\20261106-235245-fd2d583e.log
