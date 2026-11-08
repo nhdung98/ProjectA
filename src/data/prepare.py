@@ -56,7 +56,8 @@ def prepare(config):
                'gene_feature_map.tsv': gene_map, 'excluded_subtypes.tsv': excluded,
                'unmatched_clinical.tsv': unmatched, 'repeated_patient_samples.tsv': repeated}
     for filename, frame in outputs.items():
-        frame.to_csv(OUT / filename, sep='\t', index=False, na_rep='NA')
+        # Fixed line endings keep the agreed dataset checksum identical on Windows and macOS.
+        frame.to_csv(OUT / filename, sep='\t', index=False, na_rep='NA', lineterminator='\r\n')
     # Check saved training matrix preserves IDs, feature order, and every expression value.
     saved = pd.read_csv(OUT / 'sarc_merged_six_subtypes.tsv', sep='\t')
     assert saved.columns.tolist() == project.columns.tolist()

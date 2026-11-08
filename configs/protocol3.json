@@ -1,0 +1,113 @@
+{
+  "protocol_version": "3.0",
+  "frozen_tag": "p3.0-frozen",
+  "split_settings": "configs/svm.json",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.16.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "imbalanced-learn": "0.14.2"
+  },
+  "blas_threads": 1,
+  "seed": 42,
+  "filters": {
+    "low_expression_log2": 1.0,
+    "low_expression_min_samples": 5,
+    "mad_top_n": 5000
+  },
+  "smote_k_neighbors": 3,
+  "members": {
+    "1": {"name": "Trương Nam Hùng", "batch": "W4a SVM", "pipelines": ["P01-MF", "P01-ST", "P02", "P03", "P04", "P05"]},
+    "2": {"name": "Bùi Tiến Hưng", "batch": "W4b LR", "pipelines": ["P06", "P07", "P08"]},
+    "3": {"name": "Nguyễn Thành Kiên", "batch": "W4c FS & imbalance", "pipelines": ["P09", "P10"]},
+    "4": {"name": "Lê Đức Hoàng Vy", "batch": "W4d baselines", "pipelines": ["P11", "P12", "P13"]}
+  },
+  "pipelines": [
+    {"id": "P01-MF", "name": "DUMMY most_frequent", "role": "floor", "filter": "none", "scaler": "none", "select": "none",
+     "model": {"type": "dummy", "strategy": "most_frequent"}, "grid": {}},
+    {"id": "P01-ST", "name": "DUMMY stratified", "role": "floor", "filter": "none", "scaler": "none", "select": "none",
+     "model": {"type": "dummy", "strategy": "stratified"}, "grid": {}},
+    {"id": "P02", "name": "R1-REF", "role": "Round 1 reference", "filter": "F0", "scaler": "standard", "select": "anova",
+     "model": {"type": "svm", "class_weight": null}, "fixed": {"select__k": 150},
+     "grid": {"model__C": [0.01, 0.1, 1, 10, 100]}},
+    {"id": "P03", "name": "SVM-BAL", "role": "ablation", "filter": "F0", "scaler": "standard", "select": "anova",
+     "model": {"type": "svm", "class_weight": "balanced"}, "fixed": {"select__k": 150},
+     "grid": {"model__C": [0.01, 0.1, 1, 10, 100]}},
+    {"id": "P04", "name": "SVM-BAL-K", "role": "ablation", "filter": "F0", "scaler": "standard", "select": "anova",
+     "model": {"type": "svm", "class_weight": "balanced"},
+     "grid": {"select__k": [150, 500, 1000, 2000], "model__C": [0.01, 0.1, 1, 10, 100]}},
+    {"id": "P05", "name": "SVM-BAL-MAD", "role": "ablation", "filter": "F2", "scaler": "standard", "select": "none",
+     "model": {"type": "svm", "class_weight": "balanced"},
+     "grid": {"model__C": [0.01, 0.1, 1, 10, 100]}},
+    {"id": "P06", "name": "LR-L2-BAL", "role": "candidate", "filter": "F2", "scaler": "standard", "select": "none",
+     "model": {"type": "lr_l2", "class_weight": "balanced", "max_iter": 5000, "tol": 0.0001},
+     "grid": {"model__C": [0.001, 0.01, 0.1, 1, 10]}},
+    {"id": "P07", "name": "LR-EN-BAL", "role": "main candidate", "filter": "F2", "scaler": "standard", "select": "none",
+     "model": {"type": "lr_elasticnet", "class_weight": "balanced", "max_iter": 10000, "tol": 0.0001},
+     "grid": {"model__l1_ratio": [0.1, 0.5, 0.9], "model__C": [0.01, 0.1, 1]}},
+    {"id": "P08", "name": "LR-L2-PRIOR", "role": "ablation", "filter": "F2", "scaler": "standard", "select": "none",
+     "model": {"type": "lr_l2_prior", "class_weight": null, "max_iter": 5000, "tol": 0.0001},
+     "grid": {"model__C": [0.001, 0.01, 0.1, 1, 10], "model__alpha": [0, 0.5, 1]}},
+    {"id": "P09", "name": "LR-L2-ANOVA", "role": "candidate", "filter": "F1", "scaler": "standard", "select": "anova",
+     "model": {"type": "lr_l2", "class_weight": "balanced", "max_iter": 5000, "tol": 0.0001},
+     "grid": {"select__k": [500, 1000, 2000], "model__C": [0.001, 0.01, 0.1, 1, 10]}},
+    {"id": "P10", "name": "LR-L2-ANOVA-SMOTE", "role": "negative control", "filter": "F1", "scaler": "standard", "select": "anova",
+     "smote": true, "model": {"type": "lr_l2", "class_weight": null, "max_iter": 5000, "tol": 0.0001},
+     "grid": {"select__k": [500, 1000, 2000], "model__C": [0.001, 0.01, 0.1, 1, 10]}},
+    {"id": "P11", "name": "PAM", "role": "omics baseline", "filter": "F2", "scaler": "none", "select": "none",
+     "model": {"type": "pam", "priors": "uniform"},
+     "grid": {"model__shrink_threshold": [4, 2, 1, 0.5, null]}},
+    {"id": "P12", "name": "RF-BAL", "role": "nonlinear baseline", "filter": "F2", "scaler": "none", "select": "none",
+     "model": {"type": "rf", "class_weight": "balanced_subsample", "n_estimators": 500},
+     "grid": {"model__max_features": ["sqrt", 0.01], "model__min_samples_leaf": [3, 1]}},
+    {"id": "P13", "name": "KNN", "role": "simple baseline", "filter": "F1", "scaler": "standard", "select": "anova",
+     "model": {"type": "knn", "weights": "distance"},
+     "grid": {"select__k": [100, 500], "model__n_neighbors": [7, 5, 3, 1]}}
+  ],
+  "selection": {
+    "eligible": ["P02", "P03", "P04", "P05", "P06", "P07", "P08", "P09", "P10", "P11", "P12", "P13"],
+    "simplicity_order": ["P11", "P03", "P02", "P05", "P04", "P06", "P08", "P09", "P07", "P10", "P13", "P12"]
+  },
+  "ablations": [
+    {"from": "P02", "to": "P03", "change": "S4: + class weight"},
+    {"from": "P03", "to": "P04", "change": "S3: tune k 150-2000"},
+    {"from": "P04", "to": "P05", "change": "S3: drop ANOVA, use MAD 5000"},
+    {"from": "P05", "to": "P06", "change": "S5: SVM -> LR L2"},
+    {"from": "P06", "to": "P07", "change": "S5: L2 -> elastic-net"},
+    {"from": "P06", "to": "P08", "change": "S4: class weight -> threshold alpha"},
+    {"from": "P06", "to": "P09", "change": "S3: + ANOVA"},
+    {"from": "P09", "to": "P10", "change": "S4: class weight -> SMOTE"},
+    {"from": "P06", "to": "P11", "change": "Other family: PAM"},
+    {"from": "P06", "to": "P12", "change": "Other family: RF"},
+    {"from": "P09", "to": "P13", "change": "Other family: kNN"}
+  ],
+  "analysis": {
+    "rope": 0.01,
+    "rope_sensitivity": 0.02,
+    "decision_probability": 0.95,
+    "rho": 0.2,
+    "ci_repeat": 1,
+    "recall_classes": ["MFS", "MPNST"]
+  },
+  "screening": {
+    "boundary_min_folds": 3,
+    "boundary_min_values": 3,
+    "natural_limits": {"model__alpha": [0, 1], "model__shrink_threshold": [null], "model__n_neighbors": [1], "model__min_samples_leaf": [1]}
+  },
+  "reference": {
+    "pipeline": "P02",
+    "macro_f1": 0.772,
+    "run": "archive/week01/submissions/member2-new/runs/SVM-STD-ANOVA-150-LINEAR/20261013T034657Z-3614ed00"
+  },
+  "sensitivity": {
+    "s_tss_max_drop": null,
+    "s206_sample_ids": "data/raw/cell2017_reviewed_206.txt",
+    "merged_labels": {"MFS": "UPS/MFS", "UPS": "UPS/MFS"}
+  },
+  "final": {
+    "inner_validation": {"n_splits": 4, "shuffle": true, "random_state": 42}
+  }
+}

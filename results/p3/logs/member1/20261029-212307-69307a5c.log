@@ -1,0 +1,40 @@
+Log file: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261029-212307-69307a5c.log
+Arguments: ['run', '--round', 'A', '--member', '1']
+P01-MF repeat=1 fold=1: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=1 fold=2: complete in 1 s, best inner 0.098, 0 warnings
+P01-MF repeat=1 fold=3: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=1 fold=4: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=1 fold=5: complete in 1 s, best inner 0.096, 0 warnings
+Saved experiments\p3.0\roundA\member1\P01-MF
+P01-ST repeat=1 fold=1: complete in 1 s, best inner 0.153, 0 warnings
+P01-ST repeat=1 fold=2: complete in 1 s, best inner 0.159, 0 warnings
+P01-ST repeat=1 fold=3: complete in 1 s, best inner 0.157, 0 warnings
+P01-ST repeat=1 fold=4: complete in 1 s, best inner 0.138, 0 warnings
+P01-ST repeat=1 fold=5: complete in 1 s, best inner 0.153, 0 warnings
+Saved experiments\p3.0\roundA\member1\P01-ST
+P02 repeat=1 fold=1: complete in 7 s, best inner 0.741, 0 warnings
+P02 repeat=1 fold=2: complete in 7 s, best inner 0.774, 0 warnings
+P02 repeat=1 fold=3: complete in 7 s, best inner 0.676, 0 warnings
+P02 repeat=1 fold=4: complete in 8 s, best inner 0.772, 0 warnings
+P02 repeat=1 fold=5: complete in 7 s, best inner 0.736, 0 warnings
+Saved experiments\p3.0\roundA\member1\P02
+P03 repeat=1 fold=1: complete in 7 s, best inner 0.743, 0 warnings
+P03 repeat=1 fold=2: complete in 7 s, best inner 0.772, 0 warnings
+P03 repeat=1 fold=3: complete in 7 s, best inner 0.712, 0 warnings
+P03 repeat=1 fold=4: complete in 7 s, best inner 0.772, 0 warnings
+P03 repeat=1 fold=5: complete in 7 s, best inner 0.726, 0 warnings
+Saved experiments\p3.0\roundA\member1\P03
+P04 repeat=1 fold=1: complete in 26 s, best inner 0.780, 0 warnings
+P04 repeat=1 fold=2: complete in 26 s, best inner 0.772, 0 warnings
+P04 repeat=1 fold=3: complete in 28 s, best inner 0.712, 0 warnings
+P04 repeat=1 fold=4: complete in 27 s, best inner 0.772, 0 warnings
+P04 repeat=1 fold=5: complete in 27 s, best inner 0.765, 0 warnings
+Saved experiments\p3.0\roundA\member1\P04
+P05 repeat=1 fold=1: complete in 9 s, best inner 0.722, 0 warnings
+P05 repeat=1 fold=2: complete in 8 s, best inner 0.738, 0 warnings
+P05 repeat=1 fold=3: complete in 8 s, best inner 0.675, 0 warnings
+P05 repeat=1 fold=4: complete in 9 s, best inner 0.698, 0 warnings
+P05 repeat=1 fold=5: complete in 9 s, best inner 0.687, 0 warnings
+Saved experiments\p3.0\roundA\member1\P05
+SUBMISSION RESULTS (complete): C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\submissions\member1\roundA-member1-20261029T142311Z-955b84ce.zip
+Completed. Log saved: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261029-212307-69307a5c.log
