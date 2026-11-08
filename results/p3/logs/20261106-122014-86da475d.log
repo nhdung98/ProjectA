@@ -1,0 +1,10 @@
+Log file: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\20261106-122014-86da475d.log
+Arguments: ['check']
+Checking raw files, prepared expression values and shared splits...
+Verified 254 patients, 20531 genes, 762 outer and 3048 inner assignments.
+Python 3.12.10, commit 02f49276987a63d9f26df0f83f41375d961861c8, code committed
+Member 1 (Trương Nam Hùng, W4a SVM): P01-MF 25, P01-ST 25, P02 105, P03 105, P04 505, P05 125 fits per repeat; round A 890, round B 2670
+Member 2 (Bùi Tiến Hưng, W4b LR): P06 125, P07 185, P08 305 fits per repeat; round A 615, round B 1845
+Member 3 (Nguyễn Thành Kiên, W4c FS & imbalance): P09 405, P10 405 fits per repeat; round A 810, round B 2430
+Member 4 (Lê Đức Hoàng Vy, W4d baselines): P11 105, P12 85, P13 165 fits per repeat; round A 355, round B 1065
+Completed. Log saved: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\20261106-122014-86da475d.log

@@ -1,0 +1,100 @@
+Log file: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261106-122406-ba9d0e63.log
+Arguments: ['run', '--round', 'B', '--member', '1', '--jobs', '2']
+P01-MF repeat=1 fold=1: complete in 4 s, best inner 0.097, 0 warnings
+P01-MF repeat=1 fold=2: complete in 1 s, best inner 0.098, 0 warnings
+P01-MF repeat=1 fold=3: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=1 fold=4: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=1 fold=5: complete in 2 s, best inner 0.096, 0 warnings
+P01-MF repeat=2 fold=1: complete in 2 s, best inner 0.097, 0 warnings
+P01-MF repeat=2 fold=2: complete in 2 s, best inner 0.098, 0 warnings
+P01-MF repeat=2 fold=3: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=2 fold=4: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=2 fold=5: complete in 1 s, best inner 0.096, 0 warnings
+P01-MF repeat=3 fold=1: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=3 fold=2: complete in 1 s, best inner 0.098, 0 warnings
+P01-MF repeat=3 fold=3: complete in 1 s, best inner 0.097, 0 warnings
+P01-MF repeat=3 fold=4: complete in 2 s, best inner 0.097, 0 warnings
+P01-MF repeat=3 fold=5: complete in 1 s, best inner 0.096, 0 warnings
+Saved experiments\p3.0\roundB\member1\P01-MF
+P01-ST repeat=1 fold=1: complete in 1 s, best inner 0.153, 0 warnings
+P01-ST repeat=1 fold=2: complete in 1 s, best inner 0.159, 0 warnings
+P01-ST repeat=1 fold=3: complete in 1 s, best inner 0.157, 0 warnings
+P01-ST repeat=1 fold=4: complete in 1 s, best inner 0.138, 0 warnings
+P01-ST repeat=1 fold=5: complete in 1 s, best inner 0.153, 0 warnings
+P01-ST repeat=2 fold=1: complete in 1 s, best inner 0.145, 0 warnings
+P01-ST repeat=2 fold=2: complete in 1 s, best inner 0.131, 0 warnings
+P01-ST repeat=2 fold=3: complete in 2 s, best inner 0.136, 0 warnings
+P01-ST repeat=2 fold=4: complete in 1 s, best inner 0.129, 0 warnings
+P01-ST repeat=2 fold=5: complete in 1 s, best inner 0.146, 0 warnings
+P01-ST repeat=3 fold=1: complete in 1 s, best inner 0.143, 0 warnings
+P01-ST repeat=3 fold=2: complete in 1 s, best inner 0.158, 0 warnings
+P01-ST repeat=3 fold=3: complete in 1 s, best inner 0.162, 0 warnings
+P01-ST repeat=3 fold=4: complete in 1 s, best inner 0.117, 0 warnings
+P01-ST repeat=3 fold=5: complete in 1 s, best inner 0.138, 0 warnings
+Saved experiments\p3.0\roundB\member1\P01-ST
+P02 repeat=1 fold=1: complete in 6 s, best inner 0.741, 0 warnings
+P02 repeat=1 fold=2: complete in 6 s, best inner 0.774, 0 warnings
+P02 repeat=1 fold=3: complete in 6 s, best inner 0.676, 0 warnings
+P02 repeat=1 fold=4: complete in 6 s, best inner 0.772, 0 warnings
+P02 repeat=1 fold=5: complete in 6 s, best inner 0.736, 0 warnings
+P02 repeat=2 fold=1: complete in 6 s, best inner 0.702, 0 warnings
+P02 repeat=2 fold=2: complete in 6 s, best inner 0.818, 0 warnings
+P02 repeat=2 fold=3: complete in 6 s, best inner 0.693, 0 warnings
+P02 repeat=2 fold=4: complete in 6 s, best inner 0.723, 0 warnings
+P02 repeat=2 fold=5: complete in 6 s, best inner 0.753, 0 warnings
+P02 repeat=3 fold=1: complete in 5 s, best inner 0.697, 0 warnings
+P02 repeat=3 fold=2: complete in 6 s, best inner 0.724, 0 warnings
+P02 repeat=3 fold=3: complete in 6 s, best inner 0.689, 0 warnings
+P02 repeat=3 fold=4: complete in 7 s, best inner 0.705, 0 warnings
+P02 repeat=3 fold=5: complete in 7 s, best inner 0.682, 0 warnings
+Saved experiments\p3.0\roundB\member1\P02
+P03 repeat=1 fold=1: complete in 6 s, best inner 0.743, 0 warnings
+P03 repeat=1 fold=2: complete in 6 s, best inner 0.772, 0 warnings
+P03 repeat=1 fold=3: complete in 6 s, best inner 0.712, 0 warnings
+P03 repeat=1 fold=4: complete in 6 s, best inner 0.772, 0 warnings
+P03 repeat=1 fold=5: complete in 6 s, best inner 0.726, 0 warnings
+P03 repeat=2 fold=1: complete in 6 s, best inner 0.702, 0 warnings
+P03 repeat=2 fold=2: complete in 6 s, best inner 0.824, 0 warnings
+P03 repeat=2 fold=3: complete in 6 s, best inner 0.715, 0 warnings
+P03 repeat=2 fold=4: complete in 6 s, best inner 0.723, 0 warnings
+P03 repeat=2 fold=5: complete in 5 s, best inner 0.756, 0 warnings
+P03 repeat=3 fold=1: complete in 6 s, best inner 0.733, 0 warnings
+P03 repeat=3 fold=2: complete in 6 s, best inner 0.724, 0 warnings
+P03 repeat=3 fold=3: complete in 6 s, best inner 0.691, 0 warnings
+P03 repeat=3 fold=4: complete in 6 s, best inner 0.744, 0 warnings
+P03 repeat=3 fold=5: complete in 6 s, best inner 0.687, 0 warnings
+Saved experiments\p3.0\roundB\member1\P03
+P04 repeat=1 fold=1: complete in 25 s, best inner 0.780, 0 warnings
+P04 repeat=1 fold=2: complete in 25 s, best inner 0.772, 0 warnings
+P04 repeat=1 fold=3: complete in 26 s, best inner 0.736, 0 warnings
+P04 repeat=1 fold=4: complete in 26 s, best inner 0.772, 0 warnings
+P04 repeat=1 fold=5: complete in 26 s, best inner 0.765, 0 warnings
+P04 repeat=2 fold=1: complete in 25 s, best inner 0.721, 0 warnings
+P04 repeat=2 fold=2: complete in 24 s, best inner 0.825, 0 warnings
+P04 repeat=2 fold=3: complete in 25 s, best inner 0.752, 0 warnings
+P04 repeat=2 fold=4: complete in 25 s, best inner 0.728, 0 warnings
+P04 repeat=2 fold=5: complete in 25 s, best inner 0.764, 0 warnings
+P04 repeat=3 fold=1: complete in 25 s, best inner 0.739, 0 warnings
+P04 repeat=3 fold=2: complete in 25 s, best inner 0.773, 0 warnings
+P04 repeat=3 fold=3: complete in 24 s, best inner 0.742, 0 warnings
+P04 repeat=3 fold=4: complete in 26 s, best inner 0.769, 0 warnings
+P04 repeat=3 fold=5: complete in 25 s, best inner 0.723, 0 warnings
+Saved experiments\p3.0\roundB\member1\P04
+P05 repeat=1 fold=1: complete in 8 s, best inner 0.722, 0 warnings
+P05 repeat=1 fold=2: complete in 8 s, best inner 0.745, 0 warnings
+P05 repeat=1 fold=3: complete in 8 s, best inner 0.679, 0 warnings
+P05 repeat=1 fold=4: complete in 8 s, best inner 0.698, 0 warnings
+P05 repeat=1 fold=5: complete in 8 s, best inner 0.687, 0 warnings
+P05 repeat=2 fold=1: complete in 8 s, best inner 0.716, 0 warnings
+P05 repeat=2 fold=2: complete in 9 s, best inner 0.787, 0 warnings
+P05 repeat=2 fold=3: complete in 9 s, best inner 0.700, 0 warnings
+P05 repeat=2 fold=4: complete in 8 s, best inner 0.684, 0 warnings
+P05 repeat=2 fold=5: complete in 8 s, best inner 0.697, 0 warnings
+P05 repeat=3 fold=1: complete in 8 s, best inner 0.689, 0 warnings
+P05 repeat=3 fold=2: complete in 8 s, best inner 0.694, 0 warnings
+P05 repeat=3 fold=3: complete in 8 s, best inner 0.702, 0 warnings
+P05 repeat=3 fold=4: complete in 9 s, best inner 0.696, 0 warnings
+P05 repeat=3 fold=5: complete in 8 s, best inner 0.677, 0 warnings
+Saved experiments\p3.0\roundB\member1\P05
+SUBMISSION RESULTS (complete): C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\submissions\member1\roundB-member1-20261106T052411Z-dd332f58.zip
+Completed. Log saved: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261106-122406-ba9d0e63.log
