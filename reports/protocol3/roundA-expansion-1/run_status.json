@@ -1,0 +1,173 @@
+{
+  "training_commit": "4b10b0a99faf9b623427a55491f216383e4eeb75",
+  "operator": "Leader-operated reruns executed through the assistant; member IDs denote assigned batches",
+  "python": "3.12.12",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.16.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "imbalanced-learn": "0.14.2"
+  },
+  "pipelines": [
+    {
+      "pipeline": "P04",
+      "member": 1,
+      "fits": 505,
+      "warnings": 0,
+      "wall_seconds": 79.76026799995452,
+      "selected": [
+        {
+          "select__k": 500,
+          "model__C": 0.1
+        },
+        {
+          "select__k": 150,
+          "model__C": 1
+        },
+        {
+          "select__k": 100,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 150,
+          "model__C": 0.1
+        },
+        {
+          "select__k": 2000,
+          "model__C": 0.01
+        }
+      ],
+      "source_zip": "results/p3/submissions/member1/roundA-member1-20261105T173755Z-f3a0bedd.zip"
+    },
+    {
+      "pipeline": "P05",
+      "member": 1,
+      "fits": 125,
+      "warnings": 0,
+      "wall_seconds": 22.791000200086273,
+      "selected": [
+        {
+          "model__C": 0.01
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.01
+        },
+        {
+          "model__C": 0.01
+        }
+      ],
+      "source_zip": "results/p3/submissions/member1/roundA-member1-20261105T173755Z-f3a0bedd.zip"
+    },
+    {
+      "pipeline": "P06",
+      "member": 2,
+      "fits": 125,
+      "warnings": 0,
+      "wall_seconds": 52.062694899970666,
+      "selected": [
+        {
+          "model__C": 10
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.0001
+        },
+        {
+          "model__C": 0.001
+        },
+        {
+          "model__C": 0.001
+        }
+      ],
+      "source_zip": "results/p3/submissions/member2/roundA-member2-20261105T173816Z-a8ddc550.zip"
+    },
+    {
+      "pipeline": "P09",
+      "member": 3,
+      "fits": 405,
+      "warnings": 0,
+      "wall_seconds": 80.2199467997998,
+      "selected": [
+        {
+          "select__k": 2000,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 2000,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 1000,
+          "model__C": 0.001
+        },
+        {
+          "select__k": 1000,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 2000,
+          "model__C": 0.1
+        }
+      ],
+      "source_zip": "results/p3/submissions/member3/roundA-member3-20261105T174001Z-3bfd405e.zip"
+    },
+    {
+      "pipeline": "P10",
+      "member": 3,
+      "fits": 405,
+      "warnings": 0,
+      "wall_seconds": 76.33915020001587,
+      "selected": [
+        {
+          "select__k": 500,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 250,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 250,
+          "model__C": 0.001
+        },
+        {
+          "select__k": 250,
+          "model__C": 0.01
+        },
+        {
+          "select__k": 500,
+          "model__C": 0.001
+        }
+      ],
+      "source_zip": "results/p3/submissions/member3/roundA-member3-20261105T174001Z-3bfd405e.zip"
+    }
+  ],
+  "submissions": [
+    {
+      "zip": "results/p3/submissions/member1/roundA-member1-20261105T173755Z-f3a0bedd.zip",
+      "log": "results/p3/logs/member1/20261106-003752-c081f405.log",
+      "zip_sha256": "67347da741f5c39abd82a6911f6f7f07a6abf6495f95e32a9a9bac05408fea43"
+    },
+    {
+      "zip": "results/p3/submissions/member2/roundA-member2-20261105T173816Z-a8ddc550.zip",
+      "log": "results/p3/logs/member2/20261106-003813-207900cb.log",
+      "zip_sha256": "93dc0ca16555330e6d815cee251af780b6e2a4878807b508feb7747bf1c31319"
+    },
+    {
+      "zip": "results/p3/submissions/member3/roundA-member3-20261105T174001Z-3bfd405e.zip",
+      "log": "results/p3/logs/member3/20261106-003958-9f7cb97a.log",
+      "zip_sha256": "39dafd69aea86990e3ea05bbdb405c10e89e1aab0aa4dc6b2acb51ded97f1edf"
+    }
+  ]
+}

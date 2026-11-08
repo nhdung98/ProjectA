@@ -1,0 +1,7 @@
+Log file: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261029-211659-1dabf895.log
+Arguments: ['check', '--member', '1']
+Checking raw files, prepared expression values and shared splits...
+Verified 254 patients, 20531 genes, 762 outer and 3048 inner assignments.
+Python 3.12.10, commit bf2c2ba20093fa00dd8f9a489f7b3c9162ebce85, code committed
+Member 1 (Trương Nam Hùng, W4a SVM): P01-MF 25, P01-ST 25, P02 105, P03 105, P04 405, P05 105 fits per repeat; round A 770, round B 2310
+Completed. Log saved: C:\Users\hungt\Documents\GitHub\ProjectA\results\p3\logs\member1\20261029-211659-1dabf895.log

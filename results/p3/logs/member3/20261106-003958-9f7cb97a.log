@@ -1,0 +1,16 @@
+Log file: C:\PROJECTA\protocol3-expansion-20261106\results\p3\logs\member3\20261106-003958-9f7cb97a.log
+Arguments: ['run', '--round', 'A', '--member', '3', '--pipeline', 'P09', '--pipeline', 'P10', '--jobs', '2']
+P09 repeat=1 fold=1: complete in 19 s, best inner 0.796, 0 warnings
+P09 repeat=1 fold=2: complete in 17 s, best inner 0.742, 0 warnings
+P09 repeat=1 fold=3: complete in 15 s, best inner 0.747, 0 warnings
+P09 repeat=1 fold=4: complete in 15 s, best inner 0.754, 0 warnings
+P09 repeat=1 fold=5: complete in 15 s, best inner 0.764, 0 warnings
+Saved experiments\p3.0\roundA\member3\P09
+P10 repeat=1 fold=1: complete in 15 s, best inner 0.797, 0 warnings
+P10 repeat=1 fold=2: complete in 16 s, best inner 0.777, 0 warnings
+P10 repeat=1 fold=3: complete in 15 s, best inner 0.742, 0 warnings
+P10 repeat=1 fold=4: complete in 16 s, best inner 0.781, 0 warnings
+P10 repeat=1 fold=5: complete in 15 s, best inner 0.760, 0 warnings
+Saved experiments\p3.0\roundA\member3\P10
+SUBMISSION RESULTS (complete): C:\PROJECTA\protocol3-expansion-20261106\results\p3\submissions\member3\roundA-member3-20261105T174001Z-3bfd405e.zip
+Completed. Log saved: C:\PROJECTA\protocol3-expansion-20261106\results\p3\logs\member3\20261106-003958-9f7cb97a.log

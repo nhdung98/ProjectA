@@ -1,0 +1,16 @@
+Log file: D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\logs\member3\20261029-205836-c4e1926e.log
+Arguments: ['run', '--round', 'A', '--member', '3']
+P09 repeat=1 fold=1: complete in 18 s, best inner 0.796, 0 warnings
+P09 repeat=1 fold=2: complete in 19 s, best inner 0.742, 0 warnings
+P09 repeat=1 fold=3: complete in 18 s, best inner 0.747, 0 warnings
+P09 repeat=1 fold=4: complete in 19 s, best inner 0.754, 0 warnings
+P09 repeat=1 fold=5: complete in 21 s, best inner 0.764, 0 warnings
+Saved experiments\p3.0\roundA\member3\P09
+P10 repeat=1 fold=1: complete in 38 s, best inner 0.797, 0 warnings
+P10 repeat=1 fold=2: complete in 55 s, best inner 0.744, 0 warnings
+P10 repeat=1 fold=3: complete in 60 s, best inner 0.731, 0 warnings
+P10 repeat=1 fold=4: complete in 52 s, best inner 0.751, 0 warnings
+P10 repeat=1 fold=5: complete in 51 s, best inner 0.760, 0 warnings
+Saved experiments\p3.0\roundA\member3\P10
+SUBMISSION RESULTS (complete): D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\submissions\member3\roundA-member3-20261029T135839Z-9068c5a9.zip
+Completed. Log saved: D:\A Fall Semester 2026\Assignment\COS40005-Computing Technology Project A\ProjectA\results\p3\logs\member3\20261029-205836-c4e1926e.log
